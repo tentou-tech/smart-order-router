@@ -32,6 +32,7 @@ export const SUPPORTED_CHAINS: ChainId[] = [
   ChainId.MONAD_TESTNET,
   ChainId.BASE_SEPOLIA,
   ChainId.SONEIUM,
+  ChainId.STORY_AENEID,
   // Gnosis and Moonbeam don't yet have contracts deployed yet
 ];
 
@@ -696,6 +697,13 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId in ChainId]: Token } = {
     18,
     'WETH',
     'Wrapped Ether'
+  ),
+  [ChainId.STORY_AENEID]: new Token(
+    ChainId.STORY_AENEID,
+    '0x1514000000000000000000000000000000000000',
+    18,
+    'WIP',
+    'Wrapped IP'
   ),
 };
 
