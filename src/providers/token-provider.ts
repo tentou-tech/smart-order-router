@@ -798,6 +798,14 @@ export const USDC_SONEIUM = new Token(
   'Soneium Bridged USDC Soneium'
 );
 
+export const USDC_STORY_AENEID = new Token(
+  ChainId.STORY_AENEID,
+  '0xf1815bd50389c46847f0bda824ec8da914045d14',
+  6,
+  'USDCE',
+  'Bridged USDC Stargate'
+);
+
 export class TokenProvider implements ITokenProvider {
   constructor(
     private chainId: ChainId,

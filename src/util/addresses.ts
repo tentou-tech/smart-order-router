@@ -420,6 +420,13 @@ export const WETH9: {
     'WETH',
     'Wrapped Ether'
   ),
+  [ChainId.STORY_AENEID]: new Token(
+    ChainId.STORY_AENEID,
+    '0x1514000000000000000000000000000000000000',
+    18,
+    'WIP',
+    'Wrapped IP'
+  ),
 };
 
 export const BEACON_CHAIN_DEPOSIT_ADDRESS =

@@ -170,6 +170,8 @@ export const ID_TO_CHAIN_ID = (id: number): ChainId => {
       return ChainId.UNICHAIN;
     case 1868:
       return ChainId.SONEIUM;
+    case 1315:
+      return ChainId.STORY_AENEID;
     default:
       throw new Error(`Unknown chain id: ${id}`);
   }
