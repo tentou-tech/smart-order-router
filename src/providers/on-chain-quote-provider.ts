@@ -2,12 +2,12 @@ import { Interface } from '@ethersproject/abi';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { BytesLike } from '@ethersproject/bytes';
 import { BaseProvider } from '@ethersproject/providers';
+import { ChainId } from '@tentou-tech/uniswap-sdk-core';
 import {
   encodeMixedRouteToPath,
   MixedRouteSDK,
   Protocol,
 } from '@uniswap/router-sdk';
-import { ChainId } from '@uniswap/sdk-core';
 import { encodeRouteToPath as encodeV3RouteToPath } from '@uniswap/v3-sdk';
 import {
   encodeRouteToPath as encodeV4RouteToPath,
@@ -689,7 +689,10 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
                 },
               ] as QuoteExactParams[];
             case Protocol.MIXED:
-              if (!MIXED_HAS_V1_QUOTER.includes(this.chainId) || mixedRouteContainsV4Pool) {
+              if (
+                !MIXED_HAS_V1_QUOTER.includes(this.chainId) ||
+                mixedRouteContainsV4Pool
+              ) {
                 return [
                   encodedRoute as string,
                   {

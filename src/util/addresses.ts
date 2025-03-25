@@ -4,7 +4,7 @@ import {
   Currency,
   SWAP_ROUTER_02_ADDRESSES as SWAP_ROUTER_02_ADDRESSES_HELPER,
   Token,
-} from '@uniswap/sdk-core';
+} from '@tentou-tech/uniswap-sdk-core';
 import { FACTORY_ADDRESS } from '@uniswap/v3-sdk';
 
 import { ADDRESS_ZERO } from '@uniswap/router-sdk';
@@ -421,6 +421,13 @@ export const WETH9: {
     'Wrapped Ether'
   ),
   [ChainId.STORY_AENEID]: new Token(
+    ChainId.STORY_AENEID,
+    '0x1514000000000000000000000000000000000000',
+    18,
+    'WIP',
+    'Wrapped IP'
+  ),
+  [ChainId.STORY]: new Token(
     ChainId.STORY_AENEID,
     '0x1514000000000000000000000000000000000000',
     18,

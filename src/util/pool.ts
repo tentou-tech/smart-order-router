@@ -1,5 +1,5 @@
+import { ChainId } from '@tentou-tech/uniswap-sdk-core';
 import { ADDRESS_ZERO } from '@uniswap/router-sdk';
-import { ChainId } from '@uniswap/sdk-core';
 import { Pool as V4Pool } from '@uniswap/v4-sdk';
 
 import { nativeOnChain } from './chains';
@@ -310,6 +310,16 @@ export const V4_ETH_WETH_FAKE_POOL: { [chainId in ChainId]: V4Pool } = {
   [ChainId.STORY_AENEID]: new V4Pool(
     nativeOnChain(ChainId.STORY_AENEID),
     nativeOnChain(ChainId.STORY_AENEID).wrapped,
+    0,
+    FAKE_TICK_SPACING,
+    ADDRESS_ZERO,
+    79228162514264337593543950336,
+    0,
+    0
+  ),
+  [ChainId.STORY]: new V4Pool(
+    nativeOnChain(ChainId.STORY),
+    nativeOnChain(ChainId.STORY).wrapped,
     0,
     FAKE_TICK_SPACING,
     ADDRESS_ZERO,

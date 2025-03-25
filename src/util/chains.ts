@@ -4,7 +4,7 @@ import {
   Ether,
   NativeCurrency,
   Token,
-} from '@uniswap/sdk-core';
+} from '@tentou-tech/uniswap-sdk-core';
 
 // WIP: Gnosis, Moonbeam
 export const SUPPORTED_CHAINS: ChainId[] = [
@@ -701,6 +701,13 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId in ChainId]: Token } = {
     'Wrapped Ether'
   ),
   [ChainId.STORY_AENEID]: new Token(
+    ChainId.STORY_AENEID,
+    '0x1514000000000000000000000000000000000000',
+    18,
+    'WIP',
+    'Wrapped IP'
+  ),
+  [ChainId.STORY]: new Token(
     ChainId.STORY_AENEID,
     '0x1514000000000000000000000000000000000000',
     18,

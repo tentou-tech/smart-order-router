@@ -1,5 +1,5 @@
+import { ChainId, Token } from '@tentou-tech/uniswap-sdk-core';
 import { Protocol } from '@uniswap/router-sdk';
-import { ChainId, Token } from '@uniswap/sdk-core';
 
 import { ProviderConfig } from '../provider';
 import { SubgraphProvider } from '../subgraph-provider';

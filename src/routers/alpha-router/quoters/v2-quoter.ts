@@ -1,6 +1,11 @@
 import { BigNumber } from '@ethersproject/bignumber';
+import {
+  ChainId,
+  Currency,
+  Token,
+  TradeType,
+} from '@tentou-tech/uniswap-sdk-core';
 import { Protocol } from '@uniswap/router-sdk';
-import { ChainId, Currency, Token, TradeType } from '@uniswap/sdk-core';
 import _ from 'lodash';
 
 import {

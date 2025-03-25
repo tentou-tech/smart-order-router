@@ -1,5 +1,5 @@
+import { ChainId, Currency, Token } from '@tentou-tech/uniswap-sdk-core';
 import { Protocol } from '@uniswap/router-sdk';
-import { ChainId, Currency, Token } from '@uniswap/sdk-core';
 
 import { SubgraphPool } from '../routers/alpha-router/functions/get-candidate-pools';
 import { nativeOnChain, WRAPPED_NATIVE_CURRENCY } from '../util';
@@ -36,6 +36,7 @@ import {
   USDC_OPTIMISM,
   USDC_POLYGON,
   USDC_SONEIUM,
+  USDC_STORY,
   USDC_STORY_AENEID,
   USDC_UNICHAIN,
   USDC_UNICHAIN_SEPOLIA,
@@ -191,6 +192,11 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     nativeOnChain(ChainId.STORY_AENEID),
     WRAPPED_NATIVE_CURRENCY[ChainId.STORY_AENEID]!,
     USDC_STORY_AENEID,
+  ],
+  [ChainId.STORY]: [
+    nativeOnChain(ChainId.STORY),
+    WRAPPED_NATIVE_CURRENCY[ChainId.STORY]!,
+    USDC_STORY,
   ],
 };
 

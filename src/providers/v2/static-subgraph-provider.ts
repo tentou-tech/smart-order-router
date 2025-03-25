@@ -1,4 +1,4 @@
-import { ChainId, Token } from '@uniswap/sdk-core';
+import { ChainId, Token } from '@tentou-tech/uniswap-sdk-core';
 import { Pair } from '@uniswap/v2-sdk';
 import _ from 'lodash';
 
@@ -34,6 +34,7 @@ import {
   USDC_OPTIMISM,
   USDC_POLYGON,
   USDC_SONEIUM,
+  USDC_STORY,
   USDC_STORY_AENEID,
   USDC_UNICHAIN,
   USDC_UNICHAIN_SEPOLIA,
@@ -158,6 +159,7 @@ const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     WRAPPED_NATIVE_CURRENCY[ChainId.STORY_AENEID]!,
     USDC_STORY_AENEID,
   ],
+  [ChainId.STORY]: [WRAPPED_NATIVE_CURRENCY[ChainId.STORY]!, USDC_STORY],
 };
 
 /**

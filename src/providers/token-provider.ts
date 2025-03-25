@@ -1,7 +1,7 @@
 import { Interface } from '@ethersproject/abi';
 import { BigNumber } from '@ethersproject/bignumber';
 import { parseBytes32String } from '@ethersproject/strings';
-import { ChainId, Token } from '@uniswap/sdk-core';
+import { ChainId, Token } from '@tentou-tech/uniswap-sdk-core';
 import _ from 'lodash';
 
 import { IERC20Metadata__factory } from '../types/v3/factories/IERC20Metadata__factory';
@@ -799,6 +799,14 @@ export const USDC_SONEIUM = new Token(
 );
 
 export const USDC_STORY_AENEID = new Token(
+  ChainId.STORY_AENEID,
+  '0xf1815bd50389c46847f0bda824ec8da914045d14',
+  6,
+  'USDCE',
+  'Bridged USDC Stargate'
+);
+
+export const USDC_STORY = new Token(
   ChainId.STORY_AENEID,
   '0xf1815bd50389c46847f0bda824ec8da914045d14',
   6,

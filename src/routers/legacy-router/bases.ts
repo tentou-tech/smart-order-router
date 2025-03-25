@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { ChainId, Token } from '@uniswap/sdk-core';
+import { ChainId, Token } from '@tentou-tech/uniswap-sdk-core';
 
 import {
   BTC_BNB,
@@ -17,6 +17,7 @@ import {
   USDC_BNB,
   USDC_MAINNET,
   USDC_SONEIUM,
+  USDC_STORY,
   USDC_STORY_AENEID,
   USDC_UNICHAIN,
   USDC_UNICHAIN_SEPOLIA,
@@ -125,6 +126,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST = (
       WRAPPED_NATIVE_CURRENCY[ChainId.STORY_AENEID]!,
       USDC_STORY_AENEID,
     ],
+    [ChainId.STORY]: [WRAPPED_NATIVE_CURRENCY[ChainId.STORY]!, USDC_STORY],
   };
 };
 

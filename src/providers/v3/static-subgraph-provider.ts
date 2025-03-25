@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { ChainId, Token } from '@uniswap/sdk-core';
+import { ChainId, Token } from '@tentou-tech/uniswap-sdk-core';
 import { FeeAmount, Pool } from '@uniswap/v3-sdk';
 import JSBI from 'jsbi';
 import _ from 'lodash';
@@ -49,6 +49,7 @@ import {
   USDC_POLYGON,
   USDC_SEPOLIA,
   USDC_SONEIUM,
+  USDC_STORY,
   USDC_STORY_AENEID,
   USDC_UNICHAIN,
   USDC_UNICHAIN_SEPOLIA,
@@ -213,6 +214,7 @@ const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     WRAPPED_NATIVE_CURRENCY[ChainId.STORY_AENEID]!,
     USDC_STORY_AENEID,
   ],
+  [ChainId.STORY]: [WRAPPED_NATIVE_CURRENCY[ChainId.STORY]!, USDC_STORY],
 };
 
 /**

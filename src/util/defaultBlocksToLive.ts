@@ -1,4 +1,4 @@
-import { ChainId } from '@uniswap/sdk-core';
+import { ChainId } from '@tentou-tech/uniswap-sdk-core';
 
 export const DEFAULT_BLOCKS_TO_LIVE: { [chain in ChainId]: number } = {
   // (60 minutes) / (12 seconds)= 300
@@ -49,4 +49,5 @@ export const DEFAULT_BLOCKS_TO_LIVE: { [chain in ChainId]: number } = {
   [ChainId.SONEIUM]: 3600,
   // (60 minutes) / (1 seconds) = 3600
   [ChainId.STORY_AENEID]: 3600,
+  [ChainId.STORY]: 3600,
 };

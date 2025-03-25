@@ -1,4 +1,4 @@
-import { Token } from '@uniswap/sdk-core';
+import { Token } from '@tentou-tech/uniswap-sdk-core';
 import { SimulationStatus, VIRTUAL_BASE } from '../providers';
 
 export function breakDownTenderlySimulationError(

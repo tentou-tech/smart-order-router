@@ -10,7 +10,7 @@ import {
 } from '../gas-model';
 import { TickBasedHeuristicGasModelFactory } from '../tick-based-heuristic-gas-model';
 
-import { ChainId } from '@uniswap/sdk-core';
+import { ChainId } from '@tentou-tech/uniswap-sdk-core';
 
 export class V4HeuristicGasModelFactory
   extends TickBasedHeuristicGasModelFactory<V4RouteWithValidQuote>
