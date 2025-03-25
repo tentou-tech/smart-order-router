@@ -1,5 +1,5 @@
 {
-  "name": "@uniswap/smart-order-router",
+  "name": "@tentou-tech/smart-order-router",
   "version": "4.20.6",
   "description": "Uniswap Smart Order Router",
   "main": "build/main/index.js",
@@ -7,7 +7,7 @@
   "module": "build/module/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Uniswap/smart-order-router.git"
+    "url": "https://github.com/tentou-tech/smart-order-router.git"
   },
   "license": "GPL",
   "keywords": [],
