@@ -33,6 +33,7 @@ export const SUPPORTED_CHAINS: ChainId[] = [
   ChainId.BASE_SEPOLIA,
   ChainId.SONEIUM,
   ChainId.STORY_AENEID,
+  ChainId.STORY,
   // Gnosis and Moonbeam don't yet have contracts deployed yet
 ];
 
@@ -49,6 +50,8 @@ export const V2_SUPPORTED = [
   ChainId.UNICHAIN_SEPOLIA,
   ChainId.UNICHAIN,
   ChainId.SONEIUM,
+  ChainId.STORY_AENEID,
+  ChainId.STORY,
 ];
 
 export const V4_SUPPORTED = [
@@ -81,6 +84,8 @@ export const MIXED_SUPPORTED = [
   ChainId.WORLDCHAIN,
   ChainId.ZORA,
   ChainId.SONEIUM,
+  ChainId.STORY_AENEID,
+  ChainId.STORY,
 ];
 
 export const MIXED_HAS_V1_QUOTER = [ChainId.MAINNET, ChainId.GOERLI];
@@ -172,6 +177,8 @@ export const ID_TO_CHAIN_ID = (id: number): ChainId => {
       return ChainId.SONEIUM;
     case 1315:
       return ChainId.STORY_AENEID;
+    case 1514:
+      return ChainId.STORY;
     default:
       throw new Error(`Unknown chain id: ${id}`);
   }
@@ -206,6 +213,8 @@ export enum ChainName {
   UNICHAIN = 'unichain-mainnet',
   MONAD_TESTNET = 'monad-testnet',
   SONEIUM = 'soneium-mainnet',
+  STORY_AENEID = 'story-aeneid-testnet',
+  STORY = 'story-mainnet',
 }
 
 export enum NativeCurrencyName {
@@ -218,6 +227,7 @@ export enum NativeCurrencyName {
   BNB = 'BNB',
   AVALANCHE = 'AVAX',
   MONAD = 'MON',
+  IP = 'IP',
 }
 
 export const NATIVE_NAMES_BY_ID: { [chainId: number]: string[] } = {
@@ -331,6 +341,12 @@ export const NATIVE_NAMES_BY_ID: { [chainId: number]: string[] } = {
     'ETHER',
     '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
   ],
+  [ChainId.STORY_AENEID]: [
+    'IP',
+    'IP',
+    '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+  ],
+  [ChainId.STORY]: ['IP', 'IP', '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'],
 };
 
 export const NATIVE_CURRENCY: { [chainId: number]: NativeCurrencyName } = {
@@ -361,6 +377,8 @@ export const NATIVE_CURRENCY: { [chainId: number]: NativeCurrencyName } = {
   [ChainId.BASE_SEPOLIA]: NativeCurrencyName.ETHER,
   [ChainId.UNICHAIN]: NativeCurrencyName.ETHER,
   [ChainId.SONEIUM]: NativeCurrencyName.ETHER,
+  [ChainId.STORY_AENEID]: NativeCurrencyName.IP,
+  [ChainId.STORY]: NativeCurrencyName.IP,
 };
 
 export const ID_TO_NETWORK_NAME = (id: number): ChainName => {
@@ -421,6 +439,10 @@ export const ID_TO_NETWORK_NAME = (id: number): ChainName => {
       return ChainName.MONAD_TESTNET;
     case 1868:
       return ChainName.SONEIUM;
+    case 1315:
+      return ChainName.STORY_AENEID;
+    case 1514:
+      return ChainName.STORY;
     default:
       throw new Error(`Unknown chain id: ${id}`);
   }
