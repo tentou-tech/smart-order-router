@@ -94,10 +94,13 @@ export async function getHighestLiquidityV3NativePool(
     .value();
 
   const poolAccessor = await poolProvider.getPools(nativePools, providerConfig);
+  log.info({ poolAccessor }, 'poolAccessor');
 
   const pools = _(feeAmounts)
     .map((feeAmount) => {
-      return poolAccessor.getPool(nativeCurrency, token, feeAmount);
+      const pool = poolAccessor.getPool(nativeCurrency, token, feeAmount);
+      log.info({ pool }, 'pool');
+      return pool;
     })
     .compact()
     .value();
