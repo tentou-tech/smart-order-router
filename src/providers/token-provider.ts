@@ -800,7 +800,7 @@ export const USDC_SONEIUM = new Token(
 
 export const USDC_STORY_AENEID = new Token(
   ChainId.STORY_AENEID,
-  '0x8c7C52EabB0FCbcAeBCe2556D9A719d539EA02D8',
+  '0xab7bdb16bfc55bda57be1e4ad3d3d8cf6527ad12',
   6,
   'USDCE',
   'Bridged USDC Stargate'
