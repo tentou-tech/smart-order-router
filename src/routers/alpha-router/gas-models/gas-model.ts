@@ -50,6 +50,8 @@ import {
   USDC_POLYGON,
   USDC_SEPOLIA,
   USDC_SONEIUM,
+  USDC_STORY,
+  USDC_STORY_AENEID,
   USDC_UNICHAIN,
   USDC_UNICHAIN_SEPOLIA,
   USDC_WORLDCHAIN,
@@ -135,6 +137,8 @@ export const usdGasTokensByChain: { [chainId in ChainId]?: Token[] } = {
   [ChainId.BASE_SEPOLIA]: [USDC_BASE_SEPOLIA],
   [ChainId.UNICHAIN]: [DAI_UNICHAIN, USDC_UNICHAIN],
   [ChainId.SONEIUM]: [USDC_SONEIUM],
+  [ChainId.STORY_AENEID]: [USDC_STORY_AENEID],
+  [ChainId.STORY]: [USDC_STORY],
 };
 
 export type L1ToL2GasCosts = {
