@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { ChainId, Token } from '@tentou-tech/uniswap-sdk-core';
-import { FeeAmount, Pool } from '@uniswap/v3-sdk';
+import { Pool } from '@tentou-tech/uniswap-v3-sdk';
+import { FeeAmount } from '@uniswap/v3-sdk';
 import JSBI from 'jsbi';
 import _ from 'lodash';
 

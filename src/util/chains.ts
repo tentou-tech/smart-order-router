@@ -504,6 +504,10 @@ export const ID_TO_PROVIDER = (id: ChainId): string => {
       return process.env.JSON_RPC_PROVIDER_UNICHAIN!;
     case ChainId.SONEIUM:
       return process.env.JSON_RPC_PROVIDER_SONEIUM!;
+    case ChainId.STORY_AENEID:
+      return process.env.JSON_RPC_PROVIDER_STORY_AENEID!;
+    case ChainId.STORY:
+      return process.env.JSON_RPC_PROVIDER_STORY!;
     default:
       throw new Error(`Chain id: ${id} not supported`);
   }
