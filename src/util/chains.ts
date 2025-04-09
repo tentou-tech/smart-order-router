@@ -933,3 +933,45 @@ export function nativeOnChain(chainId: number): NativeCurrency {
 
   return cachedNativeCurrency[chainId]!;
 }
+
+export const STORY_UNISWAP_V3: {
+  [chainId in ChainId]?: {
+    initCodeHash: string;
+    factoryAddress: string;
+    dex: string;
+    swapRouterAddress: string;
+  }[];
+} = {
+  [ChainId.STORY_AENEID]: [
+    {
+      dex: 'piperx',
+      initCodeHash:
+        '0xa8ffca5939bbe6e18e96df724ec3b3539269b282d1be4a535d654f640a37dcf5',
+      factoryAddress: '0xb8c21e89983B5EcCD841846eA294c4c8a89718f1',
+      swapRouterAddress: '0x8295c195CEe31404ea082d253a140310b9a0A37e',
+    },
+    {
+      dex: 'storyhunt',
+      initCodeHash:
+        '0xd5178f9f07b08d01d075cc5b7e1a1ae23a37b3811522cb2fed1367201d51d4e5',
+      factoryAddress: '0x475c188B4e95612Aa2b1e327f2EA9639719151Ac',
+      swapRouterAddress: '0x848df3BFE2Fb0dc2775b6bB053b3df0101F70f73',
+    },
+  ],
+  [ChainId.STORY]: [
+    {
+      dex: 'piperx',
+      initCodeHash:
+        '0xa8ffca5939bbe6e18e96df724ec3b3539269b282d1be4a535d654f640a37dcf5',
+      factoryAddress: '0xb8c21e89983B5EcCD841846eA294c4c8a89718f1',
+      swapRouterAddress: '0x8295c195CEe31404ea082d253a140310b9a0A37e',
+    },
+    {
+      dex: 'storyhunt',
+      initCodeHash:
+        '0xd5178f9f07b08d01d075cc5b7e1a1ae23a37b3811522cb2fed1367201d51d4e5',
+      factoryAddress: '0x74014BbbE2702274c01acA0BD0c5389779f5A050',
+      swapRouterAddress: '0x2F41259CEfFa284db94A4b9a242B64eB6dD5167E',
+    },
+  ],
+};
