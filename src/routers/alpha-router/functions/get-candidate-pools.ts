@@ -86,6 +86,7 @@ import {
 } from '../../../providers/v3/pool-provider';
 import {
   IV3SubgraphProvider,
+  STORY_UNISWAP_V3,
   V3SubgraphPool,
 } from '../../../providers/v3/subgraph-provider';
 import {
@@ -577,9 +578,8 @@ export async function getV4CandidatePools({
     // If we requested direct swap pools but did not find any in the subgraph query.
     // Optimistically add them into the query regardless. Invalid pools ones will be dropped anyway
     // when we query the pool on-chain. Ensures that new pools for new pairs can be swapped on immediately.
-    top2DirectSwapPool = _.map(
-      v4PoolParams as Array<[number, number, string]>,
-      (poolParams) => {
+    top2DirectSwapPool = _.compact(
+      _.map(v4PoolParams as Array<[number, number, string]>, (poolParams) => {
         const [fee, tickSpacing, hooks] = poolParams;
 
         const { currency0, currency1, poolId } = poolProvider.getPoolId(
@@ -604,7 +604,7 @@ export async function getV4CandidatePools({
           tvlETH: 10000,
           tvlUSD: 10000,
         };
-      }
+      })
     );
   }
 
@@ -906,9 +906,14 @@ export async function getV3CandidatePools({
 
   const beforeSubgraphPools = Date.now();
 
-  const allPools = await subgraphProvider.getPools(tokenIn, tokenOut, {
-    blockNumber,
-  });
+  const allPools = await subgraphProvider.getPools(
+    tokenIn,
+    tokenOut,
+    {
+      blockNumber,
+    },
+    chainId
+  );
 
   log.info(
     { samplePools: allPools.slice(0, 3) },
@@ -1032,33 +1037,59 @@ export async function getV3CandidatePools({
       // If we requested direct swap pools but did not find any in the subgraph query.
       // Optimistically add them into the query regardless. Invalid pools ones will be dropped anyway
       // when we query the pool on-chain. Ensures that new pools for new pairs can be swapped on immediately.
-      top2DirectSwapPool = _.map(
-        getApplicableV3FeeAmounts(chainId),
-        (feeAmount) => {
-          const { token0, token1, poolAddress } = poolProvider.getPoolAddress(
-            tokenIn,
-            tokenOut,
-            feeAmount
-          );
-          return {
-            id: poolAddress,
-            feeTier: unparseFeeAmount(feeAmount),
-            liquidity: '10000',
-            token0: {
-              id: token0.address,
-            },
-            token1: {
-              id: token1.address,
-            },
-            tvlETH: 10000,
-            tvlUSD: 10000,
-          };
-        }
+      top2DirectSwapPool = _.compact(
+        _.map(getApplicableV3FeeAmounts(chainId), (feeAmount) => {
+          if (chainId == ChainId.STORY_AENEID || chainId == ChainId.STORY) {
+            const configs = STORY_UNISWAP_V3[chainId] ?? [];
+            if (configs.length === 0) return undefined;
+            const config = configs[0];
+            if (!config) return undefined;
+            const { token0, token1, poolAddress } = poolProvider.getPoolAddress(
+              tokenIn,
+              tokenOut,
+              feeAmount,
+              config.initCodeHash,
+              config.factoryAddress
+            );
+
+            return {
+              id: poolAddress,
+              feeTier: unparseFeeAmount(feeAmount),
+              liquidity: '10000',
+              token0: {
+                id: token0.address,
+              },
+              token1: {
+                id: token1.address,
+              },
+              tvlETH: 10000,
+              tvlUSD: 10000,
+            };
+          } else {
+            const { token0, token1, poolAddress } = poolProvider.getPoolAddress(
+              tokenIn,
+              tokenOut,
+              feeAmount
+            );
+
+            return {
+              id: poolAddress,
+              feeTier: unparseFeeAmount(feeAmount),
+              liquidity: '10000',
+              token0: { id: token0.address },
+              token1: { id: token1.address },
+              tvlETH: 10000,
+              tvlUSD: 10000,
+            };
+          }
+        })
       );
     }
   }
 
   addToAddressSet(top2DirectSwapPool);
+
+  console.log('top2DirectSwapPool', top2DirectSwapPool);
 
   const wrappedNativeAddress =
     WRAPPED_NATIVE_CURRENCY[chainId]?.address.toLowerCase();
@@ -1243,7 +1274,7 @@ export async function getV3CandidatePools({
 
   const tokenPairsRaw = _.map<
     V3SubgraphPool,
-    [Token, Token, FeeAmount] | undefined
+    [Token, Token, FeeAmount, string, string] | undefined
   >(subgraphPools, (subgraphPool) => {
     const tokenA = tokenAccessor.getTokenByAddress(subgraphPool.token0.id);
     const tokenB = tokenAccessor.getTokenByAddress(subgraphPool.token1.id);
@@ -1269,7 +1300,13 @@ export async function getV3CandidatePools({
       return undefined;
     }
 
-    return [tokenA, tokenB, fee];
+    return [
+      tokenA,
+      tokenB,
+      fee,
+      subgraphPool.initCodeHashManualOverride ?? '',
+      subgraphPool.factoryAddressManualOverride ?? '',
+    ];
   });
 
   const tokenPairs = _.compact(tokenPairsRaw);
@@ -2183,7 +2220,7 @@ export async function getMixedRouteCandidatePools({
 
   const V3tokenPairsRaw = _.map<
     V3SubgraphPool,
-    [Token, Token, FeeAmount] | undefined
+    [Token, Token, FeeAmount, string, string] | undefined
   >(V3sortedPools, (subgraphPool) => {
     const tokenA = tokenAccessor.getTokenByAddress(subgraphPool.token0.id);
     const tokenB = tokenAccessor.getTokenByAddress(subgraphPool.token1.id);
@@ -2209,7 +2246,13 @@ export async function getMixedRouteCandidatePools({
       return undefined;
     }
 
-    return [tokenA, tokenB, fee];
+    return [
+      tokenA,
+      tokenB,
+      fee,
+      subgraphPool.initCodeHashManualOverride ?? '',
+      subgraphPool.factoryAddressManualOverride ?? '',
+    ];
   });
 
   const V3tokenPairs = _.compact(V3tokenPairsRaw);

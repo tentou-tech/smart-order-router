@@ -16,6 +16,9 @@ export interface V3SubgraphPool {
   };
   tvlETH: number;
   tvlUSD: number;
+
+  initCodeHashManualOverride?: string;
+  factoryAddressManualOverride?: string;
 }
 
 export type V3RawSubgraphPool = {
@@ -33,6 +36,43 @@ export type V3RawSubgraphPool = {
   totalValueLockedUSD: string;
   totalValueLockedETH: string;
   totalValueLockedUSDUntracked: string;
+};
+
+export const STORY_UNISWAP_V3: {
+  [chainId in ChainId]?: {
+    initCodeHash: string;
+    factoryAddress: string;
+    dex: string;
+  }[];
+} = {
+  [ChainId.STORY_AENEID]: [
+    {
+      dex: 'piperx',
+      initCodeHash:
+        '0xa8ffca5939bbe6e18e96df724ec3b3539269b282d1be4a535d654f640a37dcf5',
+      factoryAddress: '0xb8c21e89983B5EcCD841846eA294c4c8a89718f1',
+    },
+    {
+      dex: 'storyhunt',
+      initCodeHash:
+        '0xd5178f9f07b08d01d075cc5b7e1a1ae23a37b3811522cb2fed1367201d51d4e5',
+      factoryAddress: '0x475c188B4e95612Aa2b1e327f2EA9639719151Ac',
+    },
+  ],
+  [ChainId.STORY]: [
+    {
+      dex: 'piperx',
+      initCodeHash:
+        '0xa8ffca5939bbe6e18e96df724ec3b3539269b282d1be4a535d654f640a37dcf5',
+      factoryAddress: '0xb8c21e89983B5EcCD841846eA294c4c8a89718f1',
+    },
+    {
+      dex: 'storyhunt',
+      initCodeHash:
+        '0xd5178f9f07b08d01d075cc5b7e1a1ae23a37b3811522cb2fed1367201d51d4e5',
+      factoryAddress: '0x74014BbbE2702274c01acA0BD0c5389779f5A050',
+    },
+  ],
 };
 
 const SUBGRAPH_URL_BY_CHAIN: { [chainId in ChainId]?: string } = {
@@ -74,7 +114,8 @@ export interface IV3SubgraphProvider {
   getPools(
     tokenIn?: Token,
     tokenOut?: Token,
-    providerConfig?: ProviderConfig
+    providerConfig?: ProviderConfig,
+    chainId?: ChainId
   ): Promise<V3SubgraphPool[]>;
 }
 

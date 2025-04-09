@@ -80,7 +80,11 @@ import {
 } from '../token-provider';
 
 import { IV3PoolProvider } from './pool-provider';
-import { IV3SubgraphProvider, V3SubgraphPool } from './subgraph-provider';
+import {
+  IV3SubgraphProvider,
+  STORY_UNISWAP_V3,
+  V3SubgraphPool,
+} from './subgraph-provider';
 
 type ChainTokenList = {
   readonly [chainId in ChainId]: Token[];
@@ -241,37 +245,69 @@ export class StaticV3SubgraphProvider implements IV3SubgraphProvider {
     providerConfig?: ProviderConfig
   ): Promise<V3SubgraphPool[]> {
     log.info('In static subgraph provider for V3');
+    let basePairs: [Token, Token, FeeAmount, string, string][] = [];
     const bases = BASES_TO_CHECK_TRADES_AGAINST[this.chainId];
 
-    const basePairs: [Token, Token][] = _.flatMap(
+    const tempPairs: [Token, Token][] = _.flatMap(
       bases,
       (base): [Token, Token][] => bases.map((otherBase) => [base, otherBase])
     );
 
     if (tokenIn && tokenOut) {
-      basePairs.push(
+      tempPairs.push(
         [tokenIn, tokenOut],
         ...bases.map((base): [Token, Token] => [tokenIn, base]),
         ...bases.map((base): [Token, Token] => [tokenOut, base])
       );
     }
 
-    const pairs: [Token, Token, FeeAmount][] = _(basePairs)
-      .filter((tokens): tokens is [Token, Token] =>
+    if (
+      this.chainId === ChainId.STORY_AENEID ||
+      this.chainId === ChainId.STORY
+    ) {
+      const configs = STORY_UNISWAP_V3[this.chainId];
+      if (!configs) {
+        basePairs = tempPairs.map(([tokenA, tokenB]) => [
+          tokenA,
+          tokenB,
+          FeeAmount.LOWEST,
+          '',
+          '',
+        ]);
+      } else {
+        for (const config of configs) {
+          const pairs: [Token, Token, FeeAmount, string, string][] =
+            tempPairs.map(([tokenA, tokenB]) => {
+              return [
+                tokenA,
+                tokenB,
+                FeeAmount.LOWEST,
+                config.initCodeHash,
+                config.factoryAddress,
+              ];
+            });
+          basePairs.push(...pairs);
+        }
+      }
+    }
+    const pairs: [Token, Token, FeeAmount, string, string][] = _(basePairs)
+      .filter((tokens): tokens is [Token, Token, FeeAmount, string, string] =>
         Boolean(tokens[0] && tokens[1])
       )
       .filter(
         ([tokenA, tokenB]) =>
           tokenA.address !== tokenB.address && !tokenA.equals(tokenB)
       )
-      .flatMap<[Token, Token, FeeAmount]>(([tokenA, tokenB]) => {
-        return [
-          [tokenA, tokenB, FeeAmount.LOWEST],
-          [tokenA, tokenB, FeeAmount.LOW],
-          [tokenA, tokenB, FeeAmount.MEDIUM],
-          [tokenA, tokenB, FeeAmount.HIGH],
-        ];
-      })
+      .flatMap<[Token, Token, FeeAmount, string, string]>(
+        ([tokenA, tokenB, _fee, initCodeHash, factoryAddress]) => {
+          return [
+            [tokenA, tokenB, FeeAmount.LOWEST, initCodeHash, factoryAddress],
+            [tokenA, tokenB, FeeAmount.LOW, initCodeHash, factoryAddress],
+            [tokenA, tokenB, FeeAmount.MEDIUM, initCodeHash, factoryAddress],
+            [tokenA, tokenB, FeeAmount.HIGH, initCodeHash, factoryAddress],
+          ];
+        }
+      )
       .value();
 
     log.info(

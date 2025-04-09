@@ -343,7 +343,7 @@ export class LegacyRouter {
     tokenOut: Token,
     routingConfig?: LegacyRoutingConfig
   ): Promise<V3Route[]> {
-    const tokenPairs: [Token, Token, FeeAmount][] =
+    const tokenPairs: [Token, Token, FeeAmount, string, string][] =
       await this.getAllPossiblePairings(tokenIn, tokenOut);
 
     const poolAccessor = await this.poolProvider.getPools(tokenPairs, {
@@ -373,7 +373,7 @@ export class LegacyRouter {
   private async getAllPossiblePairings(
     tokenIn: Token,
     tokenOut: Token
-  ): Promise<[Token, Token, FeeAmount][]> {
+  ): Promise<[Token, Token, FeeAmount, string, string][]> {
     const common =
       BASES_TO_CHECK_TRADES_AGAINST(this.tokenProvider)[this.chainId] ?? [];
     const additionalA =
@@ -393,7 +393,7 @@ export class LegacyRouter {
 
     const customBases = (await CUSTOM_BASES(this.tokenProvider))[this.chainId];
 
-    const allPairs: [Token, Token, FeeAmount][] = _([
+    const allPairs: [Token, Token, FeeAmount, string, string][] = _([
       // the direct pair
       [tokenIn, tokenOut],
       // token A against all bases
@@ -423,13 +423,15 @@ export class LegacyRouter {
 
         return true;
       })
-      .flatMap<[Token, Token, FeeAmount]>(([tokenA, tokenB]) => {
-        return [
-          [tokenA, tokenB, FeeAmount.LOW],
-          [tokenA, tokenB, FeeAmount.MEDIUM],
-          [tokenA, tokenB, FeeAmount.HIGH],
-        ];
-      })
+      .flatMap<[Token, Token, FeeAmount, string, string]>(
+        ([tokenA, tokenB]) => {
+          return [
+            [tokenA, tokenB, FeeAmount.LOW, '', ''],
+            [tokenA, tokenB, FeeAmount.MEDIUM, '', ''],
+            [tokenA, tokenB, FeeAmount.HIGH, '', ''],
+          ];
+        }
+      )
       .value();
 
     return allPairs;

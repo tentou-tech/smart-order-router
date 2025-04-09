@@ -88,8 +88,8 @@ export async function getHighestLiquidityV3NativePool(
   const feeAmounts = getApplicableV3FeeAmounts(token.chainId);
 
   const nativePools = _(feeAmounts)
-    .map<[Token, Token, FeeAmount]>((feeAmount) => {
-      return [nativeCurrency, token, feeAmount];
+    .map<[Token, Token, FeeAmount, string, string]>((feeAmount) => {
+      return [nativeCurrency, token, feeAmount, '', ''];
     })
     .value();
 
@@ -139,11 +139,10 @@ export async function getHighestLiquidityV3USDPool(
 
   const usdPools = _(feeAmounts)
     .flatMap((feeAmount) => {
-      return _.map<Token, [Token, Token, FeeAmount]>(usdTokens, (usdToken) => [
-        wrappedCurrency,
-        usdToken,
-        feeAmount,
-      ]);
+      return _.map<Token, [Token, Token, FeeAmount, string, string]>(
+        usdTokens,
+        (usdToken) => [wrappedCurrency, usdToken, feeAmount, '', '']
+      );
     })
     .value();
 

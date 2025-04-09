@@ -1282,11 +1282,13 @@ export class AlphaRouter
         quoteCurrency
       );
 
+    console.time('alphaRouter.route.tokenProperties');
     const tokenOutProperties =
       await this.tokenPropertiesProvider.getTokensProperties(
         [currencyOut],
         partialRoutingConfig
       );
+    console.timeEnd('alphaRouter.route.tokenProperties');
 
     const feeTakenOnTransfer =
       tokenOutProperties[getAddressLowerCase(currencyOut)]?.tokenFeeResult
@@ -1618,6 +1620,7 @@ export class AlphaRouter
       );
     }
 
+    console.time('alphaRouter.route.getSwapRouteFromCache');
     let swapRouteFromCachePromise: Promise<BestSwapRoute | null> =
       Promise.resolve(null);
     if (cachedRoutes) {
@@ -1639,7 +1642,9 @@ export class AlphaRouter
         providerConfig
       );
     }
+    console.timeEnd('alphaRouter.route.getSwapRouteFromCache');
 
+    console.time('alphaRouter.route.getSwapRouteFromChain');
     let swapRouteFromChainPromise: Promise<BestSwapRoute | null> =
       Promise.resolve(null);
     if (!cachedRoutes || cacheMode !== CacheMode.Livemode) {
@@ -1665,6 +1670,7 @@ export class AlphaRouter
       swapRouteFromCachePromise,
       swapRouteFromChainPromise,
     ]);
+    console.timeEnd('alphaRouter.route.getSwapRouteFromChain');
 
     let swapRouteRaw: BestSwapRoute | null;
     let hitsCachedRoute = false;
@@ -2122,6 +2128,7 @@ export class AlphaRouter
     swapConfig?: SwapOptions,
     providerConfig?: ProviderConfig
   ): Promise<BestSwapRoute | null> {
+    console.time('alphaRouter.getSwapRouteFromCache');
     const tokenPairProperties =
       await this.tokenPropertiesProvider.getTokensProperties(
         [currencyIn, currencyOut],
@@ -2329,6 +2336,7 @@ export class AlphaRouter
       (quoteResult) => quoteResult.routesWithValidQuotes
     );
 
+    console.timeEnd('alphaRouter.getSwapRouteFromCache');
     return getBestSwapRoute(
       amount,
       percents,
@@ -2361,11 +2369,14 @@ export class AlphaRouter
     swapConfig?: SwapOptions,
     providerConfig?: ProviderConfig
   ): Promise<BestSwapRoute | null> {
+    console.time('alphaRouter.getSwapRouteFromChain.total');
+    console.time('alphaRouter.getSwapRouteFromChain.tokenProperties');
     const tokenPairProperties =
       await this.tokenPropertiesProvider.getTokensProperties(
         [currencyIn, currencyOut],
         providerConfig
       );
+    console.timeEnd('alphaRouter.getSwapRouteFromChain.tokenProperties');
 
     const sellTokenIsFot =
       tokenPairProperties[
@@ -2380,10 +2391,12 @@ export class AlphaRouter
     // Generate our distribution of amounts, i.e. fractions of the input amount.
     // We will get quotes for fractions of the input amount for different routes, then
     // combine to generate split routes.
+    console.time('alphaRouter.getSwapRouteFromChain.getAmountDistribution');
     const [percents, amounts] = this.getAmountDistribution(
       amount,
       routingConfig
     );
+    console.timeEnd('alphaRouter.getSwapRouteFromChain.getAmountDistribution');
 
     const noProtocolsSpecified = protocols.length === 0;
     const v4ProtocolSpecified = protocols.includes(Protocol.V4);
@@ -2406,6 +2419,7 @@ export class AlphaRouter
     // we are explicitly requiring people to specify v4 for now
     if (v4SupportedInChain && (v4ProtocolSpecified || noProtocolsSpecified)) {
       // if (v4ProtocolSpecified || noProtocolsSpecified) {
+      console.time('alphaRouter.getSwapRouteFromChain.getV4CandidatePools');
       v4CandidatePoolsPromise = getV4CandidatePools({
         currencyIn: currencyIn,
         currencyOut: currencyOut,
@@ -2418,6 +2432,9 @@ export class AlphaRouter
         chainId: this.chainId,
         v4PoolParams: this.v4PoolParams,
       }).then((candidatePools) => {
+        console.timeEnd(
+          'alphaRouter.getSwapRouteFromChain.getV4CandidatePools'
+        );
         metric.putMetric(
           'GetV4CandidatePools',
           Date.now() - beforeGetCandidates,
@@ -2434,6 +2451,8 @@ export class AlphaRouter
         const tokenIn = currencyIn.wrapped;
         const tokenOut = currencyOut.wrapped;
 
+        console.time('alphaRouter.getSwapRouteFromChain.getV3CandidatePools');
+        console.log('getV3CandidatePools', this.chainId);
         v3CandidatePoolsPromise = getV3CandidatePools({
           tokenIn,
           tokenOut,
@@ -2445,6 +2464,9 @@ export class AlphaRouter
           routingConfig,
           chainId: this.chainId,
         }).then((candidatePools) => {
+          console.timeEnd(
+            'alphaRouter.getSwapRouteFromChain.getV3CandidatePools'
+          );
           metric.putMetric(
             'GetV3CandidatePools',
             Date.now() - beforeGetCandidates,
@@ -2475,6 +2497,9 @@ export class AlphaRouter
         routingConfig,
         chainId: this.chainId,
       }).then((candidatePools) => {
+        console.timeEnd(
+          'alphaRouter.getSwapRouteFromChain.getV2CandidatePools'
+        );
         metric.putMetric(
           'GetV2CandidatePools',
           Date.now() - beforeGetCandidates,
@@ -2620,6 +2645,9 @@ export class AlphaRouter
         mixedProtocolAllowed &&
         protocols.filter((protocol) => protocol !== Protocol.MIXED).length >= 2
       ) {
+        console.time(
+          'alphaRouter.getSwapRouteFromChain.getMixedCrossLiquidityCandidatePools'
+        );
         log.info({ protocols, tradeType }, 'Routing across MixedRoutes');
 
         metric.putMetric(
@@ -2684,6 +2712,7 @@ export class AlphaRouter
       }
     }
 
+    console.time('alphaRouter.getSwapRouteFromChain.getQuotes');
     const getQuotesResults = await Promise.all(quotePromises);
 
     const allRoutesWithValidQuotes: RouteWithValidQuote[] = [];
@@ -2694,6 +2723,10 @@ export class AlphaRouter
         allCandidatePools.push(getQuoteResult.candidatePools);
       }
     });
+
+    console.timeEnd('alphaRouter.getSwapRouteFromChain.getQuotes');
+
+    console.time('alphaRouter.getSwapRouteFromChain.getBestSwapRoute');
 
     if (allRoutesWithValidQuotes.length === 0) {
       log.info({ allRoutesWithValidQuotes }, 'Received no valid quotes');
@@ -2715,6 +2748,7 @@ export class AlphaRouter
       swapConfig,
       providerConfig
     );
+    console.timeEnd('alphaRouter.getSwapRouteFromChain.getBestSwapRoute');
 
     if (bestSwapRoute) {
       this.emitPoolSelectionMetrics(
@@ -2725,6 +2759,7 @@ export class AlphaRouter
       );
     }
 
+    console.timeEnd('alphaRouter.getSwapRouteFromChain.total');
     return bestSwapRoute;
   }
 

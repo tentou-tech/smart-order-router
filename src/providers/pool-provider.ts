@@ -60,6 +60,8 @@ export abstract class PoolProvider<
         poolIdentifier: poolIdentifier,
         currency0,
         currency1,
+        initCodeHashManualOverride,
+        factoryAddressManualOverride,
       } = this.getPoolIdentifier(poolConstruct);
 
       if (poolIdentifierSet.has(poolIdentifier)) {
@@ -69,6 +71,8 @@ export abstract class PoolProvider<
       // It's the easiest way to change the pool construct in place, since we don't know the entire pool construct at compiling time.
       poolConstruct[0] = currency0;
       poolConstruct[1] = currency1;
+      poolConstruct[2] = initCodeHashManualOverride;
+      poolConstruct[3] = factoryAddressManualOverride;
       poolIdentifierSet.add(poolIdentifier);
       sortedCurrencyPairs.push(poolConstruct);
       sortedPoolIdentifiers.push(poolIdentifier);

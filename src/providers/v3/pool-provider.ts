@@ -33,7 +33,7 @@ export interface IV3PoolProvider {
    * @returns A pool accessor with methods for accessing the pools.
    */
   getPools(
-    tokenPairs: [Token, Token, FeeAmount][],
+    tokenPairs: [Token, Token, FeeAmount, string, string][],
     providerConfig?: ProviderConfig
   ): Promise<V3PoolAccessor>;
 
@@ -48,7 +48,9 @@ export interface IV3PoolProvider {
   getPoolAddress(
     tokenA: Token,
     tokenB: Token,
-    feeAmount: FeeAmount
+    feeAmount: FeeAmount,
+    initCodeHashManualOverride?: string,
+    factoryAddressManualOverride?: string
   ): { poolAddress: string; token0: Token; token1: Token };
 }
 
@@ -56,19 +58,21 @@ export type V3PoolAccessor = {
   getPool: (
     tokenA: Token,
     tokenB: Token,
-    feeAmount: FeeAmount
+    feeAmount: FeeAmount,
+    initCodeHashManualOverride?: string,
+    factoryAddressManualOverride?: string
   ) => Pool | undefined;
   getPoolByAddress: (address: string) => Pool | undefined;
   getAllPools: () => Pool[];
 };
 
 export type V3PoolRetryOptions = RetryOptions;
-export type V3PoolConstruct = [Token, Token, FeeAmount];
+export type V3PoolConstruct = [Token, Token, FeeAmount, string, string];
 
 export class V3PoolProvider
   extends PoolProvider<
     Token,
-    V3PoolConstruct,
+    [Token, Token, FeeAmount, string, string],
     V3ISlot0,
     V3ILiquidity,
     V3PoolAccessor
@@ -107,12 +111,16 @@ export class V3PoolProvider
   public getPoolAddress(
     tokenA: Token,
     tokenB: Token,
-    feeAmount: FeeAmount
+    feeAmount: FeeAmount,
+    initCodeHashManualOverride?: string,
+    factoryAddressManualOverride?: string
   ): { poolAddress: string; token0: Token; token1: Token } {
     const { poolIdentifier, currency0, currency1 } = this.getPoolIdentifier([
       tokenA,
       tokenB,
       feeAmount,
+      initCodeHashManualOverride ?? '',
+      factoryAddressManualOverride ?? '',
     ]);
     return {
       poolAddress: poolIdentifier,
@@ -155,8 +163,16 @@ export class V3PoolProvider
     poolIdentifier: string;
     currency0: Token;
     currency1: Token;
+    initCodeHashManualOverride: string;
+    factoryAddressManualOverride: string;
   } {
-    const [tokenA, tokenB, feeAmount] = pool;
+    const [
+      tokenA,
+      tokenB,
+      feeAmount,
+      initCodeHashManualOverride,
+      factoryAddressManualOverride,
+    ] = pool;
 
     const [token0, token1] = tokenA.sortsBefore(tokenB)
       ? [tokenA, tokenB]
@@ -171,18 +187,27 @@ export class V3PoolProvider
         poolIdentifier: cachedAddress,
         currency0: token0,
         currency1: token1,
+        initCodeHashManualOverride,
+        factoryAddressManualOverride,
       };
     }
-
+    // TODO: duonghb - Add use multi dexes to calculate the pool address
     const poolAddress = computePoolAddress({
-      factoryAddress: V3_CORE_FACTORY_ADDRESSES[this.chainId]!,
+      factoryAddress:
+        factoryAddressManualOverride ||
+        V3_CORE_FACTORY_ADDRESSES[this.chainId]!,
       tokenA: token0,
       tokenB: token1,
       fee: feeAmount,
       initCodeHashManualOverride:
+        initCodeHashManualOverride ||
         '0xd5178f9f07b08d01d075cc5b7e1a1ae23a37b3811522cb2fed1367201d51d4e5',
       chainId: this.chainId,
     });
+
+    console.log('poolAddress', poolAddress);
+    console.log('initCodeHashManualOverride', initCodeHashManualOverride);
+    console.log('factoryAddressManualOverride', factoryAddressManualOverride);
 
     this.POOL_ADDRESS_CACHE[cacheKey] = poolAddress;
 
@@ -190,6 +215,8 @@ export class V3PoolProvider
       poolIdentifier: poolAddress,
       currency0: token0,
       currency1: token1,
+      initCodeHashManualOverride,
+      factoryAddressManualOverride,
     };
   }
 
@@ -217,9 +244,17 @@ export class V3PoolProvider
       getPool: (
         tokenA: Token,
         tokenB: Token,
-        feeAmount: FeeAmount
+        feeAmount: FeeAmount,
+        initCodeHashManualOverride?: string,
+        factoryAddressManualOverride?: string
       ): Pool | undefined => {
-        const { poolAddress } = this.getPoolAddress(tokenA, tokenB, feeAmount);
+        const { poolAddress } = this.getPoolAddress(
+          tokenA,
+          tokenB,
+          feeAmount,
+          initCodeHashManualOverride,
+          factoryAddressManualOverride
+        );
         return poolIdentifierToPool[poolAddress];
       },
       getPoolByAddress: (address: string): Pool | undefined =>

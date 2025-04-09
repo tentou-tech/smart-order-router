@@ -5,26 +5,14 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug Active Spec",
-      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/ava",
-      "runtimeArgs": ["debug", "--break", "--serial", "${file}"],
-      "port": 9229,
-      "outputCapture": "std",
-      "skipFiles": ["<node_internals>/**/*.js"],
-      "preLaunchTask": "npm: build"
-      // "smartStep": true
-    },
-    {
-      // Use this one if you're already running `yarn watch`
-      "type": "node",
-      "request": "launch",
-      "name": "Debug Active Spec (no build)",
-      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/ava",
-      "runtimeArgs": ["debug", "--break", "--serial", "${file}"],
-      "port": 9229,
-      "outputCapture": "std",
-      "skipFiles": ["<node_internals>/**/*.js"]
-      // "smartStep": true
+      "name": "Debug index.ts",
+      "skipFiles": ["<node_internals>/**"],
+      "runtimeVersion": "22.14.0",
+      "program": "${workspaceFolder}/node_modules/ts-node/dist/bin.js",
+      "args": ["${workspaceFolder}/src/index.ts"],
+      "cwd": "${workspaceFolder}",
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/**/*.js"]
     }
   ]
 }

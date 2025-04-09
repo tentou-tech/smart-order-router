@@ -40,20 +40,30 @@ export class CachingV3PoolProvider implements IV3PoolProvider {
   ) {}
 
   public async getPools(
-    tokenPairs: [Token, Token, FeeAmount][],
+    tokenPairs: [Token, Token, FeeAmount, string, string][],
     providerConfig?: ProviderConfig
   ): Promise<V3PoolAccessor> {
     const poolAddressSet: Set<string> = new Set<string>();
-    const poolsToGetTokenPairs: Array<[Token, Token, FeeAmount]> = [];
+    const poolsToGetTokenPairs: Array<
+      [Token, Token, FeeAmount, string, string]
+    > = [];
     const poolsToGetAddresses: string[] = [];
     const poolAddressToPool: { [poolAddress: string]: Pool } = {};
     const blockNumber = await providerConfig?.blockNumber;
 
-    for (const [tokenA, tokenB, feeAmount] of tokenPairs) {
+    for (const [
+      tokenA,
+      tokenB,
+      feeAmount,
+      initCodeHashManualOverride,
+      factoryAddressManualOverride,
+    ] of tokenPairs) {
       const { poolAddress, token0, token1 } = this.getPoolAddress(
         tokenA,
         tokenB,
-        feeAmount
+        feeAmount,
+        initCodeHashManualOverride,
+        factoryAddressManualOverride
       );
 
       if (poolAddressSet.has(poolAddress)) {
@@ -80,7 +90,7 @@ export class CachingV3PoolProvider implements IV3PoolProvider {
         1,
         MetricLoggerUnit.None
       );
-      poolsToGetTokenPairs.push([token0, token1, feeAmount]);
+      poolsToGetTokenPairs.push([token0, token1, feeAmount, '', '']);
       poolsToGetAddresses.push(poolAddress);
     }
 
@@ -124,9 +134,17 @@ export class CachingV3PoolProvider implements IV3PoolProvider {
       getPool: (
         tokenA: Token,
         tokenB: Token,
-        feeAmount: FeeAmount
+        feeAmount: FeeAmount,
+        initCodeHashManualOverride?: string,
+        factoryAddressManualOverride?: string
       ): Pool | undefined => {
-        const { poolAddress } = this.getPoolAddress(tokenA, tokenB, feeAmount);
+        const { poolAddress } = this.getPoolAddress(
+          tokenA,
+          tokenB,
+          feeAmount,
+          initCodeHashManualOverride,
+          factoryAddressManualOverride
+        );
         return poolAddressToPool[poolAddress];
       },
       getPoolByAddress: (address: string): Pool | undefined =>
@@ -138,8 +156,16 @@ export class CachingV3PoolProvider implements IV3PoolProvider {
   public getPoolAddress(
     tokenA: Token,
     tokenB: Token,
-    feeAmount: FeeAmount
+    feeAmount: FeeAmount,
+    initCodeHashManualOverride?: string,
+    factoryAddressManualOverride?: string
   ): { poolAddress: string; token0: Token; token1: Token } {
-    return this.poolProvider.getPoolAddress(tokenA, tokenB, feeAmount);
+    return this.poolProvider.getPoolAddress(
+      tokenA,
+      tokenB,
+      feeAmount,
+      initCodeHashManualOverride,
+      factoryAddressManualOverride
+    );
   }
 }
