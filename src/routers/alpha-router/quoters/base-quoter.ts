@@ -176,7 +176,12 @@ export abstract class BaseQuoter<
         );
       }
 
-      return this.getQuotes(
+      log.info(
+        `Getting quotes for ${
+          routesResult.routes.length
+        } routes with amounts: ${amounts.map((amount) => amount.toString())}`
+      );
+      const result = this.getQuotes(
         routesResult.routes,
         amounts,
         percents,
@@ -187,6 +192,9 @@ export abstract class BaseQuoter<
         gasModel,
         gasPriceWei
       );
+
+      log.info(`getQuotes result: ${JSON.stringify(result)}`);
+      return result;
     });
   }
 
