@@ -2726,6 +2726,7 @@ export class AlphaRouter
     }
 
     log.info(`bestSwapRoute: ${JSON.stringify(bestSwapRoute)}`);
+    console.log(`bestSwapRoute: ${JSON.stringify(bestSwapRoute)}`);
 
     return bestSwapRoute;
   }

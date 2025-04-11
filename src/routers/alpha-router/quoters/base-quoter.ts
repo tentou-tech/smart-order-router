@@ -176,11 +176,8 @@ export abstract class BaseQuoter<
         );
       }
 
-      log.info(
-        `Getting quotes for ${
-          routesResult.routes.length
-        } routes with amounts: ${amounts.map((amount) => amount.toString())}`
-      );
+      log.info(`routesResult: ${JSON.stringify(routesResult)}`);
+      console.log(`routesResult: ${JSON.stringify(routesResult)}`);
       const result = this.getQuotes(
         routesResult.routes,
         amounts,
@@ -194,6 +191,7 @@ export abstract class BaseQuoter<
       );
 
       log.info(`getQuotes result: ${JSON.stringify(result)}`);
+      console.log(`getQuotes result: ${JSON.stringify(result)}`);
       return result;
     });
   }
