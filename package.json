@@ -7,7 +7,7 @@
   "module": "build/module/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/tentou-tech/smart-order-router.git"
+    "url": "git+https://github.com/tentou-tech/smart-order-router.git"
   },
   "license": "GPL",
   "keywords": [],
