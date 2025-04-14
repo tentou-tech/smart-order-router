@@ -176,9 +176,14 @@ export abstract class BaseQuoter<
         );
       }
 
+      log.info(`routesResult.routes.length: ${routesResult.routes.length}`);
+      log.info(`candidatePools: ${JSON.stringify(routesResult.candidatePools)}`);
+      console.log(`candidatePools: ${JSON.stringify(routesResult.candidatePools)}`);
+
       log.info(`routesResult: ${JSON.stringify(routesResult)}`);
       console.log(`routesResult: ${JSON.stringify(routesResult)}`);
-      const result = this.getQuotes(
+
+      return this.getQuotes(
         routesResult.routes,
         amounts,
         percents,
@@ -189,10 +194,6 @@ export abstract class BaseQuoter<
         gasModel,
         gasPriceWei
       );
-
-      log.info(`getQuotes result: ${JSON.stringify(result)}`);
-      console.log(`getQuotes result: ${JSON.stringify(result)}`);
-      return result;
     });
   }
 

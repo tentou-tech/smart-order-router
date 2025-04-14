@@ -2561,6 +2561,9 @@ export class AlphaRouter
                   MetricLoggerUnit.Milliseconds
                 );
 
+                log.info('v3 result', JSON.stringify(result));
+                console.log('v3 result', JSON.stringify(result));
+
                 return result;
               })
           )
@@ -2694,6 +2697,9 @@ export class AlphaRouter
         allCandidatePools.push(getQuoteResult.candidatePools);
       }
     });
+
+    log.info(`allRoutesWithValidQuotes: ${JSON.stringify(allRoutesWithValidQuotes)}`);
+    console.log(`allRoutesWithValidQuotes: ${JSON.stringify(allRoutesWithValidQuotes)}`);
 
     if (allRoutesWithValidQuotes.length === 0) {
       log.info({ allRoutesWithValidQuotes }, 'Received no valid quotes');

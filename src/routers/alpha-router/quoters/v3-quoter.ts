@@ -179,6 +179,9 @@ export class V3Quoter extends BaseQuoter<V3CandidatePools, V3Route, Token> {
       routingConfig
     );
 
+    log.info('routesWithQuotes', JSON.stringify(routesWithQuotes));
+    console.log('routesWithQuotes', JSON.stringify(routesWithQuotes));
+
     metric.putMetric(
       'V3QuotesLoad',
       Date.now() - beforeQuotes,
