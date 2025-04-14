@@ -344,9 +344,9 @@ export const NATIVE_NAMES_BY_ID: { [chainId: number]: string[] } = {
   [ChainId.STORY_AENEID]: [
     'IP',
     'IP',
-    '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
+    '0x0000000000000000000000000000000000000000',
   ],
-  [ChainId.STORY]: ['IP', 'IP', '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'],
+  [ChainId.STORY]: ['IP', 'IP', '0x0000000000000000000000000000000000000000'],
 };
 
 export const NATIVE_CURRENCY: { [chainId: number]: NativeCurrencyName } = {
