@@ -14,7 +14,7 @@ import { MixedRoute, SupportedRoutes } from '../routers/router';
 import { V3_CORE_FACTORY_ADDRESSES } from './addresses';
 
 import { TPool } from '@uniswap/router-sdk';
-import { CurrencyAmount, V4_ETH_WETH_FAKE_POOL } from '.';
+import { CurrencyAmount, DEXES, V4_ETH_WETH_FAKE_POOL } from '.';
 import { CachedRoutes } from '../providers';
 
 export const routeToTokens = (route: SupportedRoutes): Currency[] => {
@@ -58,7 +58,7 @@ export const poolToString = (pool: TPool): string => {
       pool.token0,
       pool.token1,
       pool.fee,
-      undefined,
+      DEXES.StoryHunt.InitCodeHash,
       V3_CORE_FACTORY_ADDRESSES[pool.chainId]
     )}]`;
   } else if (pool instanceof Pair) {
@@ -87,7 +87,7 @@ export const routeToString = (route: SupportedRoutes): string => {
         pool.token0,
         pool.token1,
         pool.fee,
-        undefined,
+        DEXES.StoryHunt.InitCodeHash,
         V3_CORE_FACTORY_ADDRESSES[pool.chainId]
       )}]`;
     } else if (pool instanceof V4Pool) {

@@ -77,6 +77,8 @@ export class V3Quoter extends BaseQuoter<V3CandidatePools, V3Route, Token> {
     const { poolAccessor, candidatePools } = v3CandidatePools;
     const poolsRaw = poolAccessor.getAllPools();
 
+    console.log(`poolsRaw: ${JSON.stringify(poolsRaw)}`);
+
     // Drop any pools that contain fee on transfer tokens (not supported by v3) or have issues with being transferred.
     const pools = await this.applyTokenValidatorToPools(
       poolsRaw,
@@ -107,6 +109,8 @@ export class V3Quoter extends BaseQuoter<V3CandidatePools, V3Route, Token> {
         );
       }
     );
+
+    console.log(`pools after validation: ${JSON.stringify(pools)}`);
 
     // Given all our candidate pools, compute all the possible ways to route from tokenIn to tokenOut.
     const { maxSwapsPerPath } = routingConfig;

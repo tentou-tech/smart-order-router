@@ -1,6 +1,7 @@
 import { ChainId, Token } from '@tentou-tech/uniswap-sdk-core';
 import { Protocol } from '@uniswap/router-sdk';
 
+import { log } from '../../util';
 import { ProviderConfig } from '../provider';
 import { SubgraphProvider } from '../subgraph-provider';
 
@@ -104,6 +105,7 @@ export class V3SubgraphProvider
   }
 
   protected override subgraphQuery(blockNumber?: number): string {
+    log.info(`subgraphQuery: ${blockNumber}`);
     return `
     query getPools($pageSize: Int!, $id: String) {
       pools(
