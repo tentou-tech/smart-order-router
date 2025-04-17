@@ -27,8 +27,12 @@ export abstract class SubgraphProviderWithFallBacks<
           currencyOut,
           providerConfig
         );
+        console.log(`Returning pools for ${this.protocol} from fallback #${i}`);
         return pools;
       } catch (err) {
+        console.log(
+          `Failed to get subgraph pools for ${this.protocol} from fallback #${i}`
+        );
         log.info(
           `Failed to get subgraph pools for ${this.protocol} from fallback #${i}`
         );

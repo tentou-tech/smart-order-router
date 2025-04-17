@@ -4,7 +4,9 @@ import { computePoolAddress } from '@tentou-tech/uniswap-v3-sdk';
 import { FeeAmount, Pool } from '@uniswap/v3-sdk';
 import retry, { Options as RetryOptions } from 'async-retry';
 
+import { V3SubgraphPool } from '../..';
 import { IUniswapV3PoolState__factory } from '../../types/v3/factories/IUniswapV3PoolState__factory';
+import { DEXES } from '../../util';
 import { V3_CORE_FACTORY_ADDRESSES } from '../../util/addresses';
 import { log } from '../../util/log';
 import { IMulticallProvider, Result } from '../multicall-provider';
@@ -30,11 +32,13 @@ export interface IV3PoolProvider {
    *
    * @param tokenPairs The token pairs and fee amount of the pools to get.
    * @param [providerConfig] The provider config.
+   * @param [v3SubgraphPools] The subgraph pools to use to get the pools.
    * @returns A pool accessor with methods for accessing the pools.
    */
   getPools(
     tokenPairs: [Token, Token, FeeAmount][],
-    providerConfig?: ProviderConfig
+    providerConfig?: ProviderConfig,
+    v3SubgraphPools?: V3SubgraphPool[]
   ): Promise<V3PoolAccessor>;
 
   /**
@@ -99,9 +103,10 @@ export class V3PoolProvider
 
   public async getPools(
     tokenPairs: V3PoolConstruct[],
-    providerConfig?: ProviderConfig
+    providerConfig?: ProviderConfig,
+    v3SubgraphPools?: V3SubgraphPool[]
   ): Promise<V3PoolAccessor> {
-    return await super.getPoolsInternal(tokenPairs, providerConfig);
+    return await super.getPoolsInternal(tokenPairs, providerConfig, v3SubgraphPools);
   }
 
   public getPoolAddress(
@@ -151,7 +156,7 @@ export class V3PoolProvider
     return results;
   }
 
-  protected override getPoolIdentifier(pool: V3PoolConstruct): {
+  protected override getPoolIdentifier(pool: V3PoolConstruct, initCodeHash?: string): {
     poolIdentifier: string;
     currency0: Token;
     currency1: Token;
@@ -162,7 +167,10 @@ export class V3PoolProvider
       ? [tokenA, tokenB]
       : [tokenB, tokenA];
 
-    const cacheKey = `${this.chainId}/${token0.address}/${token1.address}/${feeAmount}`;
+    // If initCodeHash is not provided, use the default for StoryHunt
+    const codeHash = initCodeHash ?? DEXES.StoryHunt.InitCodeHash;
+
+    const cacheKey = `${this.chainId}/${token0.address}/${token1.address}/${feeAmount}/${codeHash}`;
 
     const cachedAddress = this.POOL_ADDRESS_CACHE[cacheKey];
 
@@ -179,8 +187,7 @@ export class V3PoolProvider
       tokenA: token0,
       tokenB: token1,
       fee: feeAmount,
-      initCodeHashManualOverride:
-        '0xd5178f9f07b08d01d075cc5b7e1a1ae23a37b3811522cb2fed1367201d51d4e5',
+      initCodeHashManualOverride: codeHash,
       chainId: this.chainId,
     });
 

@@ -5,10 +5,11 @@ import { Pool as V4Pool } from '@uniswap/v4-sdk';
 import { Options as RetryOptions } from 'async-retry';
 import _ from 'lodash';
 
-import { log, poolToString } from '../util';
+import { DEX_SUPPORTED, log, poolToString } from '../util';
 
 import { IMulticallProvider, Result } from './multicall-provider';
 import { ProviderConfig } from './provider';
+import { V3SubgraphPool } from './v3/subgraph-provider';
 
 export type PoolConstruct<TCurrency extends Currency> = [
   TCurrency,
@@ -49,32 +50,54 @@ export abstract class PoolProvider<
 
   protected async getPoolsInternal(
     poolConstructs: TPoolConstruct[],
-    providerConfig?: ProviderConfig
+    providerConfig?: ProviderConfig,
+    v3SubgraphPools?: V3SubgraphPool[]
   ): Promise<TPoolAccessor> {
     const poolIdentifierSet: Set<string> = new Set<string>();
     const sortedCurrencyPairs: Array<TPoolConstruct> = [];
     const sortedPoolIdentifiers: string[] = [];
 
+    console.log(`poolConstructs: ${JSON.stringify(poolConstructs)}`);
+
     for (const poolConstruct of poolConstructs) {
+      DEX_SUPPORTED.forEach((dex) => {
       const {
         poolIdentifier: poolIdentifier,
         currency0,
         currency1,
-      } = this.getPoolIdentifier(poolConstruct);
+      } = this.getPoolIdentifier(poolConstruct, dex.initCodeHash);
 
-      if (poolIdentifierSet.has(poolIdentifier)) {
-        console.log(
-          `Skipping duplicate pool: ${poolIdentifier} - ${currency0.symbol} - ${currency1.symbol}`
-        );
-        continue;
+      // check poolIdentifier is in v3SubgraphPools
+      const v3SubgraphPool = v3SubgraphPools?.find((pool) => pool.id === poolIdentifier);
+      if (v3SubgraphPool) {
+        console.log(`Found v3 subgraph pool: ${poolIdentifier}`);
       }
 
-      // It's the easiest way to change the pool construct in place, since we don't know the entire pool construct at compiling time.
-      poolConstruct[0] = currency0;
-      poolConstruct[1] = currency1;
-      poolIdentifierSet.add(poolIdentifier);
-      sortedCurrencyPairs.push(poolConstruct);
-      sortedPoolIdentifiers.push(poolIdentifier);
+      // add poolIdentifier to poolIdentifierSet if poolIdentifier is in v3SubgraphPools and do not exist in poolIdentifierSet before
+      if (v3SubgraphPool && !poolIdentifierSet.has(poolIdentifier)) {
+        poolConstruct[0] = currency0;
+        poolConstruct[1] = currency1;
+        poolIdentifierSet.add(poolIdentifier);
+        sortedCurrencyPairs.push(poolConstruct);
+        sortedPoolIdentifiers.push(poolIdentifier);
+      } else {
+        console.log(`Skipping duplicate pool: ${poolIdentifier} - ${currency0.symbol} - ${currency1.symbol}`);
+      }
+
+      // if (poolIdentifierSet.has(poolIdentifier)) {
+      //   console.log(
+      //     `Skipping duplicate pool: ${poolIdentifier} - ${currency0.symbol} - ${currency1.symbol}`
+      //   );
+      //   continue;
+      // }
+
+      // // It's the easiest way to change the pool construct in place, since we don't know the entire pool construct at compiling time.
+      // poolConstruct[0] = currency0;
+      // poolConstruct[1] = currency1;
+      // poolIdentifierSet.add(poolIdentifier);
+      // sortedCurrencyPairs.push(poolConstruct);
+      // sortedPoolIdentifiers.push(poolIdentifier);
+      });
     }
 
     console.log(`sortedCurrencyPairs: ${JSON.stringify(sortedCurrencyPairs)}`);
@@ -158,7 +181,7 @@ export abstract class PoolProvider<
     providerConfig?: ProviderConfig
   ): Promise<Result<TReturn>[]>;
 
-  protected abstract getPoolIdentifier(pool: TPoolConstruct): {
+  protected abstract getPoolIdentifier(pool: TPoolConstruct, initCodeHash?: string): {
     poolIdentifier: string;
     currency0: TCurrency;
     currency1: TCurrency;
