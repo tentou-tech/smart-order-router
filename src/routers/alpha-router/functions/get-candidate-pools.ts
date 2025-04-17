@@ -909,6 +909,7 @@ export async function getV3CandidatePools({
   const allPools = await subgraphProvider.getPools(tokenIn, tokenOut, {
     blockNumber,
   });
+  console.log(`allPools: ${JSON.stringify(allPools)}`);
 
   log.info(
     { samplePools: allPools.slice(0, 3) },
@@ -1029,6 +1030,7 @@ export async function getV3CandidatePools({
             '0xd46ba6d942050d489dbd938a2c909a5d5039a161')
       )
     ) {
+      console.log(`Adding direct swap pools for ${tokenIn.symbol} and ${tokenOut.symbol}`);
       // If we requested direct swap pools but did not find any in the subgraph query.
       // Optimistically add them into the query regardless. Invalid pools ones will be dropped anyway
       // when we query the pool on-chain. Ensures that new pools for new pairs can be swapped on immediately.
@@ -1040,6 +1042,7 @@ export async function getV3CandidatePools({
             tokenOut,
             feeAmount
           );
+          console.log(`poolAddress: ${poolAddress}`);
           return {
             id: poolAddress,
             feeTier: unparseFeeAmount(feeAmount),
@@ -1205,6 +1208,8 @@ export async function getV3CandidatePools({
     .uniqBy((pool) => pool.id)
     .value();
 
+  console.log(`subgraphPools: ${JSON.stringify(subgraphPools)}`);
+
   const tokenAddresses = _(subgraphPools)
     .flatMap((subgraphPool) => [subgraphPool.token0.id, subgraphPool.token1.id])
     .compact()
@@ -1272,7 +1277,11 @@ export async function getV3CandidatePools({
     return [tokenA, tokenB, fee];
   });
 
+  console.log(`tokenPairsRaw: ${JSON.stringify(tokenPairsRaw)}`);
+
   const tokenPairs = _.compact(tokenPairsRaw);
+
+  console.log(`tokenPairs: ${JSON.stringify(tokenPairs)}`);
 
   metric.putMetric(
     'V3PoolsFilterLoad',

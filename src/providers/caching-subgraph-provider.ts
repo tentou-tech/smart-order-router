@@ -241,12 +241,15 @@ export abstract class CachingSubgraphProvider<
     const cachedPools = await this.cache.get(this.SUBGRAPH_KEY(this.chainId));
 
     if (cachedPools) {
+      console.log(`Returning cached pools for ${this.chainId} - ${cachedPools.length}`);
       return cachedPools;
     }
 
     const pools = await this.subgraphProvider.getPools();
 
     await this.cache.set(this.SUBGRAPH_KEY(this.chainId), pools);
+
+    console.log(`Returning new pools for ${this.chainId} - ${pools.length}`);
 
     return pools;
   }
