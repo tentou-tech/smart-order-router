@@ -59,45 +59,57 @@ export abstract class PoolProvider<
 
     console.log(`poolConstructs: ${JSON.stringify(poolConstructs)}`);
 
-    for (const poolConstruct of poolConstructs) {
-      DEX_SUPPORTED.forEach((dex) => {
-      const {
-        poolIdentifier: poolIdentifier,
-        currency0,
-        currency1,
-      } = this.getPoolIdentifier(poolConstruct, dex.initCodeHash);
-
-      // check poolIdentifier is in v3SubgraphPools
-      const v3SubgraphPool = v3SubgraphPools?.find((pool) => pool.id === poolIdentifier);
-      if (v3SubgraphPool) {
-        console.log(`Found v3 subgraph pool: ${poolIdentifier}`);
+    if (v3SubgraphPools) {
+      // handle workaround for add dex
+      for (const poolConstruct of poolConstructs) {
+        DEX_SUPPORTED.forEach((dex) => {
+        const {
+          poolIdentifier: poolIdentifier,
+          currency0,
+          currency1,
+        } = this.getPoolIdentifier(poolConstruct, dex.initCodeHash);
+  
+        // check poolIdentifier is in v3SubgraphPools
+        const v3SubgraphPool = v3SubgraphPools?.find((pool) => pool.id === poolIdentifier);
+        if (v3SubgraphPool) {
+          console.log(`Found v3 subgraph pool: ${poolIdentifier}`);
+        }
+  
+        // add poolIdentifier to poolIdentifierSet if poolIdentifier is in v3SubgraphPools and do not exist in poolIdentifierSet before
+        if (v3SubgraphPool && !poolIdentifierSet.has(poolIdentifier)) {
+          poolConstruct[0] = currency0;
+          poolConstruct[1] = currency1;
+          poolIdentifierSet.add(poolIdentifier);
+          sortedCurrencyPairs.push(poolConstruct);
+          sortedPoolIdentifiers.push(poolIdentifier);
+        } else {
+          console.log(`Skipping duplicate pool: ${poolIdentifier} - ${currency0.symbol} - ${currency1.symbol}`);
+        }
+        });
       }
-
-      // add poolIdentifier to poolIdentifierSet if poolIdentifier is in v3SubgraphPools and do not exist in poolIdentifierSet before
-      if (v3SubgraphPool && !poolIdentifierSet.has(poolIdentifier)) {
+    } else {
+      // original logic
+      for (const poolConstruct of poolConstructs) {
+        const {
+          poolIdentifier: poolIdentifier,
+          currency0,
+          currency1,
+        } = this.getPoolIdentifier(poolConstruct);
+  
+        if (poolIdentifierSet.has(poolIdentifier)) {
+          console.log(
+            `Skipping duplicate pool: ${poolIdentifier} - ${currency0.symbol} - ${currency1.symbol}`
+          );
+          continue;
+        }
+  
+        // It's the easiest way to change the pool construct in place, since we don't know the entire pool construct at compiling time.
         poolConstruct[0] = currency0;
         poolConstruct[1] = currency1;
         poolIdentifierSet.add(poolIdentifier);
         sortedCurrencyPairs.push(poolConstruct);
         sortedPoolIdentifiers.push(poolIdentifier);
-      } else {
-        console.log(`Skipping duplicate pool: ${poolIdentifier} - ${currency0.symbol} - ${currency1.symbol}`);
       }
-
-      // if (poolIdentifierSet.has(poolIdentifier)) {
-      //   console.log(
-      //     `Skipping duplicate pool: ${poolIdentifier} - ${currency0.symbol} - ${currency1.symbol}`
-      //   );
-      //   continue;
-      // }
-
-      // // It's the easiest way to change the pool construct in place, since we don't know the entire pool construct at compiling time.
-      // poolConstruct[0] = currency0;
-      // poolConstruct[1] = currency1;
-      // poolIdentifierSet.add(poolIdentifier);
-      // sortedCurrencyPairs.push(poolConstruct);
-      // sortedPoolIdentifiers.push(poolIdentifier);
-      });
     }
 
     console.log(`sortedCurrencyPairs: ${JSON.stringify(sortedCurrencyPairs)}`);

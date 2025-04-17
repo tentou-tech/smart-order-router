@@ -1293,7 +1293,7 @@ export async function getV3CandidatePools({
 
   const poolAccessor = await poolProvider.getPools(tokenPairs, {
     blockNumber,
-  });
+  }, subgraphPools);
 
   metric.putMetric(
     'V3PoolsLoad',
