@@ -6,8 +6,7 @@ import retry, { Options as RetryOptions } from 'async-retry';
 
 import { V3SubgraphPool } from '../..';
 import { IUniswapV3PoolState__factory } from '../../types/v3/factories/IUniswapV3PoolState__factory';
-import { DEXES } from '../../util';
-import { V3_CORE_FACTORY_ADDRESSES } from '../../util/addresses';
+import { DEXES, V3_CORE_FACTORY_ADDRESSES_MAP } from '../../util';
 import { log } from '../../util/log';
 import { IMulticallProvider, Result } from '../multicall-provider';
 import { ILiquidity, ISlot0, PoolProvider } from '../pool-provider';
@@ -182,8 +181,11 @@ export class V3PoolProvider
       };
     }
 
+    const factoryAddress = V3_CORE_FACTORY_ADDRESSES_MAP[`${this.chainId.toString()}-${codeHash}`];
+    console.log(`factoryAddress: ${factoryAddress}`);
+
     const poolAddress = computePoolAddress({
-      factoryAddress: V3_CORE_FACTORY_ADDRESSES[this.chainId]!,
+      factoryAddress: factoryAddress!,
       tokenA: token0,
       tokenB: token1,
       fee: feeAmount,

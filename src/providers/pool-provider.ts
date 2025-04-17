@@ -70,7 +70,7 @@ export abstract class PoolProvider<
         } = this.getPoolIdentifier(poolConstruct, dex.initCodeHash);
   
         // check poolIdentifier is in v3SubgraphPools
-        const v3SubgraphPool = v3SubgraphPools?.find((pool) => pool.id === poolIdentifier);
+        const v3SubgraphPool = v3SubgraphPools?.find((pool) => pool.id.toLocaleLowerCase() === poolIdentifier.toLocaleLowerCase());
         if (v3SubgraphPool) {
           console.log(`Found v3 subgraph pool: ${poolIdentifier}`);
         }
