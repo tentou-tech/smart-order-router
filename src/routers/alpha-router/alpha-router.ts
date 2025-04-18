@@ -23,6 +23,8 @@ import {
   CachingTokenProviderWithFallback,
   CachingV2PoolProvider,
   CachingV2SubgraphProvider,
+  CachingV3PiperxSubgraphProvider,
+  CachingV3PoolPiperxProvider,
   CachingV3PoolProvider,
   CachingV3SubgraphProvider,
   CachingV4SubgraphProvider,
@@ -41,6 +43,7 @@ import {
   OnChainQuoteProvider,
   Simulator,
   StaticV2SubgraphProvider,
+  StaticV3PiperxSubgraphProvider,
   StaticV3SubgraphProvider,
   StaticV4SubgraphProvider,
   SwapRouterProvider,
@@ -49,6 +52,9 @@ import {
   URISubgraphProvider,
   V2QuoteProvider,
   V2SubgraphProviderWithFallBacks,
+  V3PiperxSubgraphProviderWithFallBacks,
+  V3PiperxURISubgraphProvider,
+  V3PoolPiperxProvider,
   V3SubgraphProviderWithFallBacks,
   V4SubgraphProviderWithFallBacks,
 } from '../../providers';
@@ -189,7 +195,7 @@ import { MixedRouteHeuristicGasModelFactory } from './gas-models/mixedRoute/mixe
 import { V2HeuristicGasModelFactory } from './gas-models/v2/v2-heuristic-gas-model';
 import { V3HeuristicGasModelFactory } from './gas-models/v3/v3-heuristic-gas-model';
 import { V4HeuristicGasModelFactory } from './gas-models/v4/v4-heuristic-gas-model';
-import { GetQuotesResult, MixedQuoter, V2Quoter, V3Quoter } from './quoters';
+import { GetQuotesResult, MixedQuoter, V2Quoter, V3PiperxQuoter, V3Quoter } from './quoters';
 import { V4Quoter } from './quoters/v4-quoter';
 
 export type AlphaRouterParams = {
@@ -224,6 +230,15 @@ export type AlphaRouterParams = {
    * The provider for getting data about V3 pools.
    */
   v3PoolProvider?: IV3PoolProvider;
+  /**
+   * The provider for getting all pools that exist on V3 from the Subgraph. The pools
+   * from this provider are filtered during the algorithm to a set of candidate pools.
+   */
+  v3PiperxSubgraphProvider?: IV3SubgraphProvider;
+  /**
+   * The provider for getting data about V3 pools.
+   */
+  v3PiperxPoolProvider?: IV3PoolProvider;
   /**
    * The provider for getting V3 quotes.
    */
@@ -260,6 +275,11 @@ export type AlphaRouterParams = {
    * V3 routes.
    */
   v3GasModelFactory?: IOnChainGasModelFactory<V3RouteWithValidQuote>;
+  /**
+   * A factory for generating a gas model that is used when estimating the gas used by
+   * V3 routes.
+   */
+  v3PiperxGasModelFactory?: IOnChainGasModelFactory<V3RouteWithValidQuote>;
   /**
    * A factory for generating a gas model that is used when estimating the gas used by
    * V2 routes.
@@ -541,6 +561,8 @@ export class AlphaRouter
   protected v4PoolProvider: IV4PoolProvider;
   protected v3SubgraphProvider: IV3SubgraphProvider;
   protected v3PoolProvider: IV3PoolProvider;
+  protected v3PiperxSubgraphProvider: IV3SubgraphProvider;
+  protected v3PiperxPoolProvider: IV3PoolProvider;
   protected onChainQuoteProvider: IOnChainQuoteProvider;
   protected v2SubgraphProvider: IV2SubgraphProvider;
   protected v2QuoteProvider: IV2QuoteProvider;
@@ -550,6 +572,7 @@ export class AlphaRouter
   protected swapRouterProvider: ISwapRouterProvider;
   protected v4GasModelFactory: IOnChainGasModelFactory<V4RouteWithValidQuote>;
   protected v3GasModelFactory: IOnChainGasModelFactory<V3RouteWithValidQuote>;
+  protected v3PiperxGasModelFactory: IOnChainGasModelFactory<V3RouteWithValidQuote>;
   protected v2GasModelFactory: IV2GasModelFactory;
   protected mixedRouteGasModelFactory: IOnChainGasModelFactory<MixedRouteWithValidQuote>;
   protected tokenValidatorProvider?: ITokenValidatorProvider;
@@ -558,6 +581,7 @@ export class AlphaRouter
   protected simulator?: Simulator;
   protected v2Quoter: V2Quoter;
   protected v3Quoter: V3Quoter;
+  protected v3PiperxQuoter: V3PiperxQuoter;
   protected v4Quoter: V4Quoter;
   protected mixedQuoter: MixedQuoter;
   protected routeCachingProvider?: IRouteCachingProvider;
@@ -601,6 +625,9 @@ export class AlphaRouter
     mixedSupported,
     v4PoolParams,
     cachedRoutesCacheInvalidationFixRolloutPercentage,
+    v3PiperxSubgraphProvider,
+    v3PiperxPoolProvider,
+    v3PiperxGasModelFactory,
   }: AlphaRouterParams) {
     this.chainId = chainId;
     this.provider = provider;
@@ -620,7 +647,14 @@ export class AlphaRouter
         this.chainId,
         new V3PoolProvider(ID_TO_CHAIN_ID(chainId), this.multicall2Provider),
         new NodeJSCache(new NodeCache({ stdTTL: 360, useClones: false }))
-      );
+      );  
+    this.v3PiperxPoolProvider =
+      v3PiperxPoolProvider ??
+      new CachingV3PoolPiperxProvider(
+        this.chainId,
+        new V3PoolPiperxProvider(ID_TO_CHAIN_ID(chainId), this.multicall2Provider),
+        new NodeJSCache(new NodeCache({ stdTTL: 360, useClones: false }))
+      );  
     this.simulator = simulator;
     this.routeCachingProvider = routeCachingProvider;
 
@@ -951,6 +985,24 @@ export class AlphaRouter
       ]);
     }
 
+    if (v3PiperxSubgraphProvider) {
+      this.v3PiperxSubgraphProvider = v3PiperxSubgraphProvider;
+    } else {
+      this.v3PiperxSubgraphProvider = new V3PiperxSubgraphProviderWithFallBacks([
+        new CachingV3PiperxSubgraphProvider(
+          chainId,
+          new V3PiperxURISubgraphProvider(
+            chainId,
+            `https://cloudflare-ipfs.com/ipns/api.uniswap.org/v1/pools/v3/${chainName}.json`,
+            undefined,
+            0
+          ),
+          new NodeJSCache(new NodeCache({ stdTTL: 300, useClones: false }))
+        ),
+        new StaticV3PiperxSubgraphProvider(chainId, this.v3PiperxPoolProvider),
+      ]);
+    }
+
     this.v4PoolParams =
       v4PoolParams ?? getApplicableV4FeesTickspacingsHooks(chainId);
     if (v4SubgraphProvider) {
@@ -1001,6 +1053,8 @@ export class AlphaRouter
       v4GasModelFactory ?? new V4HeuristicGasModelFactory(this.provider);
     this.v3GasModelFactory =
       v3GasModelFactory ?? new V3HeuristicGasModelFactory(this.provider);
+    this.v3PiperxGasModelFactory =
+      v3PiperxGasModelFactory ?? new V3HeuristicGasModelFactory(this.provider);
     this.v2GasModelFactory =
       v2GasModelFactory ?? new V2HeuristicGasModelFactory(this.provider);
     this.mixedRouteGasModelFactory =
@@ -1041,6 +1095,14 @@ export class AlphaRouter
       this.chainId,
       this.blockedTokenListProvider,
       this.tokenValidatorProvider
+    );
+
+    this.v3PiperxQuoter = new V3PiperxQuoter(
+      this.v3PiperxSubgraphProvider,
+      this.v3PiperxPoolProvider,
+      this.onChainQuoteProvider,
+      this.tokenProvider,
+      this.chainId,
     );
 
     this.v4Quoter = new V4Quoter(
