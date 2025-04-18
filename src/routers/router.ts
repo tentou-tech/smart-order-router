@@ -13,15 +13,15 @@ import {
   TradeType,
 } from '@tentou-tech/uniswap-sdk-core';
 import {
+  SwapOptions as UniversalRouterSwapOptions,
+  UniversalRouterVersion,
+} from '@tentou-tech/uniswap-universal-router-sdk';
+import {
   MethodParameters as SDKMethodParameters,
   Pool,
   Position,
   Route as V3RouteRaw,
 } from '@tentou-tech/uniswap-v3-sdk';
-import {
-  SwapOptions as UniversalRouterSwapOptions,
-  UniversalRouterVersion,
-} from '@uniswap/universal-router-sdk';
 import { Route as V2RouteRaw } from '@uniswap/v2-sdk';
 import { Route as V4RouteRaw } from '@uniswap/v4-sdk';
 

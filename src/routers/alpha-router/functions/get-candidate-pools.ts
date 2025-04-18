@@ -8,7 +8,7 @@ import { Protocol } from '@uniswap/router-sdk';
 import { FeeAmount } from '@uniswap/v3-sdk';
 import _ from 'lodash';
 
-import { isNativeCurrency } from '@uniswap/universal-router-sdk';
+import { isNativeCurrency } from '@tentou-tech/uniswap-universal-router-sdk';
 import {
   DAI_OPTIMISM_SEPOLIA,
   ITokenListProvider,
@@ -1030,7 +1030,9 @@ export async function getV3CandidatePools({
             '0xd46ba6d942050d489dbd938a2c909a5d5039a161')
       )
     ) {
-      console.log(`Adding direct swap pools for ${tokenIn.symbol} and ${tokenOut.symbol}`);
+      console.log(
+        `Adding direct swap pools for ${tokenIn.symbol} and ${tokenOut.symbol}`
+      );
       // If we requested direct swap pools but did not find any in the subgraph query.
       // Optimistically add them into the query regardless. Invalid pools ones will be dropped anyway
       // when we query the pool on-chain. Ensures that new pools for new pairs can be swapped on immediately.

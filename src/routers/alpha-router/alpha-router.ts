@@ -158,7 +158,7 @@ import {
   V4Route,
 } from '../router';
 
-import { UniversalRouterVersion } from '@uniswap/universal-router-sdk';
+import { UniversalRouterVersion } from '@tentou-tech/uniswap-universal-router-sdk';
 import { DEFAULT_BLOCKS_TO_LIVE } from '../../util/defaultBlocksToLive';
 import { INTENT } from '../../util/intent';
 import { serializeRouteIds } from '../../util/serializeRouteIds';

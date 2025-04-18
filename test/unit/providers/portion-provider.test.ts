@@ -7,7 +7,7 @@ import {
   Token,
   TradeType,
 } from '@tentou-tech/uniswap-sdk-core';
-import { UniversalRouterVersion } from '@uniswap/universal-router-sdk';
+import { UniversalRouterVersion } from '@tentou-tech/uniswap-universal-router-sdk';
 import {
   MixedRouteWithValidQuote,
   parseAmount,

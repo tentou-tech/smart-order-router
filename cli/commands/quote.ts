@@ -5,7 +5,7 @@ import { Protocol } from '@uniswap/router-sdk';
 import dotenv from 'dotenv';
 import _ from 'lodash';
 
-import { UniversalRouterVersion } from '@uniswap/universal-router-sdk';
+import { UniversalRouterVersion } from '@tentou-tech/uniswap-universal-router-sdk';
 import {
   ID_TO_CHAIN_ID,
   MapWithLowerCaseKey,

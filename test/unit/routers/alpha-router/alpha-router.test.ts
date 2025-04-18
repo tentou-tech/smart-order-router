@@ -6,8 +6,8 @@ import {
   Percent,
   TradeType,
 } from '@tentou-tech/uniswap-sdk-core';
+import { UniversalRouterVersion } from '@tentou-tech/uniswap-universal-router-sdk';
 import { Protocol, SwapRouter } from '@uniswap/router-sdk';
-import { UniversalRouterVersion } from '@uniswap/universal-router-sdk';
 import { Pair } from '@uniswap/v2-sdk';
 import { encodeSqrtRatioX96, Pool as V3Pool, Position } from '@uniswap/v3-sdk';
 import { Pool as V4Pool } from '@uniswap/v4-sdk';

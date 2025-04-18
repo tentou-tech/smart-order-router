@@ -1,7 +1,7 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { ChainId, Percent, TradeType } from '@tentou-tech/uniswap-sdk-core';
+import { UniversalRouterVersion } from '@tentou-tech/uniswap-universal-router-sdk';
 import { Trade } from '@uniswap/router-sdk';
-import { UniversalRouterVersion } from '@uniswap/universal-router-sdk';
 import { BigNumber } from 'ethers';
 import sinon from 'sinon';
 import {
