@@ -7,10 +7,10 @@ import {
   Token,
   TradeType,
 } from '@tentou-tech/uniswap-sdk-core';
+import { FeeAmount, Pool } from '@tentou-tech/uniswap-v3-sdk';
 import { Protocol } from '@uniswap/router-sdk';
 import { UniversalRouterVersion } from '@uniswap/universal-router-sdk';
 import { Pair } from '@uniswap/v2-sdk';
-import { FeeAmount, Pool } from '@uniswap/v3-sdk';
 import brotli from 'brotli';
 import JSBI from 'jsbi';
 import _ from 'lodash';

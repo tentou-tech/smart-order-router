@@ -1,5 +1,5 @@
 import { ChainId, Token } from '@tentou-tech/uniswap-sdk-core';
-import { FeeAmount, Pool } from '@uniswap/v3-sdk';
+import { FeeAmount, Pool } from '@tentou-tech/uniswap-v3-sdk';
 import _ from 'lodash';
 
 import { metric, MetricLoggerUnit } from '../../util';

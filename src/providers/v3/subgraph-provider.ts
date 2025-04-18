@@ -17,6 +17,11 @@ export interface V3SubgraphPool {
   };
   tvlETH: number;
   tvlUSD: number;
+
+  poolAddress?: string;
+  initCodeHash?: string;
+  factoryAddress?: string;
+  routerAddress?: string;
 }
 
 export type V3RawSubgraphPool = {

@@ -1,7 +1,7 @@
+import { TPool } from '@tentou-tech/uniswap-router-sdk';
 import { ChainId, Currency, Token } from '@tentou-tech/uniswap-sdk-core';
-import { TPool } from '@uniswap/router-sdk';
+import { Pool as V3Pool } from '@tentou-tech/uniswap-v3-sdk';
 import { Pair } from '@uniswap/v2-sdk';
-import { Pool as V3Pool } from '@uniswap/v3-sdk';
 import { Pool as V4Pool } from '@uniswap/v4-sdk';
 
 import {

@@ -4,8 +4,8 @@ import {
   CurrencyAmount as CurrencyAmountRaw,
   Token,
 } from '@tentou-tech/uniswap-sdk-core';
+import { Pool } from '@tentou-tech/uniswap-v3-sdk';
 import { Pair } from '@uniswap/v2-sdk';
-import { Pool } from '@uniswap/v3-sdk';
 
 import { ProviderConfig } from '../../../providers/provider';
 import {
