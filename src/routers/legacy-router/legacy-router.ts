@@ -1,5 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { Logger } from '@ethersproject/logger';
+import { SwapRouter, Trade } from '@tentou-tech/uniswap-router-sdk';
 import {
   ChainId,
   Currency,
@@ -12,7 +13,6 @@ import {
   Pool,
   Route,
 } from '@tentou-tech/uniswap-v3-sdk';
-import { SwapRouter, Trade } from '@uniswap/router-sdk';
 import _ from 'lodash';
 
 import { IOnChainQuoteProvider, RouteWithQuotes } from '../../providers';
