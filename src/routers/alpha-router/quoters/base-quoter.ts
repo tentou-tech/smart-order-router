@@ -179,10 +179,7 @@ export abstract class BaseQuoter<
       }
 
       log.info(`routesResult.routes.length: ${routesResult.routes.length}`);
-      log.info(`candidatePools: ${JSON.stringify(routesResult.candidatePools)}`);
       console.log(`candidatePools: ${JSON.stringify(routesResult.candidatePools)}`);
-
-      log.info(`routesResult: ${JSON.stringify(routesResult)}`);
       console.log(`routesResult: ${JSON.stringify(routesResult)}`);
 
       return this.getQuotes(

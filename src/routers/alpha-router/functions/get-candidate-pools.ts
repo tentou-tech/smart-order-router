@@ -1737,7 +1737,7 @@ export async function getV3PiperxCandidatePools({
       top2DirectSwap: top2DirectSwapPool.map(printV3SubgraphPool),
       top2EthQuotePool: top2EthQuoteTokenPool.map(printV3SubgraphPool),
     },
-    `V3 Candidate Pools`
+    `V3 Piperx Candidate Pools`
   );
 
   const tokenPairsRaw = _.map<
@@ -1771,11 +1771,11 @@ export async function getV3PiperxCandidatePools({
     return [tokenA, tokenB, fee];
   });
 
-  console.log(`tokenPairsRaw: ${JSON.stringify(tokenPairsRaw)}`);
+  console.log(`tokenPairsRaw piperx: ${JSON.stringify(tokenPairsRaw)}`);
 
   const tokenPairs = _.compact(tokenPairsRaw);
 
-  console.log(`tokenPairs: ${JSON.stringify(tokenPairs)}`);
+  console.log(`tokenPairs piperx: ${JSON.stringify(tokenPairs)}`);
 
   metric.putMetric(
     'V3PiperxPoolsFilterLoad',
@@ -1796,7 +1796,7 @@ export async function getV3PiperxCandidatePools({
   );
 
   const poolsBySelection: CandidatePoolsBySelectionCriteria = {
-    protocol: Protocol.V3,
+    protocol: Protocol.V3S1,
     selections: {
       topByBaseWithTokenIn,
       topByBaseWithTokenOut,

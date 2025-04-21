@@ -2713,7 +2713,6 @@ export class AlphaRouter
                   MetricLoggerUnit.Milliseconds
                 );
 
-                log.info('v3 result', JSON.stringify(result));
                 console.log('v3 result', JSON.stringify(result));
 
                 return result;
@@ -2759,8 +2758,7 @@ export class AlphaRouter
                   MetricLoggerUnit.Milliseconds
                 );
 
-                log.info('v3 result', JSON.stringify(result));
-                console.log('v3 result', JSON.stringify(result));
+                console.log('v3 piperx result', JSON.stringify(result));
 
                 return result;
               })

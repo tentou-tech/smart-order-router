@@ -15,6 +15,6 @@ export class V3PiperxSubgraphProviderWithFallBacks
   implements IV3PiperxSubgraphProvider
 {
   constructor(fallbacks: IV3PiperxSubgraphProvider[]) {
-    super(fallbacks, Protocol.V3);
+    super(fallbacks, Protocol.V3S1);
   }
 }

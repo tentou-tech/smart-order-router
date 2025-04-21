@@ -94,7 +94,7 @@ export class V3PiperxSubgraphProvider
     subgraphUrlOverride?: string
   ) {
     super(
-      Protocol.V3,
+      Protocol.V3S1,
       chainId,
       retries,
       timeout,
