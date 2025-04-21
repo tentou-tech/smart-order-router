@@ -1,4 +1,4 @@
-import { ADDRESS_ZERO } from '@tentou-tech/uniswap-router-sdk';
+import { ADDRESS_ZERO, Protocol } from '@tentou-tech/uniswap-router-sdk';
 import {
   ChainId,
   CHAIN_TO_ADDRESSES_MAP,
@@ -59,6 +59,11 @@ export const V3_CORE_FACTORY_ADDRESSES: AddressMap = {
   [ChainId.STORY_AENEID]:
     CHAIN_TO_ADDRESSES_MAP[ChainId.STORY_AENEID].v3CoreFactoryAddress,
   [ChainId.STORY]: CHAIN_TO_ADDRESSES_MAP[ChainId.STORY].v3CoreFactoryAddress,
+};
+
+export const V3S1_CORE_FACTORY_ADDRESSES: AddressMap = {
+  ...constructSameAddressMap('0x3D9300D311BA04EB3351663676cEE0748473d9A0'),
+  [ChainId.STORY_AENEID]:'0xb8c21e89983B5EcCD841846eA294c4c8a89718f1'
 };
 
 export const QUOTER_V2_ADDRESSES: AddressMap = {
@@ -127,6 +132,12 @@ export const NEW_QUOTER_V2_ADDRESSES: AddressMap = {
     CHAIN_TO_ADDRESSES_MAP[ChainId.STORY_AENEID].quoterAddress,
   [ChainId.STORY]: CHAIN_TO_ADDRESSES_MAP[ChainId.STORY].quoterAddress,
 };
+
+export const V3S1_QUOTER_ADDRESSES: AddressMapNew = {
+  [`${ChainId.STORY_AENEID}-${Protocol.V3S1.toString()}`]:'0x8812d810EA7CC4e1c3FB45cef19D6a7ECBf2D85D',
+  [`${ChainId.STORY}-${Protocol.V3S1.toString()}`]:'something'
+}
+
 
 export const PROTOCOL_V4_QUOTER_ADDRESSES: AddressMap = {
   ...constructSameAddressMap('0xf3a39c86dbd13c45365e57fb90fe413371f65af8'),
@@ -267,6 +278,8 @@ export const V3_MIGRATOR_ADDRESS =
 export const MULTICALL2_ADDRESS = '0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696';
 
 export type AddressMap = { [chainId: number]: string | undefined };
+
+export type AddressMapNew = { [chainIdDex: string]: string | undefined };
 
 export function constructSameAddressMap<T extends string>(
   address: T,

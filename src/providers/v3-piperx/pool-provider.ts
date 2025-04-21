@@ -5,7 +5,8 @@ import { FeeAmount, Pool } from '@tentou-tech/uniswap-v3s1-sdk';
 import retry, { Options as RetryOptions   } from 'async-retry';
 
 import { IUniswapV3PoolState__factory } from '../../types/v3/factories/IUniswapV3PoolState__factory';
-import { V3_CORE_FACTORY_ADDRESSES } from '../../util/addresses';
+import { V3S1_CORE_FACTORY_ADDRESSES } from '../../util/addresses';
+import { DEXES } from '../../util/constants';
 import { log } from '../../util/log';
 import { IMulticallProvider, Result } from '../multicall-provider';
 import { ILiquidity, ISlot0, PoolProvider } from '../pool-provider';
@@ -175,12 +176,11 @@ export class V3PoolPiperxProvider
     }
 
     const poolAddress = computePoolAddress({
-      factoryAddress: V3_CORE_FACTORY_ADDRESSES[this.chainId]!,
+      factoryAddress: V3S1_CORE_FACTORY_ADDRESSES[this.chainId]!,
       tokenA: token0,
       tokenB: token1,
       fee: feeAmount,
-      initCodeHashManualOverride:
-        '0xd5178f9f07b08d01d075cc5b7e1a1ae23a37b3811522cb2fed1367201d51d4e5',
+      initCodeHashManualOverride: DEXES.PiPerxV3.InitCodeHash,
       chainId: this.chainId,
     });
 

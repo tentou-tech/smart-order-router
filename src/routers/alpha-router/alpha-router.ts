@@ -2900,7 +2900,6 @@ export class AlphaRouter
       }
     });
 
-    log.info(`allRoutesWithValidQuotes: ${JSON.stringify(allRoutesWithValidQuotes)}`);
     console.log(`allRoutesWithValidQuotes: ${JSON.stringify(allRoutesWithValidQuotes)}`);
 
     if (allRoutesWithValidQuotes.length === 0) {

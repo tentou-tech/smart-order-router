@@ -13,7 +13,7 @@ import {
 } from '../routers/alpha-router';
 import { MixedRoute, SupportedRoutes } from '../routers/router';
 
-import { V3_CORE_FACTORY_ADDRESSES } from './addresses';
+import { V3_CORE_FACTORY_ADDRESSES, V3S1_CORE_FACTORY_ADDRESSES } from './addresses';
 
 import { CurrencyAmount, DEXES, V4_ETH_WETH_FAKE_POOL } from '.';
 
@@ -70,8 +70,8 @@ export const poolToString = (pool: TPool): string => {
       pool.token0,
       pool.token1,
       pool.fee,
-      DEXES.StoryHunt.InitCodeHash,
-      V3_CORE_FACTORY_ADDRESSES[pool.chainId]
+      DEXES.PiPerxV3.InitCodeHash,
+      V3S1_CORE_FACTORY_ADDRESSES[pool.chainId]
     )}]`;
   } else if (pool instanceof Pair) {
     return ` -- [${Pair.getAddress(
@@ -107,8 +107,8 @@ export const routeToString = (route: SupportedRoutes): string => {
         pool.token0,
         pool.token1,
         pool.fee,
-        DEXES.StoryHunt.InitCodeHash,
-        V3_CORE_FACTORY_ADDRESSES[pool.chainId]
+        DEXES.PiPerxV3.InitCodeHash,
+        V3S1_CORE_FACTORY_ADDRESSES[pool.chainId]
       )}]`;
     }else if (pool instanceof V4Pool) {
       // Special case in the case of ETH/WETH fake pool

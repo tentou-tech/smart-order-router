@@ -40,6 +40,7 @@ import {
   MIXED_ROUTE_QUOTER_V2_ADDRESSES,
   NEW_QUOTER_V2_ADDRESSES,
   PROTOCOL_V4_QUOTER_ADDRESSES,
+  V3S1_QUOTER_ADDRESSES,
 } from '../util';
 import { CurrencyAmount } from '../util/amounts';
 import { log } from '../util/log';
@@ -434,6 +435,8 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
         : MIXED_ROUTE_QUOTER_V1_ADDRESSES[this.chainId]
       : protocol === Protocol.V3
       ? NEW_QUOTER_V2_ADDRESSES[this.chainId]
+      : protocol === Protocol.V3S1
+      ? V3S1_QUOTER_ADDRESSES[`${this.chainId}-${protocol}`]
       : PROTOCOL_V4_QUOTER_ADDRESSES[this.chainId];
 
     if (!quoterAddress) {
@@ -528,6 +531,7 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
 
     switch (protocol) {
       case Protocol.V3:
+      case Protocol.V3S1:
         return IQuoterV2__factory.createInterface();
       case Protocol.V4:
         return V4Quoter__factory.createInterface();
@@ -644,6 +648,9 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
     const useV4RouteQuoter =
       routes.some((route) => route.protocol === Protocol.V4) &&
       !useMixedRouteQuoter;
+    const useV3S1RouteQuoter =
+      routes.some((route) => route.protocol === Protocol.V3S1) &&
+      !useMixedRouteQuoter;
     const mixedRouteContainsV4Pool = useMixedRouteQuoter
       ? routes.some(
           (route) =>
@@ -655,6 +662,8 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
       ? Protocol.MIXED
       : useV4RouteQuoter
       ? Protocol.V4
+      : useV3S1RouteQuoter
+      ? Protocol.V3S1
       : Protocol.V3;
 
     const optimisticCachedRoutes =
