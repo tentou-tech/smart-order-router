@@ -1407,7 +1407,7 @@ export async function getV3PiperxCandidatePools({
 
   log.info(
     { samplePools: allPools.slice(0, 3) },
-    'Got all pools from V3 subgraph provider'
+    'Got all pools from V3 Piperx subgraph provider'
   );
 
   // Although this is less of an optimization than the V2 equivalent,

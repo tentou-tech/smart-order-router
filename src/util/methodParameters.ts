@@ -6,10 +6,11 @@ import {
 } from '@tentou-tech/uniswap-router-sdk';
 import { ChainId, Currency, TradeType } from '@tentou-tech/uniswap-sdk-core';
 import {
-  SwapRouter as UniversalRouter,
   UNIVERSAL_ROUTER_ADDRESS,
+  SwapRouter as UniversalRouter,
 } from '@tentou-tech/uniswap-universal-router-sdk';
 import { Route as V3RouteRaw } from '@tentou-tech/uniswap-v3-sdk';
+import { Route as V3PiperxRouteRaw } from '@tentou-tech/uniswap-v3s1-sdk';
 import { Route as V2RouteRaw } from '@uniswap/v2-sdk';
 import { Route as V4RouteRaw } from '@uniswap/v4-sdk';
 import _ from 'lodash';
@@ -19,10 +20,11 @@ import {
   MethodParameters,
   MixedRouteWithValidQuote,
   RouteWithValidQuote,
+  SWAP_ROUTER_02_ADDRESSES,
   SwapOptions,
   SwapType,
-  SWAP_ROUTER_02_ADDRESSES,
   V2RouteWithValidQuote,
+  V3PiperxRouteWithValidQuote,
   V3RouteWithValidQuote,
   V4RouteWithValidQuote,
 } from '..';
@@ -41,6 +43,10 @@ export function buildTrade<TTradeType extends TradeType>(
   const v3RouteAmounts = _.filter(
     routeAmounts,
     (routeAmount) => routeAmount.protocol === Protocol.V3
+  );
+  const v3s1RouteAmounts = _.filter(
+    routeAmounts,
+    (routeAmount) => routeAmount.protocol === Protocol.V3S1
   );
   const v2RouteAmounts = _.filter(
     routeAmounts,
@@ -184,6 +190,72 @@ export function buildTrade<TTradeType extends TradeType>(
     }
   );
 
+  const v3s1Routes = _.map<
+    V3PiperxRouteWithValidQuote,
+    {
+      routev3s1: V3PiperxRouteRaw<Currency, Currency>;
+      inputAmount: CurrencyAmount;
+      outputAmount: CurrencyAmount;
+    }
+  >(
+    v3s1RouteAmounts as V3PiperxRouteWithValidQuote[],
+    (routeAmount: V3PiperxRouteWithValidQuote) => {
+      const { route, amount, quote } = routeAmount;
+
+      // The route, amount and quote are all in terms of wrapped tokens.
+      // When constructing the Trade object the inputAmount/outputAmount must
+      // use native currencies if specified by the user. This is so that the Trade knows to wrap/unwrap.
+      if (tradeType == TradeType.EXACT_INPUT) {
+        const amountCurrency = CurrencyAmount.fromFractionalAmount(
+          tokenInCurrency,
+          amount.numerator,
+          amount.denominator
+        );
+        const quoteCurrency = CurrencyAmount.fromFractionalAmount(
+          tokenOutCurrency,
+          quote.numerator,
+          quote.denominator
+        );
+
+        const routeRaw = new V3PiperxRouteRaw(
+          route.pools,
+          amountCurrency.currency,
+          quoteCurrency.currency
+        );
+
+        return {
+          routev3s1: routeRaw,
+          inputAmount: amountCurrency,
+          outputAmount: quoteCurrency,
+        };
+      } else {
+        const quoteCurrency = CurrencyAmount.fromFractionalAmount(
+          tokenInCurrency,
+          quote.numerator,
+          quote.denominator
+        );
+
+        const amountCurrency = CurrencyAmount.fromFractionalAmount(
+          tokenOutCurrency,
+          amount.numerator,
+          amount.denominator
+        );
+
+        const routeCurrency = new V3PiperxRouteRaw(
+          route.pools,
+          quoteCurrency.currency,
+          amountCurrency.currency
+        );
+
+        return {
+          routev3s1: routeCurrency,
+          inputAmount: quoteCurrency,
+          outputAmount: amountCurrency,
+        };
+      }
+    }
+  );
+
   const v2Routes = _.map<
     V2RouteWithValidQuote,
     {
@@ -303,6 +375,7 @@ export function buildTrade<TTradeType extends TradeType>(
   const trade = new Trade({
     v2Routes,
     v3Routes,
+    v3s1Routes,
     v4Routes,
     mixedRoutes,
     tradeType,

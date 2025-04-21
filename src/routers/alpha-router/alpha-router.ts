@@ -2511,7 +2511,7 @@ export class AlphaRouter
     const noProtocolsSpecified = protocols.length === 0;
     const v4ProtocolSpecified = protocols.includes(Protocol.V4);
     const v3ProtocolSpecified = protocols.includes(Protocol.V3);
-    const v3PiperxProtocolSpecified = protocols.includes(Protocol.V3); // TODO: change to V3Piperx after sdk update
+    const v3PiperxProtocolSpecified = protocols.includes(Protocol.V3S1);
     const v2ProtocolSpecified = protocols.includes(Protocol.V2);
     const v2SupportedInChain = this.v2Supported?.includes(this.chainId);
     const v4SupportedInChain = this.v4Supported?.includes(this.chainId);
@@ -2582,7 +2582,7 @@ export class AlphaRouter
     let v3PiperxCandidatePoolsPromise: Promise<V3PiperxCandidatePools | undefined> =
       Promise.resolve(undefined);
     if (!fotInDirectSwap) {
-      if (v3ProtocolSpecified || noProtocolsSpecified) {
+      if (v3PiperxProtocolSpecified || noProtocolsSpecified) {
         const tokenIn = currencyIn.wrapped;
         const tokenOut = currencyOut.wrapped;
 
@@ -2932,7 +2932,6 @@ export class AlphaRouter
       );
     }
 
-    log.info(`bestSwapRoute: ${JSON.stringify(bestSwapRoute)}`);
     console.log(`bestSwapRoute: ${JSON.stringify(bestSwapRoute)}`);
 
     return bestSwapRoute;
