@@ -1,3 +1,4 @@
+import { ADDRESS_ZERO } from '@tentou-tech/uniswap-router-sdk';
 import {
   ChainId,
   CHAIN_TO_ADDRESSES_MAP,
@@ -7,7 +8,6 @@ import {
 } from '@tentou-tech/uniswap-sdk-core';
 import { FACTORY_ADDRESS } from '@tentou-tech/uniswap-v3-sdk';
 
-import { ADDRESS_ZERO } from '@uniswap/router-sdk';
 import { NETWORKS_WITH_SAME_UNISWAP_ADDRESSES } from './chains';
 
 export const BNB_TICK_LENS_ADDRESS =

@@ -1,4 +1,4 @@
-import { UniversalRouterVersion } from '@uniswap/universal-router-sdk';
+import { UniversalRouterVersion } from '@tentou-tech/uniswap-universal-router-sdk';
 
 export type ProviderConfig = {
   /**

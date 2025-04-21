@@ -1,8 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { ChainId, Token } from '@tentou-tech/uniswap-sdk-core';
 import { computePoolAddress } from '@tentou-tech/uniswap-v3-sdk';
-import { FeeAmount, Pool } from '@uniswap/v3-sdk';
-import retry from 'async-retry';
+import { FeeAmount, Pool } from '@tentou-tech/uniswap-v3s1-sdk';
+import retry, { Options as RetryOptions   } from 'async-retry';
 
 import { IUniswapV3PoolState__factory } from '../../types/v3/factories/IUniswapV3PoolState__factory';
 import { V3_CORE_FACTORY_ADDRESSES } from '../../util/addresses';
@@ -10,12 +10,6 @@ import { log } from '../../util/log';
 import { IMulticallProvider, Result } from '../multicall-provider';
 import { ILiquidity, ISlot0, PoolProvider } from '../pool-provider';
 import { ProviderConfig } from '../provider';
-import { 
-  IV3PoolProvider, 
-  V3PoolAccessor, 
-  V3PoolConstruct,
-  V3PoolRetryOptions 
-} from '../v3/pool-provider';
 
 type V3ISlot0 = ISlot0 & {
   sqrtPriceX96: BigNumber;
@@ -24,15 +18,62 @@ type V3ISlot0 = ISlot0 & {
 
 type V3ILiquidity = ILiquidity;
 
+/**
+ * Provider or getting V3 pools.
+ *
+ * @export
+ * @interface IV3PiperxPoolProvider
+ */
+export interface IV3PiperxPoolProvider {
+  /**
+   * Gets the specified pools.
+   *
+   * @param tokenPairs The token pairs and fee amount of the pools to get.
+   * @param [providerConfig] The provider config.
+   * @returns A pool accessor with methods for accessing the pools.
+   */
+  getPools(
+    tokenPairs: [Token, Token, FeeAmount][],
+    providerConfig?: ProviderConfig
+  ): Promise<V3PiperxPoolAccessor>;
+
+  /**
+   * Gets the pool address for the specified token pair and fee tier.
+   *
+   * @param tokenA Token A in the pool.
+   * @param tokenB Token B in the pool.
+   * @param feeAmount The fee amount of the pool.
+   * @returns The pool address and the two tokens.
+   */
+  getPoolAddress(
+    tokenA: Token,
+    tokenB: Token,
+    feeAmount: FeeAmount
+  ): { poolAddress: string; token0: Token; token1: Token };
+}
+
+export type V3PiperxPoolAccessor = {
+  getPool: (
+    tokenA: Token,
+    tokenB: Token,
+    feeAmount: FeeAmount
+  ) => Pool | undefined;
+  getPoolByAddress: (address: string) => Pool | undefined;
+  getAllPools: () => Pool[];
+};
+
+export type V3PiperxPoolRetryOptions = RetryOptions;
+export type V3PiperxPoolConstruct = [Token, Token, FeeAmount];
+
 export class V3PoolPiperxProvider
   extends PoolProvider<
     Token,
-    V3PoolConstruct,
+    V3PiperxPoolConstruct,
     V3ISlot0,
     V3ILiquidity,
-    V3PoolAccessor
+    V3PiperxPoolAccessor
   >
-  implements IV3PoolProvider
+  implements IV3PiperxPoolProvider
 {
   // Computing pool addresses is slow as it requires hashing, encoding etc.
   // Addresses never change so can always be cached.
@@ -47,7 +88,7 @@ export class V3PoolPiperxProvider
   constructor(
     chainId: ChainId,
     multicall2Provider: IMulticallProvider,
-    retryOptions: V3PoolRetryOptions = {
+    retryOptions: V3PiperxPoolRetryOptions = {
       retries: 2,
       minTimeout: 50,
       maxTimeout: 500,
@@ -57,9 +98,9 @@ export class V3PoolPiperxProvider
   }
 
   public async getPools(
-    tokenPairs: V3PoolConstruct[],
+    tokenPairs: V3PiperxPoolConstruct[],
     providerConfig?: ProviderConfig
-  ): Promise<V3PoolAccessor> {
+  ): Promise<V3PiperxPoolAccessor> {
     return await super.getPoolsInternal(tokenPairs, providerConfig);
   }
 
@@ -110,7 +151,7 @@ export class V3PoolPiperxProvider
     return results;
   }
 
-  protected override getPoolIdentifier(pool: V3PoolConstruct): {
+  protected override getPoolIdentifier(pool: V3PiperxPoolConstruct): {
     poolIdentifier: string;
     currency0: Token;
     currency1: Token;
@@ -153,7 +194,7 @@ export class V3PoolPiperxProvider
   }
 
   protected instantiatePool(
-    pool: V3PoolConstruct,
+    pool: V3PiperxPoolConstruct,
     slot0: V3ISlot0,
     liquidity: V3ILiquidity
   ): Pool {
@@ -171,7 +212,7 @@ export class V3PoolPiperxProvider
 
   protected instantiatePoolAccessor(poolIdentifierToPool: {
     [p: string]: Pool;
-  }): V3PoolAccessor {
+  }): V3PiperxPoolAccessor {
     return {
       getPool: (
         tokenA: Token,

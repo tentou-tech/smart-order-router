@@ -1,11 +1,40 @@
-import { ChainId } from '@tentou-tech/uniswap-sdk-core';
-import { Protocol } from '@uniswap/router-sdk';
+import { Protocol } from '@tentou-tech/uniswap-router-sdk';
+import { ChainId, Token } from '@tentou-tech/uniswap-sdk-core';
 
 import { log } from '../../util';
+import { ProviderConfig } from '../provider';
 import { SubgraphProvider } from '../subgraph-provider';
-import { V3SubgraphPool } from '../v3/subgraph-provider';
-import { V3RawSubgraphPool } from '../v3/subgraph-provider';
-import { IV3SubgraphProvider } from '../v3/subgraph-provider';
+
+export interface V3PiperxSubgraphPool {
+  id: string;
+  feeTier: string;
+  liquidity: string;
+  token0: {
+    id: string;
+  };
+  token1: {
+    id: string;
+  };
+  tvlETH: number;
+  tvlUSD: number;
+}
+
+export type V3PiperxRawSubgraphPool = {
+  id: string;
+  feeTier: string;
+  liquidity: string;
+  token0: {
+    symbol: string;
+    id: string;
+  };
+  token1: {
+    symbol: string;
+    id: string;
+  };
+  totalValueLockedUSD: string;
+  totalValueLockedETH: string;
+  totalValueLockedUSDUntracked: string;
+};
 
 
 const SUBGRAPH_URL_BY_CHAIN: { [chainId in ChainId]?: string } = {
@@ -37,10 +66,23 @@ const SUBGRAPH_URL_BY_CHAIN: { [chainId in ChainId]?: string } = {
     'https://graph-api-testnet.tentou.tech/subgraphs/name/mimboku/',
 };
 
+/**
+ * Provider for getting V3 pools from the Subgraph
+ *
+ * @export
+ * @interface IV3PiperxSubgraphProvider
+ */
+export interface IV3PiperxSubgraphProvider {
+  getPools(
+    tokenIn?: Token,
+    tokenOut?: Token,
+    providerConfig?: ProviderConfig
+  ): Promise<V3PiperxSubgraphPool[]>;
+}
 
 export class V3PiperxSubgraphProvider
-  extends SubgraphProvider<V3RawSubgraphPool, V3SubgraphPool>
-  implements IV3SubgraphProvider
+  extends SubgraphProvider<V3PiperxRawSubgraphPool, V3PiperxSubgraphPool>
+  implements IV3PiperxSubgraphProvider
 {
   constructor(
     chainId: ChainId,
@@ -92,8 +134,8 @@ export class V3PiperxSubgraphProvider
   }
 
   protected override mapSubgraphPool(
-    rawPool: V3RawSubgraphPool
-  ): V3SubgraphPool {
+    rawPool: V3PiperxRawSubgraphPool
+  ): V3PiperxSubgraphPool {
     return {
       id: rawPool.id,
       feeTier: rawPool.feeTier,

@@ -19,14 +19,14 @@ import {
   permit2Address,
   PermitSingle,
 } from '@uniswap/permit2-sdk';
-import { Protocol } from '@uniswap/router-sdk';
+import { Protocol } from '@tentou-tech/uniswap-router-sdk';
 import {
   Permit2Permit,
   UniversalRouterVersion,
   UNIVERSAL_ROUTER_ADDRESS as UNIVERSAL_ROUTER_ADDRESS_BY_CHAIN,
-} from '@uniswap/universal-router-sdk';
+} from '@tentou-tech/uniswap-universal-router-sdk';
 import { Pair } from '@uniswap/v2-sdk';
-import { encodeSqrtRatioX96, FeeAmount, Pool } from '@uniswap/v3-sdk';
+import { encodeSqrtRatioX96, FeeAmount, Pool } from '@tentou-tech/uniswap-v3-sdk';
 import bunyan from 'bunyan';
 import { BigNumber, providers, Wallet } from 'ethers';
 import { parseEther } from 'ethers/lib/utils';

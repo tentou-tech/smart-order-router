@@ -1,7 +1,8 @@
+import { TPool } from '@tentou-tech/uniswap-router-sdk';
 import { ChainId, Currency, Token } from '@tentou-tech/uniswap-sdk-core';
-import { TPool } from '@uniswap/router-sdk';
+import { Pool as V3Pool } from '@tentou-tech/uniswap-v3-sdk';
+import { Pool as V3S1Pool } from '@tentou-tech/uniswap-v3s1-sdk';
 import { Pair } from '@uniswap/v2-sdk';
-import { Pool as V3Pool } from '@uniswap/v3-sdk';
 import { Pool as V4Pool } from '@uniswap/v4-sdk';
 
 import {
@@ -15,6 +16,7 @@ import {
   MixedRoute,
   SupportedRoutes,
   V2Route,
+  V3PiperxRoute,
   V3Route,
   V4Route,
 } from '../../router';
@@ -50,6 +52,24 @@ export function computeAllV3Routes(
       return new V3Route(route, tokenIn, tokenOut);
     },
     (pool: V3Pool, token: Token) => pool.involvesToken(token),
+    pools,
+    maxHops
+  );
+}
+
+export function computeAllV3PiperxRoutes(
+  tokenIn: Token,
+  tokenOut: Token,
+  pools: V3S1Pool[],
+  maxHops: number
+): V3PiperxRoute[] {
+  return computeAllRoutes<V3S1Pool, V3PiperxRoute, Token>(
+    tokenIn,
+    tokenOut,
+    (route: V3S1Pool[], tokenIn: Token, tokenOut: Token) => {
+      return new V3PiperxRoute(route, tokenIn, tokenOut);
+    },
+    (pool: V3S1Pool, token: Token) => pool.involvesToken(token),
     pools,
     maxHops
   );

@@ -1,5 +1,5 @@
+import { Protocol } from '@tentou-tech/uniswap-router-sdk';
 import { ChainId } from '@tentou-tech/uniswap-sdk-core';
-import { Protocol } from '@uniswap/router-sdk';
 
 import { CachingSubgraphProvider } from '../caching-subgraph-provider';
 

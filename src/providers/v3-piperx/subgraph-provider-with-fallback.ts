@@ -1,8 +1,8 @@
-import { Protocol } from '@uniswap/router-sdk';
+import { Protocol } from '@tentou-tech/uniswap-router-sdk';
 
 import { SubgraphProviderWithFallBacks } from '../subgraph-provider-with-fallback';
-import { IV3SubgraphProvider, V3SubgraphPool } from '../v3/subgraph-provider';
 
+import { IV3PiperxSubgraphProvider, V3PiperxSubgraphPool } from './subgraph-provider';
 /**
  * Provider for getting V3 subgraph pools that falls back to a different provider
  * in the event of failure.
@@ -11,10 +11,10 @@ import { IV3SubgraphProvider, V3SubgraphPool } from '../v3/subgraph-provider';
  * @class V3SubgraphProviderWithFallBacks
  */
 export class V3PiperxSubgraphProviderWithFallBacks
-  extends SubgraphProviderWithFallBacks<V3SubgraphPool>
-  implements IV3SubgraphProvider
+  extends SubgraphProviderWithFallBacks<V3PiperxSubgraphPool>
+  implements IV3PiperxSubgraphProvider
 {
-  constructor(fallbacks: IV3SubgraphProvider[]) {
+  constructor(fallbacks: IV3PiperxSubgraphProvider[]) {
     super(fallbacks, Protocol.V3);
   }
 }

@@ -1,13 +1,15 @@
+import { Protocol } from '@tentou-tech/uniswap-router-sdk';
 import { Currency } from '@tentou-tech/uniswap-sdk-core';
-import { Protocol } from '@uniswap/router-sdk';
+import { Pool as V3Pool } from '@tentou-tech/uniswap-v3-sdk';
+import { Pool as V3S1Pool } from '@tentou-tech/uniswap-v3s1-sdk';
 import { Pair } from '@uniswap/v2-sdk';
-import { Pool as V3Pool } from '@uniswap/v3-sdk';
 import { Pool as V4Pool } from '@uniswap/v4-sdk';
 
 import {
   MixedRoute,
   SupportedRoutes,
   V2Route,
+  V3PiperxRoute,
   V3Route,
   V4Route,
 } from '../../../../routers';
@@ -69,6 +71,13 @@ export class CachedRoute<Route extends SupportedRoutes> {
               `[V3]${pool.token0.address}/${pool.token1.address}/${pool.fee}`
           )
           .join('->');
+      case Protocol.V3S1:
+        return (this.route as V3PiperxRoute).pools
+          .map(
+            (pool) =>
+              `[V3]${pool.token0.address}/${pool.token1.address}/${pool.fee}`
+          )
+          .join('->');    
       case Protocol.V2:
         return (this.route as V2Route).pairs
           .map((pair) => `[V2]${pair.token0.address}/${pair.token1.address}`)
@@ -89,6 +98,8 @@ export class CachedRoute<Route extends SupportedRoutes> {
               }`;
             } else if (pool instanceof V3Pool) {
               return `[V3]${pool.token0.address}/${pool.token1.address}/${pool.fee}`;
+            } else if (pool instanceof V3S1Pool) {
+              return `[V3S1]${pool.token0.address}/${pool.token1.address}/${pool.fee}`;
             } else if (pool instanceof Pair) {
               return `[V2]${pool.token0.address}/${pool.token1.address}`;
             } else {

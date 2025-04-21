@@ -1,9 +1,9 @@
 import { BigNumber } from '@ethersproject/bignumber';
+import { ADDRESS_ZERO } from '@tentou-tech/uniswap-router-sdk';
 import { ChainId, Currency, Ether, Token } from '@tentou-tech/uniswap-sdk-core';
-import { ADDRESS_ZERO } from '@uniswap/router-sdk';
 import { TokenList } from '@uniswap/token-lists';
 import { Pair } from '@uniswap/v2-sdk';
-import { encodeSqrtRatioX96, FeeAmount, Pool as V3Pool } from '@uniswap/v3-sdk';
+import { encodeSqrtRatioX96, FeeAmount, Pool as V3Pool } from '@tentou-tech/uniswap-v3-sdk';
 import { Pool as V4Pool } from '@uniswap/v4-sdk';
 import _ from 'lodash';
 import {

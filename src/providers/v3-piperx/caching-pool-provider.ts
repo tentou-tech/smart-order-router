@@ -1,12 +1,13 @@
 import { ChainId, Token } from '@tentou-tech/uniswap-sdk-core';
-import { FeeAmount, Pool } from '@uniswap/v3-sdk';
+import { FeeAmount, Pool } from '@tentou-tech/uniswap-v3s1-sdk';
 import _ from 'lodash';
 
 import { metric, MetricLoggerUnit } from '../../util';
 import { log } from '../../util/log';
 import { ICache } from '../cache';
 import { ProviderConfig } from '../provider';
-import { IV3PoolProvider, V3PoolAccessor } from '../v3/pool-provider';
+
+import { IV3PiperxPoolProvider, V3PiperxPoolAccessor } from './pool-provider';
 
 /**
  * Provider for getting V3 pools, with functionality for caching the results.
@@ -16,7 +17,7 @@ import { IV3PoolProvider, V3PoolAccessor } from '../v3/pool-provider';
  * @export
  * @class CachingV3PoolPiperxProvider
  */
-export class CachingV3PoolPiperxProvider implements IV3PoolProvider {
+export class CachingV3PoolPiperxProvider implements IV3PiperxPoolProvider {
   private POOL_KEY = (
     chainId: ChainId,
     address: string,
@@ -34,14 +35,14 @@ export class CachingV3PoolPiperxProvider implements IV3PoolProvider {
    */
   constructor(
     protected chainId: ChainId,
-    protected poolProvider: IV3PoolProvider,
+    protected poolProvider: IV3PiperxPoolProvider,
     private cache: ICache<Pool>
   ) {}
 
   public async getPools(
     tokenPairs: [Token, Token, FeeAmount][],
     providerConfig?: ProviderConfig
-  ): Promise<V3PoolAccessor> {
+  ): Promise<V3PiperxPoolAccessor> {
     const poolAddressSet: Set<string> = new Set<string>();
     const poolsToGetTokenPairs: Array<[Token, Token, FeeAmount]> = [];
     const poolsToGetAddresses: string[] = [];

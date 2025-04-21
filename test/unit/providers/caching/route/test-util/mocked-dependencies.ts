@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
+import { Protocol } from '@tentou-tech/uniswap-router-sdk';
 import { ChainId, TradeType } from '@tentou-tech/uniswap-sdk-core';
-import { Protocol } from '@uniswap/router-sdk';
 import {
   CachedRoutes,
   CurrencyAmount,

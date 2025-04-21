@@ -1,10 +1,10 @@
+import { Protocol } from '@tentou-tech/uniswap-router-sdk';
 import {
   ChainId,
   Currency,
   Token,
   TradeType,
 } from '@tentou-tech/uniswap-sdk-core';
-import { Protocol } from '@uniswap/router-sdk';
 import _ from 'lodash';
 
 import {
@@ -12,8 +12,8 @@ import {
   ITokenListProvider,
   ITokenProvider,
   ITokenValidatorProvider,
-  IV3PoolProvider,
-  IV3SubgraphProvider,
+  IV3PiperxPoolProvider,
+  IV3PiperxSubgraphProvider,
   TokenValidationResult,
 } from '../../../providers';
 import {
@@ -23,13 +23,13 @@ import {
   MetricLoggerUnit,
   routeToString,
 } from '../../../util';
-import { V3Route } from '../../router';
+import { V3PiperxRoute } from '../../router';
 import { AlphaRouterConfig } from '../alpha-router';
-import { V3RouteWithValidQuote } from '../entities';
-import { computeAllV3Routes } from '../functions/compute-all-routes';
+import { V3PiperxRouteWithValidQuote } from '../entities';
+import { computeAllV3PiperxRoutes } from '../functions/compute-all-routes';
 import {
   CandidatePoolsBySelectionCriteria,
-  V3CandidatePools,
+  V3PiperxCandidatePools,
 } from '../functions/get-candidate-pools';
 import { IGasModel } from '../gas-models';
 
@@ -37,14 +37,14 @@ import { BaseQuoter } from './base-quoter';
 import { GetQuotesResult } from './model/results/get-quotes-result';
 import { GetRoutesResult } from './model/results/get-routes-result';
 
-export class V3PiperxQuoter extends BaseQuoter<V3CandidatePools, V3Route, Token> {
-  protected v3SubgraphProvider: IV3SubgraphProvider;
-  protected v3PoolProvider: IV3PoolProvider;
+export class V3PiperxQuoter extends BaseQuoter<V3PiperxCandidatePools, V3PiperxRoute, Token> {
+  protected v3SubgraphProvider: IV3PiperxSubgraphProvider;
+  protected v3PoolProvider: IV3PiperxPoolProvider;
   protected onChainQuoteProvider: IOnChainQuoteProvider;
 
   constructor(
-    v3SubgraphProvider: IV3SubgraphProvider,
-    v3PoolProvider: IV3PoolProvider,
+    v3SubgraphProvider: IV3PiperxSubgraphProvider,
+    v3PoolProvider: IV3PiperxPoolProvider,
     onChainQuoteProvider: IOnChainQuoteProvider,
     tokenProvider: ITokenProvider,
     chainId: ChainId,
@@ -54,7 +54,7 @@ export class V3PiperxQuoter extends BaseQuoter<V3CandidatePools, V3Route, Token>
     super(
       tokenProvider,
       chainId,
-      Protocol.V3,
+      Protocol.V3S1,
       blockedTokenListProvider,
       tokenValidatorProvider
     );
@@ -66,10 +66,10 @@ export class V3PiperxQuoter extends BaseQuoter<V3CandidatePools, V3Route, Token>
   protected async getRoutes(
     tokenIn: Token,
     tokenOut: Token,
-    v3CandidatePools: V3CandidatePools,
+    v3CandidatePools: V3PiperxCandidatePools,
     _tradeType: TradeType,
     routingConfig: AlphaRouterConfig
-  ): Promise<GetRoutesResult<V3Route>> {
+  ): Promise<GetRoutesResult<V3PiperxRoute>> {
     const beforeGetRoutes = Date.now();
     // Fetch all the pools that we will consider routing via. There are thousands
     // of pools, so we filter them to a set of candidate pools that we expect will
@@ -114,7 +114,7 @@ export class V3PiperxQuoter extends BaseQuoter<V3CandidatePools, V3Route, Token>
 
     // Given all our candidate pools, compute all the possible ways to route from tokenIn to tokenOut.
     const { maxSwapsPerPath } = routingConfig;
-    const routes = computeAllV3Routes(
+    const routes = computeAllV3PiperxRoutes(
       tokenIn,
       tokenOut,
       pools,
@@ -140,21 +140,21 @@ export class V3PiperxQuoter extends BaseQuoter<V3CandidatePools, V3Route, Token>
   }
 
   public override async getQuotes(
-    routes: V3Route[],
+    routes: V3PiperxRoute[],
     amounts: CurrencyAmount[],
     percents: number[],
     quoteToken: Token,
     tradeType: TradeType,
     routingConfig: AlphaRouterConfig,
     candidatePools?: CandidatePoolsBySelectionCriteria,
-    gasModel?: IGasModel<V3RouteWithValidQuote>
+    gasModel?: IGasModel<V3PiperxRouteWithValidQuote>
   ): Promise<GetQuotesResult> {
     const beforeGetQuotes = Date.now();
-    log.info('Starting to get V3 quotes');
+    log.info('Starting to get V3 piperx quotes');
 
     if (gasModel === undefined) {
       throw new Error(
-        'GasModel for V3RouteWithValidQuote is required to getQuotes'
+        'GasModel for V3PiperxRouteWithValidQuote is required to getQuotes'
       );
     }
 
@@ -177,14 +177,13 @@ export class V3PiperxQuoter extends BaseQuoter<V3CandidatePools, V3Route, Token>
       `Getting quotes for V3 for ${routes.length} routes with ${amounts.length} amounts per route.`
     );
 
-    const { routesWithQuotes } = await quoteFn<V3Route>(
+    const { routesWithQuotes } = await quoteFn<V3PiperxRoute>(
       amounts,
       routes,
       routingConfig
     );
 
-    log.info('routesWithQuotes', JSON.stringify(routesWithQuotes));
-    console.log('routesWithQuotes', JSON.stringify(routesWithQuotes));
+    console.log('routesWithQuotes v3 piperx', JSON.stringify(routesWithQuotes));
 
     metric.putMetric(
       'V3PiperxQuotesLoad',
@@ -227,12 +226,12 @@ export class V3PiperxQuoter extends BaseQuoter<V3CandidatePools, V3Route, Token>
               route: routeToString(route),
               amountQuote,
             },
-            'Dropping a null V3 quote for route.'
+            'Dropping a null V3 piperx quote for route.'
           );
           continue;
         }
 
-        const routeWithValidQuote = new V3RouteWithValidQuote({
+        const routeWithValidQuote = new V3PiperxRouteWithValidQuote({
           route,
           rawQuote: quote,
           amount,
@@ -243,7 +242,7 @@ export class V3PiperxQuoter extends BaseQuoter<V3CandidatePools, V3Route, Token>
           gasModel,
           quoteToken,
           tradeType,
-          v3PoolProvider: this.v3PoolProvider,
+          v3PiperxPoolProvider: this.v3PoolProvider,
         });
 
         routesWithValidQuotes.push(routeWithValidQuote);

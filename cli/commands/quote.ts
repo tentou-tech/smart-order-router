@@ -1,11 +1,11 @@
 import { Logger } from '@ethersproject/logger';
 import { flags } from '@oclif/command';
 import { Currency, Percent, TradeType } from '@tentou-tech/uniswap-sdk-core';
-import { Protocol } from '@uniswap/router-sdk';
+import { Protocol } from '@tentou-tech/uniswap-router-sdk';
 import dotenv from 'dotenv';
 import _ from 'lodash';
 
-import { UniversalRouterVersion } from '@uniswap/universal-router-sdk';
+import { UniversalRouterVersion } from '@tentou-tech/uniswap-universal-router-sdk';
 import {
   ID_TO_CHAIN_ID,
   MapWithLowerCaseKey,

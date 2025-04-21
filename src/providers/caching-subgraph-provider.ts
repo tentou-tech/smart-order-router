@@ -1,5 +1,5 @@
+import { Protocol } from '@tentou-tech/uniswap-router-sdk';
 import { ChainId, Currency, Token } from '@tentou-tech/uniswap-sdk-core';
-import { Protocol } from '@uniswap/router-sdk';
 
 import { SubgraphPool } from '../routers/alpha-router/functions/get-candidate-pools';
 import { nativeOnChain, WRAPPED_NATIVE_CURRENCY } from '../util';

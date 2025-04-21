@@ -1,5 +1,5 @@
+import { Protocol } from '@tentou-tech/uniswap-router-sdk';
 import { ChainId, Currency, Token } from '@tentou-tech/uniswap-sdk-core';
-import { Protocol } from '@uniswap/router-sdk';
 import retry from 'async-retry';
 import Timeout from 'await-timeout';
 import { gql, GraphQLClient } from 'graphql-request';

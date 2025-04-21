@@ -1,10 +1,10 @@
+import { Protocol } from '@tentou-tech/uniswap-router-sdk';
 import { ChainId } from '@tentou-tech/uniswap-sdk-core';
-import { Protocol } from '@uniswap/router-sdk';
 
 import { ICache } from '../cache';
 import { CachingSubgraphProvider } from '../caching-subgraph-provider';
-import { IV3SubgraphProvider, V3SubgraphPool } from '../v3/subgraph-provider';
 
+import { IV3PiperxSubgraphProvider, V3PiperxSubgraphPool } from './subgraph-provider';
 /**
  * Provider for getting V3 pools, with functionality for caching the results.
  *
@@ -12,8 +12,8 @@ import { IV3SubgraphProvider, V3SubgraphPool } from '../v3/subgraph-provider';
  * @class CachingV3PiperxSubgraphProvider
  */
 export class CachingV3PiperxSubgraphProvider
-  extends CachingSubgraphProvider<V3SubgraphPool>
-  implements IV3SubgraphProvider
+  extends CachingSubgraphProvider<V3PiperxSubgraphPool>
+  implements IV3PiperxSubgraphProvider
 {
   /**
    * Creates an instance of CachingV3SubgraphProvider.
@@ -23,8 +23,8 @@ export class CachingV3PiperxSubgraphProvider
    */
   constructor(
     chainId: ChainId,
-    subgraphProvider: IV3SubgraphProvider,
-    cache: ICache<V3SubgraphPool[]>
+    subgraphProvider: IV3PiperxSubgraphProvider,
+    cache: ICache<V3PiperxSubgraphPool[]>
   ) {
     super(chainId, subgraphProvider, cache, Protocol.V3);
   }

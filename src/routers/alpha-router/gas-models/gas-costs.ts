@@ -1,9 +1,9 @@
 import { BigNumber } from '@ethersproject/bignumber';
-
+import { Protocol } from '@tentou-tech/uniswap-router-sdk';
 import { ChainId, Currency } from '@tentou-tech/uniswap-sdk-core';
-import { Protocol } from '@uniswap/router-sdk';
+
 import { AAVE_MAINNET, LIDO_MAINNET } from '../../../providers';
-import { V3Route, V4Route } from '../../router';
+import { V3PiperxRoute, V3Route, V4Route } from '../../router';
 
 // Cost for crossing an uninitialized tick.
 export const COST_PER_UNINIT_TICK = BigNumber.from(0);
@@ -150,7 +150,7 @@ export const SINGLE_HOP_OVERHEAD = (_id: ChainId): BigNumber => {
 
 export const TOKEN_OVERHEAD = (
   id: ChainId,
-  route: V3Route | V4Route
+  route: V3Route | V4Route | V3PiperxRoute
 ): BigNumber => {
   const currencies: Currency[] =
     route.protocol === Protocol.V4 ? route.currencyPath : route.tokenPath;

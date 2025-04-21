@@ -2,13 +2,14 @@ import { Interface } from '@ethersproject/abi';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { BytesLike } from '@ethersproject/bytes';
 import { BaseProvider } from '@ethersproject/providers';
-import { ChainId } from '@tentou-tech/uniswap-sdk-core';
 import {
   encodeMixedRouteToPath,
   MixedRouteSDK,
   Protocol,
-} from '@uniswap/router-sdk';
-import { encodeRouteToPath as encodeV3RouteToPath } from '@uniswap/v3-sdk';
+} from '@tentou-tech/uniswap-router-sdk';
+import { ChainId } from '@tentou-tech/uniswap-sdk-core';
+import { encodeRouteToPath as encodeV3RouteToPath } from '@tentou-tech/uniswap-v3-sdk';
+import { encodeRouteToPath as encodeV3PiperxRouteToPath } from '@tentou-tech/uniswap-v3s1-sdk';
 import {
   encodeRouteToPath as encodeV4RouteToPath,
   Pool as V4Pool,
@@ -21,6 +22,7 @@ import {
   MixedRoute,
   SupportedRoutes,
   V2Route,
+  V3PiperxRoute,
   V3Route,
   V4Route,
 } from '../routers/router';
@@ -162,7 +164,7 @@ export type OnChainQuotes<TRoute extends SupportedRoutes> = {
   blockNumber: BigNumber;
 };
 
-export type SupportedExactOutRoutes = V4Route | V3Route;
+export type SupportedExactOutRoutes = V4Route | V3Route | V3PiperxRoute;
 
 type QuoteBatchSuccess<TQuoteParams> = {
   status: 'success';
@@ -475,7 +477,12 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
     switch (route.protocol) {
       case Protocol.V3:
         return encodeV3RouteToPath(
-          route,
+          route as V3Route,
+          functionName == 'quoteExactOutput' // For exactOut must be true to ensure the routes are reversed.
+        ) as TPath;
+      case Protocol.V3S1: // TODO: Add support for V3Piperx on SDK
+        return encodeV3PiperxRouteToPath(
+          route as V3PiperxRoute,
           functionName == 'quoteExactOutput' // For exactOut must be true to ensure the routes are reversed.
         ) as TPath;
       case Protocol.V4:

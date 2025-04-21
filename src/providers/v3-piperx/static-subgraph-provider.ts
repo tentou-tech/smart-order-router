@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { ChainId, Token } from '@tentou-tech/uniswap-sdk-core';
 import { Pool } from '@tentou-tech/uniswap-v3-sdk';
-import { FeeAmount } from '@uniswap/v3-sdk';
+import { FeeAmount } from '@tentou-tech/uniswap-v3s1-sdk';
 import JSBI from 'jsbi';
 import _ from 'lodash';
 
@@ -79,8 +79,8 @@ import {
   WXDAI_GNOSIS,
 } from '../token-provider';
 
-import { IV3PoolProvider } from '../v3/pool-provider';
-import { IV3SubgraphProvider, V3SubgraphPool } from '../v3/subgraph-provider';
+import { IV3PiperxPoolProvider } from './pool-provider';
+import { IV3PiperxSubgraphProvider, V3PiperxSubgraphPool } from './subgraph-provider';
 
 type ChainTokenList = {
   readonly [chainId in ChainId]: Token[];
@@ -229,17 +229,17 @@ const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
  * @export
  * @class StaticV3PiperxSubgraphProvider
  */
-export class StaticV3PiperxSubgraphProvider implements IV3SubgraphProvider {
+export class StaticV3PiperxSubgraphProvider implements IV3PiperxSubgraphProvider {
   constructor(
     private chainId: ChainId,
-    private poolProvider: IV3PoolProvider
+    private poolProvider: IV3PiperxPoolProvider
   ) {}
 
   public async getPools(
     tokenIn?: Token,
     tokenOut?: Token,
     providerConfig?: ProviderConfig
-  ): Promise<V3SubgraphPool[]> {
+  ): Promise<V3PiperxSubgraphPool[]> {
     log.info('In static subgraph provider for V3');
     const bases = BASES_TO_CHECK_TRADES_AGAINST[this.chainId];
 
@@ -284,7 +284,7 @@ export class StaticV3PiperxSubgraphProvider implements IV3SubgraphProvider {
     const pools = poolAccessor.getAllPools();
 
     const poolAddressSet = new Set<string>();
-    const subgraphPools: V3SubgraphPool[] = _(pools)
+    const subgraphPools: V3PiperxSubgraphPool[] = _(pools)
       .map((pool) => {
         const { token0, token1, fee, liquidity } = pool;
 

@@ -4,8 +4,8 @@ import https from 'https';
 import { MaxUint256 } from '@ethersproject/constants';
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { ChainId } from '@tentou-tech/uniswap-sdk-core';
+import { UNIVERSAL_ROUTER_ADDRESS } from '@tentou-tech/uniswap-universal-router-sdk';
 import { permit2Address } from '@uniswap/permit2-sdk';
-import { UNIVERSAL_ROUTER_ADDRESS } from '@uniswap/universal-router-sdk';
 import axios, { AxiosRequestConfig } from 'axios';
 import { BigNumber } from 'ethers/lib/ethers';
 
@@ -31,8 +31,8 @@ import {
   initSwapRouteFromExisting,
   logGasEstimationVsSimulationMetrics,
 } from '../util/gas-factory-helpers';
-
 import { breakDownTenderlySimulationError } from '../util/tenderlySimulationErrorBreakDown';
+
 import { EthEstimateGasSimulator } from './eth-estimate-gas-provider';
 import { IPortionProvider } from './portion-provider';
 import {
@@ -41,6 +41,7 @@ import {
   Simulator,
 } from './simulation-provider';
 import { IV2PoolProvider } from './v2/pool-provider';
+import { IV3PiperxPoolProvider } from './v3-piperx/pool-provider';
 import { IV3PoolProvider } from './v3/pool-provider';
 import { IV4PoolProvider } from './v4/pool-provider';
 
@@ -260,6 +261,7 @@ export class TenderlySimulator extends Simulator {
   private tenderlyNodeApiKey: string;
   private v2PoolProvider: IV2PoolProvider;
   private v3PoolProvider: IV3PoolProvider;
+  private v3PiperxPoolProvider: IV3PiperxPoolProvider;
   private v4PoolProvider: IV4PoolProvider;
   private overrideEstimateMultiplier: { [chainId in ChainId]?: number };
   private tenderlyRequestTimeout?: number;
@@ -281,6 +283,7 @@ export class TenderlySimulator extends Simulator {
     tenderlyNodeApiKey: string,
     v2PoolProvider: IV2PoolProvider,
     v3PoolProvider: IV3PoolProvider,
+    v3PiperxPoolProvider: IV3PiperxPoolProvider,
     v4PoolProvider: IV4PoolProvider,
     provider: JsonRpcProvider,
     portionProvider: IPortionProvider,
@@ -297,6 +300,7 @@ export class TenderlySimulator extends Simulator {
     this.tenderlyNodeApiKey = tenderlyNodeApiKey;
     this.v2PoolProvider = v2PoolProvider;
     this.v3PoolProvider = v3PoolProvider;
+    this.v3PiperxPoolProvider = v3PiperxPoolProvider;
     this.v4PoolProvider = v4PoolProvider;
     this.overrideEstimateMultiplier = overrideEstimateMultiplier ?? {};
     this.tenderlyRequestTimeout = tenderlyRequestTimeout;
@@ -740,6 +744,7 @@ export class TenderlySimulator extends Simulator {
         swapRoute,
         this.v2PoolProvider,
         this.v3PoolProvider,
+        this.v3PiperxPoolProvider,
         this.v4PoolProvider,
         this.portionProvider,
         quoteGasAdjusted,

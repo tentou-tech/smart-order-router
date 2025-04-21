@@ -1,21 +1,21 @@
 import { estimateL1Gas, estimateL1GasCost } from '@eth-optimism/sdk';
 import { BigNumber } from '@ethersproject/bignumber';
 import { BaseProvider, TransactionRequest } from '@ethersproject/providers';
+import { Protocol } from '@tentou-tech/uniswap-router-sdk';
 import {
   ChainId,
   Percent,
   Token,
   TradeType,
 } from '@tentou-tech/uniswap-sdk-core';
-import { Protocol } from '@uniswap/router-sdk';
-import { UniversalRouterVersion } from '@uniswap/universal-router-sdk';
+import { UniversalRouterVersion } from '@tentou-tech/uniswap-universal-router-sdk';
+import { FeeAmount, Pool } from '@tentou-tech/uniswap-v3-sdk';
 import { Pair } from '@uniswap/v2-sdk';
-import { FeeAmount, Pool } from '@uniswap/v3-sdk';
 import brotli from 'brotli';
 import JSBI from 'jsbi';
 import _ from 'lodash';
 
-import { IV2PoolProvider, IV4PoolProvider } from '../providers';
+import { IV2PoolProvider, IV3PiperxPoolProvider, IV4PoolProvider } from '../providers';
 import { IPortionProvider } from '../providers/portion-provider';
 import { ProviderConfig } from '../providers/provider';
 import { ArbitrumGasData } from '../providers/v3/gas-data-provider';
@@ -34,6 +34,7 @@ import {
   SwapType,
   usdGasTokensByChain,
   V2RouteWithValidQuote,
+  V3PiperxRouteWithValidQuote,
   V3RouteWithValidQuote,
   V4RouteWithValidQuote,
 } from '../routers';
@@ -383,6 +384,7 @@ export function initSwapRouteFromExisting(
   swapRoute: SwapRoute,
   v2PoolProvider: IV2PoolProvider,
   v3PoolProvider: IV3PoolProvider,
+  v3PiperxPoolProvider: IV3PiperxPoolProvider,
   v4PoolProvider: IV4PoolProvider,
   portionProvider: IPortionProvider,
   quoteGasAdjusted: CurrencyAmount,
@@ -451,6 +453,32 @@ export function initSwapRouteFromExisting(
           ),
           tradeType: tradeType,
           v3PoolProvider: v3PoolProvider,
+        });
+        case Protocol.V3S1:
+        return new V3PiperxRouteWithValidQuote({
+          amount: CurrencyAmount.fromFractionalAmount(
+            route.amount.currency,
+            route.amount.numerator,
+            route.amount.denominator
+          ),
+          rawQuote: BigNumber.from(route.rawQuote),
+          sqrtPriceX96AfterList: route.sqrtPriceX96AfterList.map((num) =>
+            BigNumber.from(num)
+          ),
+          initializedTicksCrossedList: [...route.initializedTicksCrossedList],
+          quoterGasEstimate: BigNumber.from(route.gasEstimate),
+          percent: route.percent,
+          route: route.route,
+          gasModel: route.gasModel,
+          quoteToken: new Token(
+            currencyIn.chainId,
+            route.quoteToken.address,
+            route.quoteToken.decimals,
+            route.quoteToken.symbol,
+            route.quoteToken.name
+          ),
+          tradeType: tradeType,
+          v3PiperxPoolProvider: v3PiperxPoolProvider,
         });
       case Protocol.V2:
         return new V2RouteWithValidQuote({

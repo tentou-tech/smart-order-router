@@ -10,7 +10,7 @@ import {
   Token,
 } from '@tentou-tech/uniswap-sdk-core';
 import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list';
-import { MethodParameters } from '@uniswap/v3-sdk';
+import { MethodParameters } from '@tentou-tech/uniswap-v3-sdk';
 import bunyan, { default as Logger } from 'bunyan';
 import bunyanDebugStream from 'bunyan-debug-stream';
 import _ from 'lodash';
@@ -22,6 +22,7 @@ import {
   CachingTokenListProvider,
   CachingTokenProviderWithFallback,
   CachingV3PoolProvider,
+  CachingV3PoolPiperxProvider,
   CachingV4PoolProvider,
   CHAIN_IDS_LIST,
   EIP1559GasPriceProvider,
@@ -52,6 +53,7 @@ import {
   V3PoolProvider,
   V3RouteWithValidQuote,
   V4PoolProvider,
+  V3PoolPiperxProvider,
 } from '../src';
 import { LegacyGasPriceProvider } from '../src/providers/legacy-gas-price-provider';
 import { OnChainGasPriceProvider } from '../src/providers/on-chain-gas-price-provider';
@@ -299,6 +301,11 @@ export abstract class BaseCommand extends Command {
         new V3PoolProvider(chainId, multicall2Provider),
         new NodeJSCache(new NodeCache({ stdTTL: 360, useClones: false }))
       );
+      const v3PiperxPoolProvider = new CachingV3PoolPiperxProvider(
+        chainId,
+        new V3PoolPiperxProvider(chainId, multicall2Provider),
+        new NodeJSCache(new NodeCache({ stdTTL: 360, useClones: false }))
+      );
       const tokenFeeFetcher = new OnChainTokenFeeFetcher(chainId, provider);
       const tokenPropertiesProvider = new TokenPropertiesProvider(
         chainId,
@@ -321,6 +328,7 @@ export abstract class BaseCommand extends Command {
         process.env.TENDERLY_NODE_API_KEY!,
         v2PoolProvider,
         v3PoolProvider,
+        v3PiperxPoolProvider,
         v4PoolProvider,
         provider,
         portionProvider,
@@ -335,6 +343,7 @@ export abstract class BaseCommand extends Command {
         provider,
         v2PoolProvider,
         v3PoolProvider,
+        v3PiperxPoolProvider,
         v4PoolProvider,
         portionProvider
       );

@@ -1,10 +1,12 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { BaseProvider } from '@ethersproject/providers';
 import { ChainId, Percent, Price } from '@tentou-tech/uniswap-sdk-core';
-import { Pool } from '@uniswap/v3-sdk';
+import { Pool } from '@tentou-tech/uniswap-v3-sdk';
+
 import { CurrencyAmount, log, WRAPPED_NATIVE_CURRENCY } from '../../../util';
 import { calculateL1GasFeesHelper } from '../../../util/gas-factory-helpers';
-import { V3RouteWithValidQuote, V4RouteWithValidQuote } from '../entities';
+import { V3PiperxRouteWithValidQuote, V3RouteWithValidQuote, V4RouteWithValidQuote } from '../entities';
+
 import {
   BASE_SWAP_COST,
   COST_PER_HOP,
@@ -22,7 +24,7 @@ import {
 } from './gas-model';
 
 export abstract class TickBasedHeuristicGasModelFactory<
-  TRouteWithValidQuote extends V3RouteWithValidQuote | V4RouteWithValidQuote
+  TRouteWithValidQuote extends V3RouteWithValidQuote | V3PiperxRouteWithValidQuote | V4RouteWithValidQuote
 > extends IOnChainGasModelFactory<TRouteWithValidQuote> {
   protected provider: BaseProvider;
 

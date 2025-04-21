@@ -1,11 +1,11 @@
 import { parseUnits } from '@ethersproject/units';
+import { ADDRESS_ZERO } from '@tentou-tech/uniswap-router-sdk';
 import {
   ChainId,
   Currency,
   CurrencyAmount as CurrencyAmountRaw,
 } from '@tentou-tech/uniswap-sdk-core';
-import { ADDRESS_ZERO } from '@uniswap/router-sdk';
-import { FeeAmount, TICK_SPACINGS } from '@uniswap/v3-sdk';
+import { FeeAmount, TICK_SPACINGS } from '@tentou-tech/uniswap-v3-sdk';
 import JSBI from 'jsbi';
 
 export class CurrencyAmount extends CurrencyAmountRaw<Currency> {}
