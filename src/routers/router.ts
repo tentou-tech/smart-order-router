@@ -1,5 +1,11 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import {
+  CondensedAddLiquidityOptions,
+  MixedRouteSDK,
+  Protocol,
+  Trade,
+} from '@tentou-tech/uniswap-router-sdk';
+import {
   Currency,
   Fraction,
   Percent,
@@ -7,22 +13,19 @@ import {
   TradeType,
 } from '@tentou-tech/uniswap-sdk-core';
 import {
-  CondensedAddLiquidityOptions,
-  MixedRouteSDK,
-  Protocol,
-  Trade,
-} from '@uniswap/router-sdk';
-import {
   SwapOptions as UniversalRouterSwapOptions,
   UniversalRouterVersion,
-} from '@uniswap/universal-router-sdk';
-import { Route as V2RouteRaw } from '@uniswap/v2-sdk';
+} from '@tentou-tech/uniswap-universal-router-sdk';
 import {
-  MethodParameters as SDKMethodParameters,
   Pool,
   Position,
+  MethodParameters as SDKMethodParameters,
   Route as V3RouteRaw,
-} from '@uniswap/v3-sdk';
+} from '@tentou-tech/uniswap-v3-sdk';
+import {
+  Route as V3PiperxRouteRaw,
+} from '@tentou-tech/uniswap-v3s1-sdk';
+import { Route as V2RouteRaw } from '@uniswap/v2-sdk';
 import { Route as V4RouteRaw } from '@uniswap/v4-sdk';
 
 import { SimulationStatus } from '../providers';
@@ -36,13 +39,16 @@ export class V4Route extends V4RouteRaw<Currency, Currency> {
 export class V3Route extends V3RouteRaw<Token, Token> {
   protocol: Protocol.V3 = Protocol.V3;
 }
+export class V3PiperxRoute extends V3PiperxRouteRaw<Token, Token> {
+  protocol: Protocol.V3S1 = Protocol.V3S1;
+}
 export class V2Route extends V2RouteRaw<Token, Token> {
   protocol: Protocol.V2 = Protocol.V2;
 }
 export class MixedRoute extends MixedRouteSDK<Currency, Currency> {
   protocol: Protocol.MIXED = Protocol.MIXED;
 }
-export type SupportedRoutes = V4Route | V3Route | V2Route | MixedRoute;
+export type SupportedRoutes = V4Route | V3Route | V3PiperxRoute | V2Route | MixedRoute;
 
 export type SwapRoute = {
   /**

@@ -1,5 +1,5 @@
+import { Protocol } from '@tentou-tech/uniswap-router-sdk';
 import { ChainId, Currency, TradeType } from '@tentou-tech/uniswap-sdk-core';
-import { Protocol } from '@uniswap/router-sdk';
 import _ from 'lodash';
 
 import { RouteWithValidQuote, SupportedRoutes } from '../../../../routers';

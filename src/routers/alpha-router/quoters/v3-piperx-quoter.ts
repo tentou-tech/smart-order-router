@@ -1,5 +1,10 @@
 import { Protocol } from '@tentou-tech/uniswap-router-sdk';
-import { ChainId, Currency, TradeType } from '@tentou-tech/uniswap-sdk-core';
+import {
+  ChainId,
+  Currency,
+  Token,
+  TradeType,
+} from '@tentou-tech/uniswap-sdk-core';
 import _ from 'lodash';
 
 import {
@@ -7,8 +12,8 @@ import {
   ITokenListProvider,
   ITokenProvider,
   ITokenValidatorProvider,
-  IV4PoolProvider,
-  IV4SubgraphProvider,
+  IV3PiperxPoolProvider,
+  IV3PiperxSubgraphProvider,
   TokenValidationResult,
 } from '../../../providers';
 import {
@@ -18,27 +23,28 @@ import {
   MetricLoggerUnit,
   routeToString,
 } from '../../../util';
-import { V4Route } from '../../router';
+import { V3PiperxRoute } from '../../router';
 import { AlphaRouterConfig } from '../alpha-router';
-import { RouteWithValidQuote, V4RouteWithValidQuote } from '../entities';
-import { computeAllV4Routes } from '../functions/compute-all-routes';
+import { V3PiperxRouteWithValidQuote } from '../entities';
+import { computeAllV3PiperxRoutes } from '../functions/compute-all-routes';
 import {
   CandidatePoolsBySelectionCriteria,
-  V4CandidatePools,
+  V3PiperxCandidatePools,
 } from '../functions/get-candidate-pools';
 import { IGasModel } from '../gas-models';
 
 import { BaseQuoter } from './base-quoter';
-import { GetQuotesResult, GetRoutesResult } from './model';
+import { GetQuotesResult } from './model/results/get-quotes-result';
+import { GetRoutesResult } from './model/results/get-routes-result';
 
-export class V4Quoter extends BaseQuoter<V4CandidatePools, V4Route, Currency> {
-  protected v4SubgraphProvider: IV4SubgraphProvider;
-  protected v4PoolProvider: IV4PoolProvider;
+export class V3PiperxQuoter extends BaseQuoter<V3PiperxCandidatePools, V3PiperxRoute, Token> {
+  protected v3SubgraphProvider: IV3PiperxSubgraphProvider;
+  protected v3PoolProvider: IV3PiperxPoolProvider;
   protected onChainQuoteProvider: IOnChainQuoteProvider;
 
   constructor(
-    v4SubgraphProvider: IV4SubgraphProvider,
-    v4PoolProvider: IV4PoolProvider,
+    v3SubgraphProvider: IV3PiperxSubgraphProvider,
+    v3PoolProvider: IV3PiperxPoolProvider,
     onChainQuoteProvider: IOnChainQuoteProvider,
     tokenProvider: ITokenProvider,
     chainId: ChainId,
@@ -48,30 +54,32 @@ export class V4Quoter extends BaseQuoter<V4CandidatePools, V4Route, Currency> {
     super(
       tokenProvider,
       chainId,
-      Protocol.V4,
+      Protocol.V3S1,
       blockedTokenListProvider,
       tokenValidatorProvider
     );
-    this.v4SubgraphProvider = v4SubgraphProvider;
-    this.v4PoolProvider = v4PoolProvider;
+    this.v3SubgraphProvider = v3SubgraphProvider;
+    this.v3PoolProvider = v3PoolProvider;
     this.onChainQuoteProvider = onChainQuoteProvider;
   }
 
   protected async getRoutes(
-    currencyIn: Currency,
-    currencyOut: Currency,
-    v4CandidatePools: V4CandidatePools,
+    tokenIn: Token,
+    tokenOut: Token,
+    v3CandidatePools: V3PiperxCandidatePools,
     _tradeType: TradeType,
     routingConfig: AlphaRouterConfig
-  ): Promise<GetRoutesResult<V4Route>> {
+  ): Promise<GetRoutesResult<V3PiperxRoute>> {
     const beforeGetRoutes = Date.now();
     // Fetch all the pools that we will consider routing via. There are thousands
     // of pools, so we filter them to a set of candidate pools that we expect will
     // result in good prices.
-    const { poolAccessor, candidatePools } = v4CandidatePools;
+    const { poolAccessor, candidatePools } = v3CandidatePools;
     const poolsRaw = poolAccessor.getAllPools();
 
-    // Drop any pools that contain fee on transfer tokens (not supported by v4) or have issues with being transferred.
+    console.log(`poolsRaw: ${JSON.stringify(poolsRaw)}`);
+
+    // Drop any pools that contain fee on transfer tokens (not supported by v3) or have issues with being transferred.
     const pools = await this.applyTokenValidatorToPools(
       poolsRaw,
       (
@@ -90,7 +98,7 @@ export class V4Quoter extends BaseQuoter<V4CandidatePools, V4Route, Currency> {
         //
         if (
           tokenValidation == TokenValidationResult.STF &&
-          (token.equals(currencyIn) || token.equals(currencyOut))
+          (token.equals(tokenIn) || token.equals(tokenOut))
         ) {
           return false;
         }
@@ -102,23 +110,25 @@ export class V4Quoter extends BaseQuoter<V4CandidatePools, V4Route, Currency> {
       }
     );
 
-    // Given all our candidate pools, compute all the possible ways to route from currencyIn to tokenOut.
+    console.log(`pools after validation: ${JSON.stringify(pools)}`);
+
+    // Given all our candidate pools, compute all the possible ways to route from tokenIn to tokenOut.
     const { maxSwapsPerPath } = routingConfig;
-    const routes = computeAllV4Routes(
-      currencyIn,
-      currencyOut,
+    const routes = computeAllV3PiperxRoutes(
+      tokenIn,
+      tokenOut,
       pools,
       maxSwapsPerPath
     );
 
     metric.putMetric(
-      'V4GetRoutesLoad',
+      'V3GetRoutesLoad',
       Date.now() - beforeGetRoutes,
       MetricLoggerUnit.Milliseconds
     );
 
     metric.putMetric(
-      `V4GetRoutesLoad_Chain${this.chainId}`,
+      `V3GetRoutesLoad_Chain${this.chainId}`,
       Date.now() - beforeGetRoutes,
       MetricLoggerUnit.Milliseconds
     );
@@ -130,21 +140,21 @@ export class V4Quoter extends BaseQuoter<V4CandidatePools, V4Route, Currency> {
   }
 
   public override async getQuotes(
-    routes: V4Route[],
+    routes: V3PiperxRoute[],
     amounts: CurrencyAmount[],
     percents: number[],
-    quoteCurrency: Currency,
+    quoteToken: Token,
     tradeType: TradeType,
     routingConfig: AlphaRouterConfig,
     candidatePools?: CandidatePoolsBySelectionCriteria,
-    gasModel?: IGasModel<RouteWithValidQuote>
+    gasModel?: IGasModel<V3PiperxRouteWithValidQuote>
   ): Promise<GetQuotesResult> {
     const beforeGetQuotes = Date.now();
-    log.info('Starting to get V4 quotes');
+    log.info('Starting to get V3 piperx quotes');
 
     if (gasModel === undefined) {
       throw new Error(
-        'GasModel for V4RouteWithValidQuote is required to getQuotes'
+        'GasModel for V3PiperxRouteWithValidQuote is required to getQuotes'
       );
     }
 
@@ -164,23 +174,25 @@ export class V4Quoter extends BaseQuoter<V4CandidatePools, V4Route, Currency> {
 
     const beforeQuotes = Date.now();
     log.info(
-      `Getting quotes for V4 for ${routes.length} routes with ${amounts.length} amounts per route.`
+      `Getting quotes for V3 for ${routes.length} routes with ${amounts.length} amounts per route.`
     );
 
-    const { routesWithQuotes } = await quoteFn<V4Route>(
+    const { routesWithQuotes } = await quoteFn<V3PiperxRoute>(
       amounts,
       routes,
       routingConfig
     );
 
+    console.log('routesWithQuotes v3 piperx', JSON.stringify(routesWithQuotes));
+
     metric.putMetric(
-      'V4QuotesLoad',
+      'V3PiperxQuotesLoad',
       Date.now() - beforeQuotes,
       MetricLoggerUnit.Milliseconds
     );
 
     metric.putMetric(
-      'V4QuotesFetched',
+      'V3PiperxQuotesFetched',
       _(routesWithQuotes)
         .map(([, quotes]) => quotes.length)
         .sum(),
@@ -214,12 +226,12 @@ export class V4Quoter extends BaseQuoter<V4CandidatePools, V4Route, Currency> {
               route: routeToString(route),
               amountQuote,
             },
-            'Dropping a null V4 quote for route.'
+            'Dropping a null V3 piperx quote for route.'
           );
           continue;
         }
 
-        const routeWithValidQuote = new V4RouteWithValidQuote({
+        const routeWithValidQuote = new V3PiperxRouteWithValidQuote({
           route,
           rawQuote: quote,
           amount,
@@ -228,12 +240,9 @@ export class V4Quoter extends BaseQuoter<V4CandidatePools, V4Route, Currency> {
           initializedTicksCrossedList,
           quoterGasEstimate: gasEstimate,
           gasModel,
-          // TODO: ROUTE-306 make it unwrapped, once v4 gas model supports native quote currency
-          // For now it's ok to keep it wrapped,
-          // because the quote is the fairly accurate quote from the native currency routing
-          quoteToken: quoteCurrency.wrapped,
+          quoteToken,
           tradeType,
-          v4PoolProvider: this.v4PoolProvider,
+          v3PiperxPoolProvider: this.v3PoolProvider,
         });
 
         routesWithValidQuotes.push(routeWithValidQuote);
@@ -241,7 +250,7 @@ export class V4Quoter extends BaseQuoter<V4CandidatePools, V4Route, Currency> {
     }
 
     metric.putMetric(
-      'V4GetQuotesLoad',
+      'V3PiperxGetQuotesLoad',
       Date.now() - beforeGetQuotes,
       MetricLoggerUnit.Milliseconds
     );

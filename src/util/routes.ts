@@ -1,27 +1,30 @@
+import { Protocol, TPool } from '@tentou-tech/uniswap-router-sdk';
 import { ChainId, Currency, Percent } from '@tentou-tech/uniswap-sdk-core';
-import { Protocol } from '@uniswap/router-sdk';
+import { Pool as V3Pool } from '@tentou-tech/uniswap-v3-sdk';
+import { Pool as V3S1Pool } from '@tentou-tech/uniswap-v3s1-sdk';
 import { Pair } from '@uniswap/v2-sdk';
-import { Pool as V3Pool } from '@uniswap/v3-sdk';
 import { Pool as V4Pool } from '@uniswap/v4-sdk';
 import _ from 'lodash';
 
+import { CachedRoutes } from '../providers';
 import {
   AlphaRouterConfig,
   RouteWithValidQuote,
 } from '../routers/alpha-router';
 import { MixedRoute, SupportedRoutes } from '../routers/router';
 
-import { V3_CORE_FACTORY_ADDRESSES } from './addresses';
+import { V3_CORE_FACTORY_ADDRESSES, V3S1_CORE_FACTORY_ADDRESSES } from './addresses';
 
-import { TPool } from '@uniswap/router-sdk';
 import { CurrencyAmount, DEXES, V4_ETH_WETH_FAKE_POOL } from '.';
-import { CachedRoutes } from '../providers';
+
 
 export const routeToTokens = (route: SupportedRoutes): Currency[] => {
   switch (route.protocol) {
     case Protocol.V4:
       return route.currencyPath;
     case Protocol.V3:
+      return route.tokenPath;
+    case Protocol.V3S1:
       return route.tokenPath;
     case Protocol.V2:
     case Protocol.MIXED:
@@ -35,6 +38,7 @@ export const routeToPools = (route: SupportedRoutes): TPool[] => {
   switch (route.protocol) {
     case Protocol.V4:
     case Protocol.V3:
+    case Protocol.V3S1:
     case Protocol.MIXED:
       return route.pools;
     case Protocol.V2:
@@ -60,6 +64,14 @@ export const poolToString = (pool: TPool): string => {
       pool.fee,
       DEXES.StoryHunt.InitCodeHash,
       V3_CORE_FACTORY_ADDRESSES[pool.chainId]
+    )}]`;
+  } else if (pool instanceof V3S1Pool) {
+    return ` -- ${pool.fee / 10000}% [${V3S1Pool.getAddress(
+      pool.token0,
+      pool.token1,
+      pool.fee,
+      DEXES.PiPerxV3.InitCodeHash,
+      V3S1_CORE_FACTORY_ADDRESSES[pool.chainId]
     )}]`;
   } else if (pool instanceof Pair) {
     return ` -- [${Pair.getAddress(
@@ -90,7 +102,15 @@ export const routeToString = (route: SupportedRoutes): string => {
         DEXES.StoryHunt.InitCodeHash,
         V3_CORE_FACTORY_ADDRESSES[pool.chainId]
       )}]`;
-    } else if (pool instanceof V4Pool) {
+    } else if (pool instanceof V3S1Pool) {
+      return ` -- ${pool.fee / 10000}% [${V3S1Pool.getAddress(
+        pool.token0,
+        pool.token1,
+        pool.fee,
+        DEXES.PiPerxV3.InitCodeHash,
+        V3S1_CORE_FACTORY_ADDRESSES[pool.chainId]
+      )}]`;
+    }else if (pool instanceof V4Pool) {
       // Special case in the case of ETH/WETH fake pool
       // where we do not want to return the fake pool in the route string as it is not a real pool
       if (

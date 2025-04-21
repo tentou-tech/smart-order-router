@@ -4,8 +4,8 @@ import {
   CurrencyAmount as CurrencyAmountRaw,
   Token,
 } from '@tentou-tech/uniswap-sdk-core';
+import { Pool } from '@tentou-tech/uniswap-v3-sdk';
 import { Pair } from '@uniswap/v2-sdk';
-import { Pool } from '@uniswap/v3-sdk';
 
 import { ProviderConfig } from '../../../providers/provider';
 import {
@@ -79,6 +79,7 @@ import {
   MixedRouteWithValidQuote,
   RouteWithValidQuote,
   V2RouteWithValidQuote,
+  V3PiperxRouteWithValidQuote,
   V3RouteWithValidQuote,
   V4RouteWithValidQuote,
 } from '../entities/route-with-valid-quote';
@@ -187,6 +188,7 @@ export type LiquidityCalculationPools = {
 export type GasModelType = {
   v2GasModel?: IGasModel<V2RouteWithValidQuote>;
   v3GasModel: IGasModel<V3RouteWithValidQuote>;
+  v3PiperxGasModel: IGasModel<V3PiperxRouteWithValidQuote>;
   v4GasModel: IGasModel<V4RouteWithValidQuote>;
   mixedRouteGasModel: IGasModel<MixedRouteWithValidQuote>;
 };

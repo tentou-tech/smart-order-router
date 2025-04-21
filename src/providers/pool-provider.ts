@@ -1,6 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { ChainId, Currency } from '@tentou-tech/uniswap-sdk-core';
-import { Pool as V3Pool } from '@uniswap/v3-sdk';
+import { Pool as V3Pool } from '@tentou-tech/uniswap-v3-sdk';
+import { Pool as V3S1Pool } from '@tentou-tech/uniswap-v3s1-sdk';
 import { Pool as V4Pool } from '@uniswap/v4-sdk';
 import { Options as RetryOptions } from 'async-retry';
 import _ from 'lodash';
@@ -15,7 +16,7 @@ export type PoolConstruct<TCurrency extends Currency> = [
   TCurrency,
   ...Array<string | number>
 ];
-export type Pool = V3Pool | V4Pool;
+export type Pool = V3Pool | V3S1Pool | V4Pool;
 
 export type ISlot0 = {
   sqrtPriceX96: BigNumber;

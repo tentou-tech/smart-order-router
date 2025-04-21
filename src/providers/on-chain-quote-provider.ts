@@ -2,13 +2,14 @@ import { Interface } from '@ethersproject/abi';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { BytesLike } from '@ethersproject/bytes';
 import { BaseProvider } from '@ethersproject/providers';
-import { ChainId } from '@tentou-tech/uniswap-sdk-core';
 import {
   encodeMixedRouteToPath,
   MixedRouteSDK,
   Protocol,
-} from '@uniswap/router-sdk';
-import { encodeRouteToPath as encodeV3RouteToPath } from '@uniswap/v3-sdk';
+} from '@tentou-tech/uniswap-router-sdk';
+import { ChainId } from '@tentou-tech/uniswap-sdk-core';
+import { encodeRouteToPath as encodeV3RouteToPath } from '@tentou-tech/uniswap-v3-sdk';
+import { encodeRouteToPath as encodeV3PiperxRouteToPath } from '@tentou-tech/uniswap-v3s1-sdk';
 import {
   encodeRouteToPath as encodeV4RouteToPath,
   Pool as V4Pool,
@@ -21,6 +22,7 @@ import {
   MixedRoute,
   SupportedRoutes,
   V2Route,
+  V3PiperxRoute,
   V3Route,
   V4Route,
 } from '../routers/router';
@@ -38,6 +40,7 @@ import {
   MIXED_ROUTE_QUOTER_V2_ADDRESSES,
   NEW_QUOTER_V2_ADDRESSES,
   PROTOCOL_V4_QUOTER_ADDRESSES,
+  V3S1_QUOTER_ADDRESSES,
 } from '../util';
 import { CurrencyAmount } from '../util/amounts';
 import { log } from '../util/log';
@@ -162,7 +165,7 @@ export type OnChainQuotes<TRoute extends SupportedRoutes> = {
   blockNumber: BigNumber;
 };
 
-export type SupportedExactOutRoutes = V4Route | V3Route;
+export type SupportedExactOutRoutes = V4Route | V3Route | V3PiperxRoute;
 
 type QuoteBatchSuccess<TQuoteParams> = {
   status: 'success';
@@ -432,6 +435,8 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
         : MIXED_ROUTE_QUOTER_V1_ADDRESSES[this.chainId]
       : protocol === Protocol.V3
       ? NEW_QUOTER_V2_ADDRESSES[this.chainId]
+      : protocol === Protocol.V3S1
+      ? V3S1_QUOTER_ADDRESSES[`${this.chainId}-${protocol}`]
       : PROTOCOL_V4_QUOTER_ADDRESSES[this.chainId];
 
     if (!quoterAddress) {
@@ -475,7 +480,12 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
     switch (route.protocol) {
       case Protocol.V3:
         return encodeV3RouteToPath(
-          route,
+          route as V3Route,
+          functionName == 'quoteExactOutput' // For exactOut must be true to ensure the routes are reversed.
+        ) as TPath;
+      case Protocol.V3S1: // TODO: Add support for V3Piperx on SDK
+        return encodeV3PiperxRouteToPath(
+          route as V3PiperxRoute,
           functionName == 'quoteExactOutput' // For exactOut must be true to ensure the routes are reversed.
         ) as TPath;
       case Protocol.V4:
@@ -521,6 +531,7 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
 
     switch (protocol) {
       case Protocol.V3:
+      case Protocol.V3S1:
         return IQuoterV2__factory.createInterface();
       case Protocol.V4:
         return V4Quoter__factory.createInterface();
@@ -637,6 +648,9 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
     const useV4RouteQuoter =
       routes.some((route) => route.protocol === Protocol.V4) &&
       !useMixedRouteQuoter;
+    const useV3S1RouteQuoter =
+      routes.some((route) => route.protocol === Protocol.V3S1) &&
+      !useMixedRouteQuoter;
     const mixedRouteContainsV4Pool = useMixedRouteQuoter
       ? routes.some(
           (route) =>
@@ -648,6 +662,8 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
       ? Protocol.MIXED
       : useV4RouteQuoter
       ? Protocol.V4
+      : useV3S1RouteQuoter
+      ? Protocol.V3S1
       : Protocol.V3;
 
     const optimisticCachedRoutes =

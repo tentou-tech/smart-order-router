@@ -4,13 +4,13 @@
  * @export
  * @interface IRouteCachingProvider
  */
+import { Protocol } from '@tentou-tech/uniswap-router-sdk';
 import {
   ChainId,
   Currency,
   CurrencyAmount,
   TradeType,
 } from '@tentou-tech/uniswap-sdk-core';
-import { Protocol } from '@uniswap/router-sdk';
 
 import { CacheMode } from './model';
 import { CachedRoutes } from './model/cached-routes';

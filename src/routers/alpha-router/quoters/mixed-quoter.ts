@@ -1,5 +1,5 @@
+import { Protocol } from '@tentou-tech/uniswap-router-sdk';
 import { ChainId, Currency, TradeType } from '@tentou-tech/uniswap-sdk-core';
-import { Protocol } from '@uniswap/router-sdk';
 import _ from 'lodash';
 
 import {
@@ -9,6 +9,8 @@ import {
   ITokenValidatorProvider,
   IV2PoolProvider,
   IV2SubgraphProvider,
+  IV3PiperxPoolProvider,
+  IV3PiperxSubgraphProvider,
   IV3PoolProvider,
   IV3SubgraphProvider,
   IV4PoolProvider,
@@ -32,6 +34,7 @@ import {
   getMixedRouteCandidatePools,
   V2CandidatePools,
   V3CandidatePools,
+  V3PiperxCandidatePools,
   V4CandidatePools,
 } from '../functions/get-candidate-pools';
 import { IGasModel } from '../gas-models';
@@ -43,6 +46,7 @@ export class MixedQuoter extends BaseQuoter<
   [
     V4CandidatePools | undefined,
     V3CandidatePools | undefined,
+    V3PiperxCandidatePools | undefined,
     V2CandidatePools | undefined,
     CrossLiquidityCandidatePools
   ],
@@ -53,6 +57,8 @@ export class MixedQuoter extends BaseQuoter<
   protected v4PoolProvider: IV4PoolProvider;
   protected v3SubgraphProvider: IV3SubgraphProvider;
   protected v3PoolProvider: IV3PoolProvider;
+  protected v3PiperxSubgraphProvider: IV3PiperxSubgraphProvider;
+  protected v3PiperxPoolProvider: IV3PiperxPoolProvider;
   protected v2SubgraphProvider: IV2SubgraphProvider;
   protected v2PoolProvider: IV2PoolProvider;
   protected onChainQuoteProvider: IOnChainQuoteProvider;
@@ -62,6 +68,8 @@ export class MixedQuoter extends BaseQuoter<
     v4PoolProvider: IV4PoolProvider,
     v3SubgraphProvider: IV3SubgraphProvider,
     v3PoolProvider: IV3PoolProvider,
+    v3PiperxSubgraphProvider: IV3PiperxSubgraphProvider,
+    v3PiperxPoolProvider: IV3PiperxPoolProvider,
     v2SubgraphProvider: IV2SubgraphProvider,
     v2PoolProvider: IV2PoolProvider,
     onChainQuoteProvider: IOnChainQuoteProvider,
@@ -81,6 +89,8 @@ export class MixedQuoter extends BaseQuoter<
     this.v4PoolProvider = v4PoolProvider;
     this.v3SubgraphProvider = v3SubgraphProvider;
     this.v3PoolProvider = v3PoolProvider;
+    this.v3PiperxSubgraphProvider = v3PiperxSubgraphProvider;
+    this.v3PiperxPoolProvider = v3PiperxPoolProvider;
     this.v2SubgraphProvider = v2SubgraphProvider;
     this.v2PoolProvider = v2PoolProvider;
     this.onChainQuoteProvider = onChainQuoteProvider;
@@ -92,6 +102,7 @@ export class MixedQuoter extends BaseQuoter<
     v4v3v2candidatePools: [
       V4CandidatePools | undefined,
       V3CandidatePools | undefined,
+      V3PiperxCandidatePools | undefined,
       V2CandidatePools | undefined,
       CrossLiquidityCandidatePools
     ],
@@ -107,6 +118,7 @@ export class MixedQuoter extends BaseQuoter<
     const [
       v4CandidatePools,
       v3CandidatePools,
+      v3PiperxCandidatePools,
       v2CandidatePools,
       crossLiquidityPools,
     ] = v4v3v2candidatePools;
@@ -114,16 +126,19 @@ export class MixedQuoter extends BaseQuoter<
     const {
       V2poolAccessor,
       V3poolAccessor,
+      V3PiperxPoolAccessor,
       V4poolAccessor,
       candidatePools: mixedRouteCandidatePools,
     } = await getMixedRouteCandidatePools({
       v4CandidatePools,
       v3CandidatePools,
+      v3PiperxCandidatePools,
       v2CandidatePools,
       crossLiquidityPools,
       tokenProvider: this.tokenProvider,
       v4PoolProvider: this.v4PoolProvider,
       v3poolProvider: this.v3PoolProvider,
+      v3PiperxPoolProvider: this.v3PiperxPoolProvider,
       v2poolProvider: this.v2PoolProvider,
       routingConfig,
       chainId: this.chainId,
@@ -131,6 +146,7 @@ export class MixedQuoter extends BaseQuoter<
 
     const V4poolsRaw = V4poolAccessor.getAllPools();
     const V3poolsRaw = V3poolAccessor.getAllPools();
+    const V3PiperxPoolsRaw = V3PiperxPoolAccessor.getAllPools();
     const V2poolsRaw = V2poolAccessor.getAllPools();
 
     const poolsRaw = [];
@@ -139,6 +155,9 @@ export class MixedQuoter extends BaseQuoter<
     }
     if (!routingConfig.excludedProtocolsFromMixed?.includes(Protocol.V3)) {
       poolsRaw.push(...V3poolsRaw);
+    }
+    if (!routingConfig.excludedProtocolsFromMixed?.includes(Protocol.V3S1)) {
+      poolsRaw.push(...V3PiperxPoolsRaw);
     }
     if (!routingConfig.excludedProtocolsFromMixed?.includes(Protocol.V2)) {
       poolsRaw.push(...V2poolsRaw);

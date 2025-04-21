@@ -6,7 +6,7 @@ import {
   Fraction,
   Percent,
 } from '@tentou-tech/uniswap-sdk-core';
-import { Position } from '@uniswap/v3-sdk';
+import { Position } from '@tentou-tech/uniswap-v3-sdk';
 import dotenv from 'dotenv';
 import {
   ID_TO_CHAIN_ID,

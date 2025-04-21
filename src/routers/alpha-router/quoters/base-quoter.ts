@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
+import { Protocol, TPool } from '@tentou-tech/uniswap-router-sdk';
 import { ChainId, Currency, TradeType } from '@tentou-tech/uniswap-sdk-core';
-import { Protocol } from '@uniswap/router-sdk';
 import _ from 'lodash';
 
 import {
@@ -25,11 +25,12 @@ import {
   SupportedCandidatePools,
   V2CandidatePools,
   V3CandidatePools,
+  V3PiperxCandidatePools,
   V4CandidatePools,
 } from '../functions/get-candidate-pools';
 import { IGasModel } from '../gas-models';
 
-import { TPool } from '@uniswap/router-sdk';
+
 import { GetQuotesResult, GetRoutesResult } from './model/results';
 
 /**
@@ -46,6 +47,7 @@ export abstract class BaseQuoter<
     | [
         V4CandidatePools | undefined,
         V3CandidatePools | undefined,
+        V3PiperxCandidatePools | undefined,
         V2CandidatePools | undefined,
         CrossLiquidityCandidatePools
       ],
@@ -177,10 +179,7 @@ export abstract class BaseQuoter<
       }
 
       log.info(`routesResult.routes.length: ${routesResult.routes.length}`);
-      log.info(`candidatePools: ${JSON.stringify(routesResult.candidatePools)}`);
       console.log(`candidatePools: ${JSON.stringify(routesResult.candidatePools)}`);
-
-      log.info(`routesResult: ${JSON.stringify(routesResult)}`);
       console.log(`routesResult: ${JSON.stringify(routesResult)}`);
 
       return this.getQuotes(

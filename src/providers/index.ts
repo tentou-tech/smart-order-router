@@ -44,3 +44,11 @@ export * from './v4/static-subgraph-provider';
 export * from './v4/subgraph-provider';
 export * from './v4/subgraph-provider-with-fallback';
 export * from './v4/uri-subgraph-provider';
+
+export * from './v3-piperx/caching-pool-provider';
+export * from './v3-piperx/caching-subgraph-provider';
+export * from './v3-piperx/pool-provider';
+export * from './v3-piperx/static-subgraph-provider';
+export * from './v3-piperx/subgraph-provider';
+export * from './v3-piperx/subgraph-provider-with-fallback';
+export * from './v3-piperx/uri-subgraph-provider';

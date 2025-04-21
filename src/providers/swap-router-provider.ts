@@ -1,9 +1,9 @@
+import { ApprovalTypes } from '@tentou-tech/uniswap-router-sdk';
 import {
   ChainId,
   Currency,
   CurrencyAmount,
 } from '@tentou-tech/uniswap-sdk-core';
-import { ApprovalTypes } from '@uniswap/router-sdk';
 
 import { SwapRouter02__factory } from '../types/other/factories/SwapRouter02__factory';
 import { log, SWAP_ROUTER_02_ADDRESSES } from '../util';

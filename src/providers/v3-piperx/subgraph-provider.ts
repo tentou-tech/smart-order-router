@@ -5,7 +5,7 @@ import { log } from '../../util';
 import { ProviderConfig } from '../provider';
 import { SubgraphProvider } from '../subgraph-provider';
 
-export interface V3SubgraphPool {
+export interface V3PiperxSubgraphPool {
   id: string;
   feeTier: string;
   liquidity: string;
@@ -19,7 +19,7 @@ export interface V3SubgraphPool {
   tvlUSD: number;
 }
 
-export type V3RawSubgraphPool = {
+export type V3PiperxRawSubgraphPool = {
   id: string;
   feeTier: string;
   liquidity: string;
@@ -35,6 +35,7 @@ export type V3RawSubgraphPool = {
   totalValueLockedETH: string;
   totalValueLockedUSDUntracked: string;
 };
+
 
 const SUBGRAPH_URL_BY_CHAIN: { [chainId in ChainId]?: string } = {
   [ChainId.MAINNET]:
@@ -69,19 +70,19 @@ const SUBGRAPH_URL_BY_CHAIN: { [chainId in ChainId]?: string } = {
  * Provider for getting V3 pools from the Subgraph
  *
  * @export
- * @interface IV3SubgraphProvider
+ * @interface IV3PiperxSubgraphProvider
  */
-export interface IV3SubgraphProvider {
+export interface IV3PiperxSubgraphProvider {
   getPools(
     tokenIn?: Token,
     tokenOut?: Token,
     providerConfig?: ProviderConfig
-  ): Promise<V3SubgraphPool[]>;
+  ): Promise<V3PiperxSubgraphPool[]>;
 }
 
-export class V3SubgraphProvider
-  extends SubgraphProvider<V3RawSubgraphPool, V3SubgraphPool>
-  implements IV3SubgraphProvider
+export class V3PiperxSubgraphProvider
+  extends SubgraphProvider<V3PiperxRawSubgraphPool, V3PiperxSubgraphPool>
+  implements IV3PiperxSubgraphProvider
 {
   constructor(
     chainId: ChainId,
@@ -93,7 +94,7 @@ export class V3SubgraphProvider
     subgraphUrlOverride?: string
   ) {
     super(
-      Protocol.V3,
+      Protocol.V3S1,
       chainId,
       retries,
       timeout,
@@ -133,8 +134,8 @@ export class V3SubgraphProvider
   }
 
   protected override mapSubgraphPool(
-    rawPool: V3RawSubgraphPool
-  ): V3SubgraphPool {
+    rawPool: V3PiperxRawSubgraphPool
+  ): V3PiperxSubgraphPool {
     return {
       id: rawPool.id,
       feeTier: rawPool.feeTier,

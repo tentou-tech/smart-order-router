@@ -1,12 +1,12 @@
 import { ChainId, Currency } from '@tentou-tech/uniswap-sdk-core';
 import { Pool } from '@uniswap/v4-sdk';
 import retry, { Options as RetryOptions } from 'async-retry';
-import { getAddress, log, STATE_VIEW_ADDRESSES } from '../../util';
-import { IMulticallProvider, Result } from '../multicall-provider';
-import { ProviderConfig } from '../provider';
 
 import { StateView__factory } from '../../types/other/factories/StateView__factory';
+import { getAddress, log, STATE_VIEW_ADDRESSES } from '../../util';
+import { IMulticallProvider, Result } from '../multicall-provider';
 import { ILiquidity, ISlot0, PoolProvider } from '../pool-provider';
+import { ProviderConfig } from '../provider';
 
 type V4ISlot0 = ISlot0 & {
   poolId: string;
