@@ -63,7 +63,7 @@ export const V3_CORE_FACTORY_ADDRESSES: AddressMap = {
 
 export const V3S1_CORE_FACTORY_ADDRESSES: AddressMap = {
   ...constructSameAddressMap('0x3D9300D311BA04EB3351663676cEE0748473d9A0'),
-  [ChainId.STORY_AENEID]:'0xb8c21e89983B5EcCD841846eA294c4c8a89718f1'
+  [ChainId.STORY_AENEID]: '0xb8c21e89983B5EcCD841846eA294c4c8a89718f1',
 };
 
 export const QUOTER_V2_ADDRESSES: AddressMap = {
@@ -134,10 +134,18 @@ export const NEW_QUOTER_V2_ADDRESSES: AddressMap = {
 };
 
 export const V3S1_QUOTER_ADDRESSES: AddressMapNew = {
-  [`${ChainId.STORY_AENEID}-${Protocol.V3S1.toString()}`]:'0x8812d810EA7CC4e1c3FB45cef19D6a7ECBf2D85D',
-  [`${ChainId.STORY}-${Protocol.V3S1.toString()}`]:'something'
-}
+  [`${ChainId.STORY_AENEID}-${Protocol.V3S1.toString()}`]:
+    '0x8812d810EA7CC4e1c3FB45cef19D6a7ECBf2D85D',
+  [`${ChainId.STORY}-${Protocol.V3S1.toString()}`]:
+    '0xe8CabF9d1FFB6CE23cF0a86641849543ec7BD7d5',
+};
 
+export const V3S1_ROUTER_ADDRESSES: AddressMapNew = {
+  [`${ChainId.STORY_AENEID}-${Protocol.V3S1.toString()}`]:
+    '0x8295c195CEe31404ea082d253a140310b9a0A37e',
+  [`${ChainId.STORY}-${Protocol.V3S1.toString()}`]:
+    '0x8295c195CEe31404ea082d253a140310b9a0A37e',
+};
 
 export const PROTOCOL_V4_QUOTER_ADDRESSES: AddressMap = {
   ...constructSameAddressMap('0xf3a39c86dbd13c45365e57fb90fe413371f65af8'),
