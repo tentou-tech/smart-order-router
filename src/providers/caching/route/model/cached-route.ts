@@ -1,9 +1,9 @@
 import { Protocol } from '@tentou-tech/uniswap-router-sdk';
 import { Currency } from '@tentou-tech/uniswap-sdk-core';
+import { Pair } from '@tentou-tech/uniswap-v2-sdk';
 import { Pool as V3Pool } from '@tentou-tech/uniswap-v3-sdk';
 import { Pool as V3S1Pool } from '@tentou-tech/uniswap-v3s1-sdk';
-import { Pair } from '@uniswap/v2-sdk';
-import { Pool as V4Pool } from '@uniswap/v4-sdk';
+import { Pool as V4Pool } from '@tentou-tech/uniswap-v4-sdk';
 
 import {
   MixedRoute,
@@ -77,7 +77,7 @@ export class CachedRoute<Route extends SupportedRoutes> {
             (pool) =>
               `[V3]${pool.token0.address}/${pool.token1.address}/${pool.fee}`
           )
-          .join('->');    
+          .join('->');
       case Protocol.V2:
         return (this.route as V2Route).pairs
           .map((pair) => `[V2]${pair.token0.address}/${pair.token1.address}`)

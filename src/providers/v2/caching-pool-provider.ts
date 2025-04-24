@@ -1,5 +1,5 @@
 import { ChainId, Token } from '@tentou-tech/uniswap-sdk-core';
-import { Pair } from '@uniswap/v2-sdk';
+import { Pair } from '@tentou-tech/uniswap-v2-sdk';
 import _ from 'lodash';
 
 import { log } from '../../util/log';

@@ -1,5 +1,5 @@
 import { ChainId, Currency } from '@tentou-tech/uniswap-sdk-core';
-import { Pool } from '@uniswap/v4-sdk';
+import { Pool } from '@tentou-tech/uniswap-v4-sdk';
 import _ from 'lodash';
 import { log, metric, MetricLoggerUnit } from '../../util';
 import { ICache } from '../cache';

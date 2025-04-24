@@ -1,7 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { BaseProvider } from '@ethersproject/providers';
 import { ChainId, Token } from '@tentou-tech/uniswap-sdk-core';
-import { Pair } from '@uniswap/v2-sdk';
+import { Pair } from '@tentou-tech/uniswap-v2-sdk';
 import _ from 'lodash';
 
 import { ProviderConfig } from '../../../../providers/provider';
@@ -286,9 +286,15 @@ export class V2HeuristicGasModelFactory extends IV2GasModelFactory {
     if (pools.length == 0) {
       log.error(
         { pools },
-        `Could not find a USD/WETH pool for computing gas costs.`
+        `Could not find a USD/${
+          WRAPPED_NATIVE_CURRENCY[chainId]!.symbol
+        } pool for computing gas costs.`
       );
-      throw new Error(`Can't find USD/WETH pool for computing gas costs.`);
+      throw new Error(
+        `Can't find USD/${
+          WRAPPED_NATIVE_CURRENCY[chainId]!.symbol
+        } pool for computing gas costs.`
+      );
     }
 
     const maxPool = _.maxBy(pools, (pool) => {

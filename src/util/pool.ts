@@ -1,6 +1,6 @@
 import { ADDRESS_ZERO } from '@tentou-tech/uniswap-router-sdk';
 import { ChainId } from '@tentou-tech/uniswap-sdk-core';
-import { Pool as V4Pool } from '@uniswap/v4-sdk';
+import { Pool as V4Pool } from '@tentou-tech/uniswap-v4-sdk';
 
 import { nativeOnChain } from './chains';
 

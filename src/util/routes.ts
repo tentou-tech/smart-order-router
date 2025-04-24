@@ -1,9 +1,9 @@
 import { Protocol, TPool } from '@tentou-tech/uniswap-router-sdk';
 import { ChainId, Currency, Percent } from '@tentou-tech/uniswap-sdk-core';
+import { Pair } from '@tentou-tech/uniswap-v2-sdk';
 import { Pool as V3Pool } from '@tentou-tech/uniswap-v3-sdk';
 import { Pool as V3S1Pool } from '@tentou-tech/uniswap-v3s1-sdk';
-import { Pair } from '@uniswap/v2-sdk';
-import { Pool as V4Pool } from '@uniswap/v4-sdk';
+import { Pool as V4Pool } from '@tentou-tech/uniswap-v4-sdk';
 import _ from 'lodash';
 
 import { CachedRoutes } from '../providers';
@@ -13,10 +13,12 @@ import {
 } from '../routers/alpha-router';
 import { MixedRoute, SupportedRoutes } from '../routers/router';
 
-import { V3_CORE_FACTORY_ADDRESSES, V3S1_CORE_FACTORY_ADDRESSES } from './addresses';
+import {
+  V3S1_CORE_FACTORY_ADDRESSES,
+  V3_CORE_FACTORY_ADDRESSES,
+} from './addresses';
 
 import { CurrencyAmount, DEXES, V4_ETH_WETH_FAKE_POOL } from '.';
-
 
 export const routeToTokens = (route: SupportedRoutes): Currency[] => {
   switch (route.protocol) {
@@ -110,7 +112,7 @@ export const routeToString = (route: SupportedRoutes): string => {
         DEXES.PiPerxV3.InitCodeHash,
         V3S1_CORE_FACTORY_ADDRESSES[pool.chainId]
       )}]`;
-    }else if (pool instanceof V4Pool) {
+    } else if (pool instanceof V4Pool) {
       // Special case in the case of ETH/WETH fake pool
       // where we do not want to return the fake pool in the route string as it is not a real pool
       if (

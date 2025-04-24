@@ -1,5 +1,5 @@
 import { ChainId, Currency } from '@tentou-tech/uniswap-sdk-core';
-import { Pool } from '@uniswap/v4-sdk';
+import { Pool } from '@tentou-tech/uniswap-v4-sdk';
 import retry, { Options as RetryOptions } from 'async-retry';
 
 import { StateView__factory } from '../../types/other/factories/StateView__factory';

@@ -3,7 +3,7 @@ import { TradeType } from '@tentou-tech/uniswap-sdk-core';
 import {
   InsufficientInputAmountError,
   InsufficientReservesError,
-} from '@uniswap/v2-sdk';
+} from '@tentou-tech/uniswap-v2-sdk';
 
 import { V2Route } from '../../routers/router';
 import { CurrencyAmount } from '../../util/amounts';

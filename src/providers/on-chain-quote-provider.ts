@@ -13,7 +13,7 @@ import { encodeRouteToPath as encodeV3PiperxRouteToPath } from '@tentou-tech/uni
 import {
   encodeRouteToPath as encodeV4RouteToPath,
   Pool as V4Pool,
-} from '@uniswap/v4-sdk';
+} from '@tentou-tech/uniswap-v4-sdk';
 import retry, { Options as RetryOptions } from 'async-retry';
 import _ from 'lodash';
 import stats from 'stats-lite';

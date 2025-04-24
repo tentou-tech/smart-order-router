@@ -1,5 +1,5 @@
 import { ChainId, Token } from '@tentou-tech/uniswap-sdk-core';
-import { Pair } from '@uniswap/v2-sdk';
+import { Pair } from '@tentou-tech/uniswap-v2-sdk';
 import _ from 'lodash';
 
 import { WRAPPED_NATIVE_CURRENCY } from '../../util/chains';
@@ -45,6 +45,7 @@ import {
   USDT_MAINNET,
   USDT_MONAD_TESTNET,
   USDT_OPTIMISM,
+  USDT_STORY_AENEID,
   WBTC_ARBITRUM,
   WBTC_MAINNET,
   WBTC_MOONBEAM,
@@ -157,6 +158,7 @@ const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
   [ChainId.SONEIUM]: [WRAPPED_NATIVE_CURRENCY[ChainId.SONEIUM]!, USDC_SONEIUM],
   [ChainId.STORY_AENEID]: [
     WRAPPED_NATIVE_CURRENCY[ChainId.STORY_AENEID]!,
+    USDT_STORY_AENEID,
     USDC_STORY_AENEID,
   ],
   [ChainId.STORY]: [WRAPPED_NATIVE_CURRENCY[ChainId.STORY]!, USDC_STORY],
