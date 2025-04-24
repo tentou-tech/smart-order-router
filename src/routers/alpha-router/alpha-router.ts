@@ -2246,15 +2246,22 @@ export class AlphaRouter
       (route) => route.protocol === Protocol.MIXED
     );
 
+    // let percents: number[];
+    // let amounts: CurrencyAmount[];
+    // if (cachedRoutes.routes.length > 1) {
+    //   // If we have more than 1 route, we will quote the different percents for it, following the regular process
+    //   [percents, amounts] = this.getAmountDistribution(amount, routingConfig);
+    // } else if (cachedRoutes.routes.length == 1) {
+    //   [percents, amounts] = [[100], [amount]];
+    // } else {
+    //   // In this case this means that there's no route, so we return null
+    //   return Promise.resolve(null);
+    // }
     let percents: number[];
     let amounts: CurrencyAmount[];
-    if (cachedRoutes.routes.length > 1) {
-      // If we have more than 1 route, we will quote the different percents for it, following the regular process
+    if (cachedRoutes.routes.length >= 1) {
       [percents, amounts] = this.getAmountDistribution(amount, routingConfig);
-    } else if (cachedRoutes.routes.length == 1) {
-      [percents, amounts] = [[100], [amount]];
     } else {
-      // In this case this means that there's no route, so we return null
       return Promise.resolve(null);
     }
 
