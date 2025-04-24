@@ -16,17 +16,15 @@ import {
   SwapOptions as UniversalRouterSwapOptions,
   UniversalRouterVersion,
 } from '@tentou-tech/uniswap-universal-router-sdk';
+import { Route as V2RouteRaw } from '@tentou-tech/uniswap-v2-sdk';
 import {
+  MethodParameters as SDKMethodParameters,
   Pool,
   Position,
-  MethodParameters as SDKMethodParameters,
   Route as V3RouteRaw,
 } from '@tentou-tech/uniswap-v3-sdk';
-import {
-  Route as V3PiperxRouteRaw,
-} from '@tentou-tech/uniswap-v3s1-sdk';
-import { Route as V2RouteRaw } from '@uniswap/v2-sdk';
-import { Route as V4RouteRaw } from '@uniswap/v4-sdk';
+import { Route as V3PiperxRouteRaw } from '@tentou-tech/uniswap-v3s1-sdk';
+import { Route as V4RouteRaw } from '@tentou-tech/uniswap-v4-sdk';
 
 import { SimulationStatus } from '../providers';
 import { CurrencyAmount } from '../util/amounts';
@@ -48,7 +46,12 @@ export class V2Route extends V2RouteRaw<Token, Token> {
 export class MixedRoute extends MixedRouteSDK<Currency, Currency> {
   protocol: Protocol.MIXED = Protocol.MIXED;
 }
-export type SupportedRoutes = V4Route | V3Route | V3PiperxRoute | V2Route | MixedRoute;
+export type SupportedRoutes =
+  | V4Route
+  | V3Route
+  | V3PiperxRoute
+  | V2Route
+  | MixedRoute;
 
 export type SwapRoute = {
   /**

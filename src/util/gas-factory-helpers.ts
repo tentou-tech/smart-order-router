@@ -9,13 +9,17 @@ import {
   TradeType,
 } from '@tentou-tech/uniswap-sdk-core';
 import { UniversalRouterVersion } from '@tentou-tech/uniswap-universal-router-sdk';
+import { Pair } from '@tentou-tech/uniswap-v2-sdk';
 import { FeeAmount, Pool } from '@tentou-tech/uniswap-v3-sdk';
-import { Pair } from '@uniswap/v2-sdk';
 import brotli from 'brotli';
 import JSBI from 'jsbi';
 import _ from 'lodash';
 
-import { IV2PoolProvider, IV3PiperxPoolProvider, IV4PoolProvider } from '../providers';
+import {
+  IV2PoolProvider,
+  IV3PiperxPoolProvider,
+  IV4PoolProvider,
+} from '../providers';
 import { IPortionProvider } from '../providers/portion-provider';
 import { ProviderConfig } from '../providers/provider';
 import { ArbitrumGasData } from '../providers/v3/gas-data-provider';
@@ -454,7 +458,7 @@ export function initSwapRouteFromExisting(
           tradeType: tradeType,
           v3PoolProvider: v3PoolProvider,
         });
-        case Protocol.V3S1:
+      case Protocol.V3S1:
         return new V3PiperxRouteWithValidQuote({
           amount: CurrencyAmount.fromFractionalAmount(
             route.amount.currency,

@@ -1,10 +1,12 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { partitionMixedRouteByProtocol } from '@tentou-tech/uniswap-router-sdk';
-import { TPool } from '@tentou-tech/uniswap-router-sdk';
+import {
+  partitionMixedRouteByProtocol,
+  TPool,
+} from '@tentou-tech/uniswap-router-sdk';
 import { ChainId } from '@tentou-tech/uniswap-sdk-core';
+import { Pair } from '@tentou-tech/uniswap-v2-sdk';
 import { Pool as V3Pool } from '@tentou-tech/uniswap-v3-sdk';
-import { Pair } from '@uniswap/v2-sdk';
-import { Pool as V4Pool } from '@uniswap/v4-sdk';
+import { Pool as V4Pool } from '@tentou-tech/uniswap-v4-sdk';
 import JSBI from 'jsbi';
 
 import { WRAPPED_NATIVE_CURRENCY } from '../../../..';

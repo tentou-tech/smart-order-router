@@ -4,8 +4,8 @@ import {
   CurrencyAmount as CurrencyAmountRaw,
   Token,
 } from '@tentou-tech/uniswap-sdk-core';
+import { Pair } from '@tentou-tech/uniswap-v2-sdk';
 import { Pool } from '@tentou-tech/uniswap-v3-sdk';
-import { Pair } from '@uniswap/v2-sdk';
 
 import { ProviderConfig } from '../../../providers/provider';
 import {
@@ -66,6 +66,7 @@ import {
   USDT_OPTIMISM,
   USDT_OPTIMISM_GOERLI,
   USDT_OPTIMISM_SEPOLIA,
+  USDT_STORY_AENEID,
   WBTC_GOERLI,
 } from '../../../providers/token-provider';
 import { IV2PoolProvider } from '../../../providers/v2/pool-provider';
@@ -138,7 +139,7 @@ export const usdGasTokensByChain: { [chainId in ChainId]?: Token[] } = {
   [ChainId.BASE_SEPOLIA]: [USDC_BASE_SEPOLIA],
   [ChainId.UNICHAIN]: [DAI_UNICHAIN, USDC_UNICHAIN],
   [ChainId.SONEIUM]: [USDC_SONEIUM],
-  [ChainId.STORY_AENEID]: [USDC_STORY_AENEID],
+  [ChainId.STORY_AENEID]: [USDT_STORY_AENEID, USDC_STORY_AENEID],
   [ChainId.STORY]: [USDC_STORY],
 };
 

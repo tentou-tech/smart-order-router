@@ -806,6 +806,14 @@ export const USDC_STORY_AENEID = new Token(
   'USDC'
 );
 
+export const USDT_STORY_AENEID = new Token(
+  ChainId.STORY_AENEID,
+  '0xD1fa5456186758b84811b929B4D696178fb56eE3',
+  18,
+  'USDT',
+  'USDT'
+);
+
 export const USDC_STORY = new Token(
   ChainId.STORY_AENEID,
   '0xf1815bd50389c46847f0bda824ec8da914045d14',
