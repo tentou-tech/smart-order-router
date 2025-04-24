@@ -154,15 +154,16 @@ export abstract class BaseQuoter<
       tradeType,
       routingConfig
     ).then((routesResult) => {
-      if (routesResult.routes.length == 1) {
-        metric.putMetric(
-          `${this.protocol}QuoterSingleRoute`,
-          1,
-          MetricLoggerUnit.Count
-        );
-        percents = [100];
-        amounts = [amount];
-      }
+      // if (routesResult.routes.length == 1) {
+      //   metric.putMetric(
+      //     `${this.protocol}QuoterSingleRoute`,
+      //     1,
+      //     MetricLoggerUnit.Count
+      //   );
+      //   percents = [100];
+      //   amounts = [amount];
+      // }
+      console.log("amount", amount)
 
       if (routesResult.routes.length > 0) {
         metric.putMetric(
