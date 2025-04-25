@@ -271,7 +271,7 @@ export class V2SubgraphProvider implements IV2SubgraphProvider {
           pool.token0.id == FEI ||
           pool.token1.id == FEI ||
           this.isVirtualPairBaseV2Pool(pool) ||
-          parseFloat(pool.trackedReserveETH) > this.trackedEthThreshold ||
+          parseFloat(pool.trackedReserveETH) >= this.trackedEthThreshold || // TODO: Remove this once we have a better way to filter pools.
           parseFloat(pool.reserveUSD) > this.untrackedUsdThreshold
         );
       })
