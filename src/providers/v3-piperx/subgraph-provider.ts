@@ -36,7 +36,6 @@ export type V3PiperxRawSubgraphPool = {
   totalValueLockedUSDUntracked: string;
 };
 
-
 const SUBGRAPH_URL_BY_CHAIN: { [chainId in ChainId]?: string } = {
   [ChainId.MAINNET]:
     'https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v3',
@@ -107,12 +106,13 @@ export class V3PiperxSubgraphProvider
 
   protected override subgraphQuery(blockNumber?: number): string {
     log.info(`subgraphQuery: ${blockNumber}`);
+    const factory = '0xb8c21e89983b5eccd841846ea294c4c8a89718f1';
     return `
     query getPools($pageSize: Int!, $id: String) {
       pools(
         first: $pageSize
         ${blockNumber ? `block: { number: ${blockNumber} }` : ``}
-          where: { id_gt: $id }
+          where: { id_gt: $id, factory: ${factory} }
         ) {
           id
           token0 {

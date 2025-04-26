@@ -106,12 +106,13 @@ export class V3SubgraphProvider
 
   protected override subgraphQuery(blockNumber?: number): string {
     log.info(`subgraphQuery: ${blockNumber}`);
+    const factory = '0xb0d76e6c7aa7a78a00af1a1083b4732a488700b4';
     return `
     query getPools($pageSize: Int!, $id: String) {
       pools(
         first: $pageSize
         ${blockNumber ? `block: { number: ${blockNumber} }` : ``}
-          where: { id_gt: $id }
+          where: { id_gt: $id, factory: ${factory} }
         ) {
           id
           token0 {
