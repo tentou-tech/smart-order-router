@@ -77,7 +77,7 @@ export class V3Quoter extends BaseQuoter<V3CandidatePools, V3Route, Token> {
     const { poolAccessor, candidatePools } = v3CandidatePools;
     const poolsRaw = poolAccessor.getAllPools();
 
-    console.log(`poolsRaw: ${JSON.stringify(poolsRaw)}`);
+    log.debug(`v3 poolsRaw: ${JSON.stringify(poolsRaw)}`);
 
     // Drop any pools that contain fee on transfer tokens (not supported by v3) or have issues with being transferred.
     const pools = await this.applyTokenValidatorToPools(
@@ -110,7 +110,7 @@ export class V3Quoter extends BaseQuoter<V3CandidatePools, V3Route, Token> {
       }
     );
 
-    console.log(`pools after validation: ${JSON.stringify(pools)}`);
+    log.debug(`v3 pools after validation: ${JSON.stringify(pools)}`);
 
     // Given all our candidate pools, compute all the possible ways to route from tokenIn to tokenOut.
     const { maxSwapsPerPath } = routingConfig;
@@ -177,8 +177,8 @@ export class V3Quoter extends BaseQuoter<V3CandidatePools, V3Route, Token> {
       `Getting quotes for V3 for ${routes.length} routes with ${amounts.length} amounts per route.`
     );
 
-    console.log(`amounts: ${amounts.length}`)
-    console.log(`routes: ${JSON.stringify(routes)}`)
+    log.debug(`amounts: ${amounts.length}`);
+    log.debug(`routes: ${JSON.stringify(routes)}`);
 
     const { routesWithQuotes } = await quoteFn<V3Route>(
       amounts,
@@ -186,7 +186,7 @@ export class V3Quoter extends BaseQuoter<V3CandidatePools, V3Route, Token> {
       routingConfig
     );
 
-    console.log('routesWithQuotes', JSON.stringify(routesWithQuotes));
+    log.debug('v3 routesWithQuotes', JSON.stringify(routesWithQuotes));
 
     metric.putMetric(
       'V3QuotesLoad',

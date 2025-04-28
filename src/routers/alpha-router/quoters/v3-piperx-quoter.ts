@@ -37,7 +37,11 @@ import { BaseQuoter } from './base-quoter';
 import { GetQuotesResult } from './model/results/get-quotes-result';
 import { GetRoutesResult } from './model/results/get-routes-result';
 
-export class V3PiperxQuoter extends BaseQuoter<V3PiperxCandidatePools, V3PiperxRoute, Token> {
+export class V3PiperxQuoter extends BaseQuoter<
+  V3PiperxCandidatePools,
+  V3PiperxRoute,
+  Token
+> {
   protected v3SubgraphProvider: IV3PiperxSubgraphProvider;
   protected v3PoolProvider: IV3PiperxPoolProvider;
   protected onChainQuoteProvider: IOnChainQuoteProvider;
@@ -77,7 +81,7 @@ export class V3PiperxQuoter extends BaseQuoter<V3PiperxCandidatePools, V3PiperxR
     const { poolAccessor, candidatePools } = v3CandidatePools;
     const poolsRaw = poolAccessor.getAllPools();
 
-    console.log(`poolsRaw: ${JSON.stringify(poolsRaw)}`);
+    log.debug(`v3 piperx poolsRaw: ${JSON.stringify(poolsRaw)}`);
 
     // Drop any pools that contain fee on transfer tokens (not supported by v3) or have issues with being transferred.
     const pools = await this.applyTokenValidatorToPools(
@@ -110,7 +114,7 @@ export class V3PiperxQuoter extends BaseQuoter<V3PiperxCandidatePools, V3PiperxR
       }
     );
 
-    console.log(`pools after validation: ${JSON.stringify(pools)}`);
+    log.debug(`v3 piperx pools after validation: ${JSON.stringify(pools)}`);
 
     // Given all our candidate pools, compute all the possible ways to route from tokenIn to tokenOut.
     const { maxSwapsPerPath } = routingConfig;
@@ -183,7 +187,7 @@ export class V3PiperxQuoter extends BaseQuoter<V3PiperxCandidatePools, V3PiperxR
       routingConfig
     );
 
-    console.log('routesWithQuotes v3 piperx', JSON.stringify(routesWithQuotes));
+    log.debug('v3 piperx routesWithQuotes', JSON.stringify(routesWithQuotes));
 
     metric.putMetric(
       'V3PiperxQuotesLoad',

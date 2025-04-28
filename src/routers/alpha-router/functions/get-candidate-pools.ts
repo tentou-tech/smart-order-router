@@ -392,8 +392,14 @@ export async function getMixedCrossLiquidityCandidatePools({
 
 function findCrossProtocolMissingPools<
   TSubgraphPool extends SubgraphPool,
-  CandidatePoolsProtocolToSearch extends V2CandidatePools | V3CandidatePools | V3PiperxCandidatePools,
-  CandidatePoolsContextualProtocol extends V2CandidatePools | V3CandidatePools | V3PiperxCandidatePools
+  CandidatePoolsProtocolToSearch extends
+    | V2CandidatePools
+    | V3CandidatePools
+    | V3PiperxCandidatePools,
+  CandidatePoolsContextualProtocol extends
+    | V2CandidatePools
+    | V3CandidatePools
+    | V3PiperxCandidatePools
 >(
   tokenInAddress: string,
   tokenOutAddress: string,
@@ -955,7 +961,7 @@ export async function getV3CandidatePools({
   const allPools = await subgraphProvider.getPools(tokenIn, tokenOut, {
     blockNumber,
   });
-  console.log(`allPools: ${JSON.stringify(allPools)}`);
+  log.debug(`v3 allPools: ${JSON.stringify(allPools)}`);
 
   log.info(
     { samplePools: allPools.slice(0, 3) },
@@ -1076,7 +1082,6 @@ export async function getV3CandidatePools({
             '0xd46ba6d942050d489dbd938a2c909a5d5039a161')
       )
     ) {
-      console.log(`Adding direct swap pools for ${tokenIn.symbol} and ${tokenOut.symbol}`);
       // If we requested direct swap pools but did not find any in the subgraph query.
       // Optimistically add them into the query regardless. Invalid pools ones will be dropped anyway
       // when we query the pool on-chain. Ensures that new pools for new pairs can be swapped on immediately.
@@ -1088,7 +1093,6 @@ export async function getV3CandidatePools({
             tokenOut,
             feeAmount
           );
-          console.log(`poolAddress: ${poolAddress}`);
           return {
             id: poolAddress,
             feeTier: unparseFeeAmount(feeAmount),
@@ -1254,7 +1258,7 @@ export async function getV3CandidatePools({
     .uniqBy((pool) => pool.id)
     .value();
 
-  console.log(`subgraphPools: ${JSON.stringify(subgraphPools)}`);
+  log.info(`v3 subgraphPools: ${JSON.stringify(subgraphPools)}`);
 
   const tokenAddresses = _(subgraphPools)
     .flatMap((subgraphPool) => [subgraphPool.token0.id, subgraphPool.token1.id])
@@ -1323,11 +1327,11 @@ export async function getV3CandidatePools({
     return [tokenA, tokenB, fee];
   });
 
-  console.log(`tokenPairsRaw: ${JSON.stringify(tokenPairsRaw)}`);
+  log.debug(`v3 tokenPairsRaw: ${JSON.stringify(tokenPairsRaw)}`);
 
   const tokenPairs = _.compact(tokenPairsRaw);
 
-  console.log(`tokenPairs: ${JSON.stringify(tokenPairs)}`);
+  log.debug(`v3 tokenPairs: ${JSON.stringify(tokenPairs)}`);
 
   metric.putMetric(
     'V3PoolsFilterLoad',
@@ -1403,7 +1407,7 @@ export async function getV3PiperxCandidatePools({
   const allPools = await subgraphProvider.getPools(tokenIn, tokenOut, {
     blockNumber,
   });
-  console.log(`allPools piperx: ${JSON.stringify(allPools)}`);
+  log.info(`v3 piperx allPools: ${JSON.stringify(allPools)}`);
 
   log.info(
     { samplePools: allPools.slice(0, 3) },
@@ -1524,7 +1528,6 @@ export async function getV3PiperxCandidatePools({
             '0xd46ba6d942050d489dbd938a2c909a5d5039a161')
       )
     ) {
-      console.log(`Adding direct swap pools for ${tokenIn.symbol} and ${tokenOut.symbol}`);
       // If we requested direct swap pools but did not find any in the subgraph query.
       // Optimistically add them into the query regardless. Invalid pools ones will be dropped anyway
       // when we query the pool on-chain. Ensures that new pools for new pairs can be swapped on immediately.
@@ -1536,7 +1539,6 @@ export async function getV3PiperxCandidatePools({
             tokenOut,
             feeAmount
           );
-          console.log(`poolAddress: ${poolAddress}`);
           return {
             id: poolAddress,
             feeTier: unparseFeeAmount(feeAmount),
@@ -1702,7 +1704,7 @@ export async function getV3PiperxCandidatePools({
     .uniqBy((pool) => pool.id)
     .value();
 
-  console.log(`subgraphPools: ${JSON.stringify(subgraphPools)}`);
+  log.info(`v3 piperx subgraphPools: ${JSON.stringify(subgraphPools)}`);
 
   const tokenAddresses = _(subgraphPools)
     .flatMap((subgraphPool) => [subgraphPool.token0.id, subgraphPool.token1.id])
@@ -1771,11 +1773,11 @@ export async function getV3PiperxCandidatePools({
     return [tokenA, tokenB, fee];
   });
 
-  console.log(`tokenPairsRaw piperx: ${JSON.stringify(tokenPairsRaw)}`);
+  log.debug(`v3 piperx tokenPairsRaw: ${JSON.stringify(tokenPairsRaw)}`);
 
   const tokenPairs = _.compact(tokenPairsRaw);
 
-  console.log(`tokenPairs piperx: ${JSON.stringify(tokenPairs)}`);
+  log.debug(`v3 piperx tokenPairs: ${JSON.stringify(tokenPairs)}`);
 
   metric.putMetric(
     'V3PiperxPoolsFilterLoad',
@@ -1812,7 +1814,6 @@ export async function getV3PiperxCandidatePools({
 
   return { poolAccessor, candidatePools: poolsBySelection, subgraphPools };
 }
-
 
 export type V2CandidatePools = {
   poolAccessor: V2PoolAccessor;
@@ -2804,12 +2805,13 @@ export async function getMixedRouteCandidatePools({
 
   const beforePoolsLoad = Date.now();
 
-  const [V2poolAccessor, V3poolAccessor, V3PiperxPoolAccessor, V4poolAccessor] = await Promise.all([
-    v2poolProvider.getPools(V2tokenPairs, routingConfig),
-    v3poolProvider.getPools(V3tokenPairs, routingConfig),
-    v3PiperxPoolProvider.getPools(V3PiperxTokenPairs, routingConfig),
-    v4PoolProvider.getPools(V4tokenPairs, routingConfig),
-  ]);
+  const [V2poolAccessor, V3poolAccessor, V3PiperxPoolAccessor, V4poolAccessor] =
+    await Promise.all([
+      v2poolProvider.getPools(V2tokenPairs, routingConfig),
+      v3poolProvider.getPools(V3tokenPairs, routingConfig),
+      v3PiperxPoolProvider.getPools(V3PiperxTokenPairs, routingConfig),
+      v4PoolProvider.getPools(V4tokenPairs, routingConfig),
+    ]);
 
   metric.putMetric(
     'MixedPoolsLoad',
