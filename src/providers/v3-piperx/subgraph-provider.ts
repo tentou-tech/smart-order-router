@@ -112,7 +112,7 @@ export class V3PiperxSubgraphProvider
       pools(
         first: $pageSize
         ${blockNumber ? `block: { number: ${blockNumber} }` : ``}
-          where: { id_gt: $id, factory: ${factory} }
+          where: { id_gt: $id, factory: "${factory}" }
         ) {
           id
           token0 {
