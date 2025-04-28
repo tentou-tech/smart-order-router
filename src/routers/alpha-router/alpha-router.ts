@@ -1,6 +1,11 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { BaseProvider, JsonRpcProvider } from '@ethersproject/providers';
-import { Protocol, SwapRouter, Trade, ZERO } from '@tentou-tech/uniswap-router-sdk';
+import {
+  Protocol,
+  SwapRouter,
+  Trade,
+  ZERO,
+} from '@tentou-tech/uniswap-router-sdk';
 import {
   ChainId,
   Currency,
@@ -9,8 +14,12 @@ import {
   TradeType,
 } from '@tentou-tech/uniswap-sdk-core';
 import { UniversalRouterVersion } from '@tentou-tech/uniswap-universal-router-sdk';
-import { SqrtPriceMath, TickMath } from '@tentou-tech/uniswap-v3-sdk';
-import { Pool, Position } from '@tentou-tech/uniswap-v3-sdk';
+import {
+  Pool,
+  Position,
+  SqrtPriceMath,
+  TickMath,
+} from '@tentou-tech/uniswap-v3-sdk';
 import DEFAULT_TOKEN_LIST from '@uniswap/default-token-list';
 import { TokenList } from '@uniswap/token-lists';
 import retry from 'async-retry';
@@ -162,8 +171,6 @@ import {
   V4Route,
 } from '../router';
 
-
-
 import {
   DEFAULT_ROUTING_CONFIG_BY_CHAIN,
   ETH_GAS_STATION_API_URL,
@@ -205,7 +212,13 @@ import { V2HeuristicGasModelFactory } from './gas-models/v2/v2-heuristic-gas-mod
 import { V3PiperxHeuristicGasModelFactory } from './gas-models/v3-piperx/v3-piperx-heuristic-gas-model';
 import { V3HeuristicGasModelFactory } from './gas-models/v3/v3-heuristic-gas-model';
 import { V4HeuristicGasModelFactory } from './gas-models/v4/v4-heuristic-gas-model';
-import { GetQuotesResult, MixedQuoter, V2Quoter, V3PiperxQuoter, V3Quoter } from './quoters';
+import {
+  GetQuotesResult,
+  MixedQuoter,
+  V2Quoter,
+  V3PiperxQuoter,
+  V3Quoter,
+} from './quoters';
 import { V4Quoter } from './quoters/v4-quoter';
 
 export type AlphaRouterParams = {
@@ -662,7 +675,10 @@ export class AlphaRouter
       v3PiperxPoolProvider ??
       new CachingV3PoolPiperxProvider(
         this.chainId,
-        new V3PoolPiperxProvider(ID_TO_CHAIN_ID(chainId), this.multicall2Provider),
+        new V3PoolPiperxProvider(
+          ID_TO_CHAIN_ID(chainId),
+          this.multicall2Provider
+        ),
         new NodeJSCache(new NodeCache({ stdTTL: 360, useClones: false }))
       );
     this.simulator = simulator;
@@ -998,19 +1014,24 @@ export class AlphaRouter
     if (v3PiperxSubgraphProvider) {
       this.v3PiperxSubgraphProvider = v3PiperxSubgraphProvider;
     } else {
-      this.v3PiperxSubgraphProvider = new V3PiperxSubgraphProviderWithFallBacks([
-        new CachingV3PiperxSubgraphProvider(
-          chainId,
-          new V3PiperxURISubgraphProvider(
+      this.v3PiperxSubgraphProvider = new V3PiperxSubgraphProviderWithFallBacks(
+        [
+          new CachingV3PiperxSubgraphProvider(
             chainId,
-            `https://cloudflare-ipfs.com/ipns/api.uniswap.org/v1/pools/v3/${chainName}.json`,
-            undefined,
-            0
+            new V3PiperxURISubgraphProvider(
+              chainId,
+              `https://cloudflare-ipfs.com/ipns/api.uniswap.org/v1/pools/v3/${chainName}.json`,
+              undefined,
+              0
+            ),
+            new NodeJSCache(new NodeCache({ stdTTL: 300, useClones: false }))
           ),
-          new NodeJSCache(new NodeCache({ stdTTL: 300, useClones: false }))
-        ),
-        new StaticV3PiperxSubgraphProvider(chainId, this.v3PiperxPoolProvider),
-      ]);
+          new StaticV3PiperxSubgraphProvider(
+            chainId,
+            this.v3PiperxPoolProvider
+          ),
+        ]
+      );
     }
 
     this.v4PoolParams =
@@ -1064,7 +1085,8 @@ export class AlphaRouter
     this.v3GasModelFactory =
       v3GasModelFactory ?? new V3HeuristicGasModelFactory(this.provider);
     this.v3PiperxGasModelFactory =
-      v3PiperxGasModelFactory ?? new V3PiperxHeuristicGasModelFactory(this.provider);
+      v3PiperxGasModelFactory ??
+      new V3PiperxHeuristicGasModelFactory(this.provider);
     this.v2GasModelFactory =
       v2GasModelFactory ?? new V2HeuristicGasModelFactory(this.provider);
     this.mixedRouteGasModelFactory =
@@ -2586,8 +2608,9 @@ export class AlphaRouter
       }
     }
 
-    let v3PiperxCandidatePoolsPromise: Promise<V3PiperxCandidatePools | undefined> =
-      Promise.resolve(undefined);
+    let v3PiperxCandidatePoolsPromise: Promise<
+      V3PiperxCandidatePools | undefined
+    > = Promise.resolve(undefined);
     if (!fotInDirectSwap) {
       if (v3PiperxProtocolSpecified || noProtocolsSpecified) {
         const tokenIn = currencyIn.wrapped;
@@ -2720,7 +2743,7 @@ export class AlphaRouter
                   MetricLoggerUnit.Milliseconds
                 );
 
-                console.log('v3 result', JSON.stringify(result));
+                log.debug('v3 getRoutesThenQuotes:', JSON.stringify(result));
 
                 return result;
               })
@@ -2765,7 +2788,10 @@ export class AlphaRouter
                   MetricLoggerUnit.Milliseconds
                 );
 
-                console.log('v3 piperx result', JSON.stringify(result));
+                log.debug(
+                  'v3 piperx getRoutesThenQuotes:',
+                  JSON.stringify(result)
+                );
 
                 return result;
               })
@@ -2842,7 +2868,12 @@ export class AlphaRouter
             v3PiperxCandidatePoolsPromise,
             v2CandidatePoolsPromise,
           ]).then(
-            async ([v4CandidatePools, v3CandidatePools, v3PiperxCandidatePools, v2CandidatePools]) => {
+            async ([
+              v4CandidatePools,
+              v3CandidatePools,
+              v3PiperxCandidatePools,
+              v2CandidatePools,
+            ]) => {
               const tokenIn = currencyIn.wrapped;
               const tokenOut = currencyOut.wrapped;
 
@@ -2905,7 +2936,9 @@ export class AlphaRouter
       }
     });
 
-    console.log(`allRoutesWithValidQuotes: ${JSON.stringify(allRoutesWithValidQuotes)}`);
+    log.debug(
+      `allRoutesWithValidQuotes: ${JSON.stringify(allRoutesWithValidQuotes)}`
+    );
 
     if (allRoutesWithValidQuotes.length === 0) {
       log.info({ allRoutesWithValidQuotes }, 'Received no valid quotes');
@@ -2937,7 +2970,7 @@ export class AlphaRouter
       );
     }
 
-    console.log(`bestSwapRoute: ${JSON.stringify(bestSwapRoute)}`);
+    log.debug(`bestSwapRoute: ${JSON.stringify(bestSwapRoute)}`);
 
     return bestSwapRoute;
   }
@@ -3115,14 +3148,19 @@ export class AlphaRouter
         providerConfig: providerConfig,
       });
 
-    const [v2GasModel, v3GasModel, v3PiperxGasModel, V4GasModel, mixedRouteGasModel] =
-      await Promise.all([
-        v2GasModelPromise,
-        v3GasModelPromise,
-        v3PiperxGasModelPromise,
-        v4GasModelPromise,
-        mixedRouteGasModelPromise,
-      ]);
+    const [
+      v2GasModel,
+      v3GasModel,
+      v3PiperxGasModel,
+      V4GasModel,
+      mixedRouteGasModel,
+    ] = await Promise.all([
+      v2GasModelPromise,
+      v3GasModelPromise,
+      v3PiperxGasModelPromise,
+      v4GasModelPromise,
+      mixedRouteGasModelPromise,
+    ]);
 
     metric.putMetric(
       'GasModelCreation',

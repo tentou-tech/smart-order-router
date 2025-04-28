@@ -7,7 +7,12 @@ import {
   Token,
   TradeType,
 } from '@tentou-tech/uniswap-sdk-core';
-import { FeeAmount, MethodParameters, Pool, Route } from '@tentou-tech/uniswap-v3-sdk';
+import {
+  FeeAmount,
+  MethodParameters,
+  Pool,
+  Route,
+} from '@tentou-tech/uniswap-v3-sdk';
 import _ from 'lodash';
 
 import { IOnChainQuoteProvider, RouteWithQuotes } from '../../providers';

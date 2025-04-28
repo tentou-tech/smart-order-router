@@ -64,9 +64,6 @@ export abstract class PoolProvider<
       } = this.getPoolIdentifier(poolConstruct);
 
       if (poolIdentifierSet.has(poolIdentifier)) {
-        console.log(
-          `Skipping duplicate pool: ${poolIdentifier} - ${currency0.symbol} - ${currency1.symbol}`
-        );
         continue;
       }
 
@@ -77,11 +74,6 @@ export abstract class PoolProvider<
       sortedCurrencyPairs.push(poolConstruct);
       sortedPoolIdentifiers.push(poolIdentifier);
     }
-
-    console.log(`sortedCurrencyPairs: ${JSON.stringify(sortedCurrencyPairs)}`);
-    console.log(
-      `sortedPoolIdentifiers: ${JSON.stringify(sortedPoolIdentifiers)}`
-    );
 
     log.debug(
       `getPools called with ${poolConstructs.length} token pairs. Deduped down to ${poolIdentifierSet.size}`
@@ -123,7 +115,6 @@ export abstract class PoolProvider<
         slot0Result.result.sqrtPriceX96.eq(0)
       ) {
         invalidPools.push(sortedCurrencyPairs[i]!);
-        console.log(`Invalid pool: ${JSON.stringify(sortedCurrencyPairs[i])}`);
         continue;
       }
 
@@ -140,9 +131,7 @@ export abstract class PoolProvider<
       poolIdentifierToPool[poolIdentifier] = pool;
     }
 
-    console.log(
-      `poolIdentifierToPool: ${JSON.stringify(poolIdentifierToPool)}`
-    );
+    log.debug(`poolIdentifierToPool: ${JSON.stringify(poolIdentifierToPool)}`);
 
     const poolStrs = _.map(Object.values(poolIdentifierToPool), poolToString);
 

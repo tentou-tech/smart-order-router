@@ -1,7 +1,6 @@
 import { Protocol } from '@tentou-tech/uniswap-router-sdk';
 import { Token } from '@tentou-tech/uniswap-sdk-core';
 
-
 import { SubgraphPool } from '../routers/alpha-router/functions/get-candidate-pools';
 import { log } from '../util';
 

@@ -80,7 +80,10 @@ import {
 } from '../token-provider';
 
 import { IV3PiperxPoolProvider } from './pool-provider';
-import { IV3PiperxSubgraphProvider, V3PiperxSubgraphPool } from './subgraph-provider';
+import {
+  IV3PiperxSubgraphProvider,
+  V3PiperxSubgraphPool,
+} from './subgraph-provider';
 
 type ChainTokenList = {
   readonly [chainId in ChainId]: Token[];
@@ -229,7 +232,9 @@ const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
  * @export
  * @class StaticV3PiperxSubgraphProvider
  */
-export class StaticV3PiperxSubgraphProvider implements IV3PiperxSubgraphProvider {
+export class StaticV3PiperxSubgraphProvider
+  implements IV3PiperxSubgraphProvider
+{
   constructor(
     private chainId: ChainId,
     private poolProvider: IV3PiperxPoolProvider

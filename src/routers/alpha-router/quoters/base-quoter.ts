@@ -30,7 +30,6 @@ import {
 } from '../functions/get-candidate-pools';
 import { IGasModel } from '../gas-models';
 
-
 import { GetQuotesResult, GetRoutesResult } from './model/results';
 
 /**
@@ -163,7 +162,7 @@ export abstract class BaseQuoter<
       //   percents = [100];
       //   amounts = [amount];
       // }
-      console.log("amount", amount)
+      log.debug(`amount: ${amount}`);
 
       if (routesResult.routes.length > 0) {
         metric.putMetric(
@@ -179,9 +178,11 @@ export abstract class BaseQuoter<
         );
       }
 
-      log.info(`routesResult.routes.length: ${routesResult.routes.length}`);
-      console.log(`candidatePools: ${JSON.stringify(routesResult.candidatePools)}`);
-      console.log(`routesResult: ${JSON.stringify(routesResult)}`);
+      log.debug(`routesResult.routes.length: ${routesResult.routes.length}`);
+      log.debug(
+        `candidatePools: ${JSON.stringify(routesResult.candidatePools)}`
+      );
+      log.debug(`routesResult: ${JSON.stringify(routesResult)}`);
 
       return this.getQuotes(
         routesResult.routes,

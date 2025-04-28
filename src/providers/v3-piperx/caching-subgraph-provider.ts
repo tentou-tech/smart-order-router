@@ -4,7 +4,10 @@ import { ChainId } from '@tentou-tech/uniswap-sdk-core';
 import { ICache } from '../cache';
 import { CachingSubgraphProvider } from '../caching-subgraph-provider';
 
-import { IV3PiperxSubgraphProvider, V3PiperxSubgraphPool } from './subgraph-provider';
+import {
+  IV3PiperxSubgraphProvider,
+  V3PiperxSubgraphPool,
+} from './subgraph-provider';
 /**
  * Provider for getting V3 pools, with functionality for caching the results.
  *
