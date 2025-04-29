@@ -870,6 +870,32 @@ function isAvax(chainId: number): chainId is ChainId.AVALANCHE {
   return chainId === ChainId.AVALANCHE;
 }
 
+function isStory(
+  chainId: number
+): chainId is ChainId.STORY | ChainId.STORY_AENEID {
+  return chainId === ChainId.STORY || chainId === ChainId.STORY_AENEID;
+}
+
+class StoryNativeCurrency extends NativeCurrency {
+  equals(other: Currency): boolean {
+    return other.isNative && other.chainId === this.chainId;
+  }
+
+  get wrapped(): Token {
+    if (!isStory(this.chainId)) throw new Error('Not story protocol');
+    const nativeCurrency = WRAPPED_NATIVE_CURRENCY[this.chainId];
+    if (nativeCurrency) {
+      return nativeCurrency;
+    }
+    throw new Error(`Does not support this chain ${this.chainId}`);
+  }
+
+  public constructor(chainId: number) {
+    if (!isStory(chainId)) throw new Error('Not story protocol');
+    super(chainId, 18, 'IP', 'IP');
+  }
+}
+
 class AvalancheNativeCurrency extends NativeCurrency {
   equals(other: Currency): boolean {
     return other.isNative && other.chainId === this.chainId;
@@ -927,6 +953,8 @@ export function nativeOnChain(chainId: number): NativeCurrency {
     cachedNativeCurrency[chainId] = new BnbNativeCurrency(chainId);
   } else if (isAvax(chainId)) {
     cachedNativeCurrency[chainId] = new AvalancheNativeCurrency(chainId);
+  } else if (isStory(chainId)) {
+    cachedNativeCurrency[chainId] = new StoryNativeCurrency(chainId);
   } else {
     cachedNativeCurrency[chainId] = ExtendedEther.onChain(chainId);
   }
