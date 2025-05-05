@@ -1,3 +1,6 @@
+import { Protocol } from '@tentou-tech/uniswap-router-sdk';
+import { ChainId } from '@tentou-tech/uniswap-sdk-core';
+
 export const DEXES = {
   StoryHunt: {
     InitCodeHash:
@@ -19,4 +22,15 @@ export const DEXES = {
       '0x0000000000000000000000000000000000000000000000000000000000000000',
     DexName: 'PiperX V2',
   },
+};
+
+export const V3_FACTORY_ADDRESS: Record<string, string> = {
+  [`${ChainId.STORY}-${Protocol.V3}`]:
+    '0xa111ddbe973094f949d78ad755cd560f8737b7e2',
+  [`${ChainId.STORY_AENEID}-${Protocol.V3}`]:
+    '0xb0d76e6c7aa7a78a00af1a1083b4732a488700b4',
+  [`${ChainId.STORY}-${Protocol.V3S1}`]:
+    '0xb8c21e89983b5eccd841846ea294c4c8a89718f1',
+  [`${ChainId.STORY_AENEID}-${Protocol.V3S1}`]:
+    '0xb8c21e89983b5eccd841846ea294c4c8a89718f1',
 };

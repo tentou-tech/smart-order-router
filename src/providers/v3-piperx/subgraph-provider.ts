@@ -1,7 +1,7 @@
 import { Protocol } from '@tentou-tech/uniswap-router-sdk';
 import { ChainId, Token } from '@tentou-tech/uniswap-sdk-core';
 
-import { log } from '../../util';
+import { V3_FACTORY_ADDRESS } from '../../util';
 import { ProviderConfig } from '../provider';
 import { SubgraphProvider } from '../subgraph-provider';
 
@@ -104,9 +104,11 @@ export class V3PiperxSubgraphProvider
     );
   }
 
-  protected override subgraphQuery(blockNumber?: number): string {
-    log.info(`subgraphQuery: ${blockNumber}`);
-    const factory = '0xb8c21e89983b5eccd841846ea294c4c8a89718f1';
+  protected override subgraphQuery(
+    chainId: ChainId,
+    blockNumber?: number
+  ): string {
+    const factory = V3_FACTORY_ADDRESS[`${chainId}-${Protocol.V3S1}`];
     return `
     query getPools($pageSize: Int!, $id: String) {
       pools(

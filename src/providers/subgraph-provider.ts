@@ -83,9 +83,8 @@ export abstract class SubgraphProvider<
     let blockNumber = providerConfig?.blockNumber
       ? await providerConfig.blockNumber
       : undefined;
-
     const query = gql`
-      ${this.subgraphQuery(blockNumber)}
+      ${this.subgraphQuery(this.chainId, blockNumber)}
     `;
 
     let pools: TRawSubgraphPool[] = [];
@@ -254,7 +253,10 @@ export abstract class SubgraphProvider<
     return poolsSanitized;
   }
 
-  protected abstract subgraphQuery(blockNumber?: number): string;
+  protected abstract subgraphQuery(
+    chainId: ChainId,
+    blockNumber?: number
+  ): string;
 
   protected abstract mapSubgraphPool(
     rawSubgraphPool: TRawSubgraphPool
