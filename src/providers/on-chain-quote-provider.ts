@@ -357,7 +357,7 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
     ) => BatchParams = (_optimisticCachedRoutes, _protocol) => {
       return {
         multicallChunk: 150,
-        gasLimitPerCall: 1_000_000,
+        gasLimitPerCall: 2_500_000, // 1_000_000 default
         quoteMinSuccessRate: 0.2,
       };
     },
@@ -365,7 +365,7 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
       protocol: Protocol
     ) => FailureOverrides = (_protocol: Protocol) => {
       return {
-        gasLimitOverride: 1_500_000,
+        gasLimitOverride: 5_000_000, // 1_500_000 default
         multicallChunk: 100,
       };
     },
