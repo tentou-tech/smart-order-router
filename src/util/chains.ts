@@ -734,7 +734,7 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId in ChainId]: Token } = {
     'Wrapped IP'
   ),
   [ChainId.STORY]: new Token(
-    ChainId.STORY_AENEID,
+    ChainId.STORY,
     '0x1514000000000000000000000000000000000000',
     18,
     'WIP',
