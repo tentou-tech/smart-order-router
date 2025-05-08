@@ -424,6 +424,9 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
           `No address for the quoter contract on chain id: ${this.chainId} ${useMixedRouteQuoter} ${mixedRouteContainsV4Pool} ${protocol}`
         );
       }
+      log.info(
+        `[quoterAddressOverride] Protocol: ${protocol}, Quoter address: ${quoterAddress}`
+      );
       return quoterAddress;
     }
 
@@ -444,6 +447,9 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
         `No address for the quoter contract on chain id: ${this.chainId}`
       );
     }
+    log.info(
+      `[quoterAddress] Protocol: ${protocol}, Quoter address: ${quoterAddress}`
+    );
     return quoterAddress;
   }
 
