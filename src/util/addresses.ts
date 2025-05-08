@@ -64,6 +64,7 @@ export const V3_CORE_FACTORY_ADDRESSES: AddressMap = {
 export const V3S1_CORE_FACTORY_ADDRESSES: AddressMap = {
   ...constructSameAddressMap('0x3D9300D311BA04EB3351663676cEE0748473d9A0'),
   [ChainId.STORY_AENEID]: '0xb8c21e89983B5EcCD841846eA294c4c8a89718f1',
+  [ChainId.STORY]: '0xb8c21e89983B5EcCD841846eA294c4c8a89718f1',
 };
 
 export const QUOTER_V2_ADDRESSES: AddressMap = {
