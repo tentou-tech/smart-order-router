@@ -961,7 +961,7 @@ export async function getV3CandidatePools({
   const allPools = await subgraphProvider.getPools(tokenIn, tokenOut, {
     blockNumber,
   });
-  log.debug(`v3 allPools: ${JSON.stringify(allPools)}`);
+  log.info(`v3 allPools: ${JSON.stringify(allPools)}`);
 
   log.info(
     { samplePools: allPools.slice(0, 3) },
