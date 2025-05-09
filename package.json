@@ -1,6 +1,6 @@
 {
   "name": "@tentou-tech/smart-order-router",
-  "version": "4.20.51",
+  "version": "4.20.52",
   "description": "Uniswap Smart Order Router",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
