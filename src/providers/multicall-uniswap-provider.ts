@@ -158,6 +158,10 @@ export class UniswapMulticallProvider extends IMulticallProvider<UniswapMultical
       additionalConfig?.gasLimitPerCallOverride ?? this.gasLimitPerCall;
     const blockNumberOverride = providerConfig?.blockNumber ?? undefined;
 
+    log.info(
+      { functionParams },
+      `Calling ${functionName} at address ${address} with ${functionParams.length} different sets of params`
+    );
     const calls = _.map(functionParams, (functionParam) => {
       const callData = contractInterface.encodeFunctionData(
         fragment,
@@ -171,7 +175,7 @@ export class UniswapMulticallProvider extends IMulticallProvider<UniswapMultical
       };
     });
 
-    log.debug(
+    log.info(
       { calls },
       `About to multicall for ${functionName} at address ${address} with ${functionParams.length} different sets of params`
     );
