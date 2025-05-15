@@ -822,6 +822,14 @@ export const USDC_STORY = new Token(
   'Bridged USDC Stargate'
 );
 
+export const USDT_STORY = new Token(
+  ChainId.STORY,
+  '0x674843c06ff83502ddb4d37c2e09c01cda38cbc8',
+  6,
+  'USDT',
+  'Bridged stgUSDT(USDT)'
+);
+
 export class TokenProvider implements ITokenProvider {
   constructor(
     private chainId: ChainId,

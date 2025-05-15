@@ -66,6 +66,7 @@ import {
   USDT_OPTIMISM,
   USDT_OPTIMISM_GOERLI,
   USDT_OPTIMISM_SEPOLIA,
+  USDT_STORY,
   USDT_STORY_AENEID,
   WBTC_GOERLI,
 } from '../../../providers/token-provider';
@@ -140,7 +141,7 @@ export const usdGasTokensByChain: { [chainId in ChainId]?: Token[] } = {
   [ChainId.UNICHAIN]: [DAI_UNICHAIN, USDC_UNICHAIN],
   [ChainId.SONEIUM]: [USDC_SONEIUM],
   [ChainId.STORY_AENEID]: [USDT_STORY_AENEID, USDC_STORY_AENEID],
-  [ChainId.STORY]: [USDC_STORY],
+  [ChainId.STORY]: [USDC_STORY, USDT_STORY],
 };
 
 export type L1ToL2GasCosts = {

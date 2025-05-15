@@ -47,6 +47,7 @@ import {
   USDT_MAINNET,
   USDT_MONAD_TESTNET,
   USDT_OPTIMISM,
+  USDT_STORY,
   WBTC_ARBITRUM,
   WBTC_MAINNET,
   WBTC_MOONBEAM,
@@ -197,6 +198,7 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     nativeOnChain(ChainId.STORY),
     WRAPPED_NATIVE_CURRENCY[ChainId.STORY]!,
     USDC_STORY,
+    USDT_STORY,
   ],
 };
 
