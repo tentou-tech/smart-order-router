@@ -32,7 +32,7 @@ export type V3RawSubgraphPool = {
     id: string;
   };
   totalValueLockedUSD: string;
-  totalValueLockedETH: string;
+  totalValueLockedIP: string;
   totalValueLockedUSDUntracked: string;
 };
 
@@ -128,7 +128,7 @@ export class V3SubgraphProvider
           feeTier
           liquidity
           totalValueLockedUSD
-          totalValueLockedETH
+          totalValueLockedIP
           totalValueLockedUSDUntracked
         }
       }
@@ -148,7 +148,7 @@ export class V3SubgraphProvider
       token1: {
         id: rawPool.token1.id,
       },
-      tvlETH: parseFloat(rawPool.totalValueLockedETH),
+      tvlETH: parseFloat(rawPool.totalValueLockedIP),
       tvlUSD: parseFloat(rawPool.totalValueLockedUSD),
     };
   }

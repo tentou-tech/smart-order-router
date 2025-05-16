@@ -35,7 +35,7 @@ export type V4RawSubgraphPool = {
     id: string;
   };
   totalValueLockedUSD: string;
-  totalValueLockedETH: string;
+  totalValueLockedIP: string;
   totalValueLockedUSDUntracked: string;
 };
 
@@ -107,7 +107,7 @@ export class V4SubgraphProvider
           hooks
           liquidity
           totalValueLockedUSD
-          totalValueLockedETH
+          totalValueLockedIP
           totalValueLockedUSDUntracked
         }
       }
@@ -129,7 +129,7 @@ export class V4SubgraphProvider
       token1: {
         id: rawPool.token1.id,
       },
-      tvlETH: parseFloat(rawPool.totalValueLockedETH),
+      tvlETH: parseFloat(rawPool.totalValueLockedIP),
       tvlUSD: parseFloat(rawPool.totalValueLockedUSD),
     };
   }

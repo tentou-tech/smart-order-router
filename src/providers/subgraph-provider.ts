@@ -47,7 +47,7 @@ export type V3V4RawSubgraphPool = {
     id: string;
   };
   totalValueLockedUSD: string;
-  totalValueLockedETH: string;
+  totalValueLockedIP: string;
   totalValueLockedUSDUntracked: string;
 };
 
@@ -201,7 +201,7 @@ export abstract class SubgraphProvider<
     const untrackedPools = pools.filter(
       (pool) =>
         parseInt(pool.liquidity) > 0 ||
-        parseFloat(pool.totalValueLockedETH) > this.trackedEthThreshold ||
+        parseFloat(pool.totalValueLockedIP) > this.trackedEthThreshold ||
         parseFloat(pool.totalValueLockedUSDUntracked) >
           this.untrackedUsdThreshold
     );
@@ -219,7 +219,7 @@ export abstract class SubgraphProvider<
       .filter(
         (pool) =>
           parseInt(pool.liquidity) > 0 ||
-          parseFloat(pool.totalValueLockedETH) > this.trackedEthThreshold
+          parseFloat(pool.totalValueLockedIP) > this.trackedEthThreshold
       )
       .map((pool) => {
         return this.mapSubgraphPool(pool);
