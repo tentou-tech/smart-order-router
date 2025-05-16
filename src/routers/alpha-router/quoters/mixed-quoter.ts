@@ -196,6 +196,9 @@ export class MixedQuoter extends BaseQuoter<
       }
     );
 
+    log.info(`Mixed route pools: ${JSON.stringify(pools)}`);
+    log.info(`Mixed route candidatePools: ${JSON.stringify(candidatePools)}`);
+
     const { maxSwapsPerPath } = routingConfig;
 
     const routes = computeAllMixedRoutes(
@@ -205,6 +208,7 @@ export class MixedQuoter extends BaseQuoter<
       maxSwapsPerPath,
       routingConfig.shouldEnableMixedRouteEthWeth
     );
+    log.info(`Mixed route routes: ${JSON.stringify(routes)}`);
 
     metric.putMetric(
       'MixedGetRoutesLoad',
