@@ -3,6 +3,7 @@ import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { BytesLike } from '@ethersproject/bytes';
 import { BaseProvider } from '@ethersproject/providers';
 import {
+  encodeMixedRouteDexToPath,
   encodeMixedRouteToPath,
   MixedRouteSDK,
   Protocol,
@@ -489,7 +490,7 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
           route as V3Route,
           functionName == 'quoteExactOutput' // For exactOut must be true to ensure the routes are reversed.
         ) as TPath;
-      case Protocol.V3S1: // TODO: Add support for V3Piperx on SDK
+      case Protocol.V3S1:
         return encodeV3PiperxRouteToPath(
           route as V3PiperxRoute,
           functionName == 'quoteExactOutput' // For exactOut must be true to ensure the routes are reversed.
@@ -502,13 +503,15 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
       // We don't have onchain V2 quoter, but we do have a mixed quoter that can quote against v2 routes onchain
       // Hence in case of V2 or mixed, we explicitly encode into mixed routes.
       case Protocol.V2:
-      case Protocol.MIXED:
-        // we need to retain the fake pool data for the mixed route
-        return encodeMixedRouteToPath(
+         // we need to retain the fake pool data for the v2 route
+         return encodeMixedRouteToPath(
           route instanceof V2Route
             ? new MixedRouteSDK(route.pairs, route.input, route.output, true)
             : route
         ) as TPath;
+      case Protocol.MIXED:
+        // use new encode route to support new dex in the mixed route
+        return encodeMixedRouteDexToPath(route) as TPath;
       default:
         throw new Error(
           `Unsupported protocol for the route: ${JSON.stringify(route)}`
