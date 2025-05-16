@@ -215,6 +215,7 @@ export abstract class SubgraphProvider<
     );
 
     const beforeFilter = Date.now();
+    log.info(`pools before filter: ${JSON.stringify(pools)}`);
     const poolsSanitized: TSubgraphPool[] = pools
       .filter(
         (pool) =>
