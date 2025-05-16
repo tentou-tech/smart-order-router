@@ -2611,6 +2611,39 @@ export async function getMixedRouteCandidatePools({
       buildV2Pools.push(V2subgraphPool);
     }
 
+    const V3PiperxsubgraphPool = V3PiperxsortedPools.find(
+      (pool) =>
+        (pool.token0.id == V2subgraphPool.token0.id &&
+          pool.token1.id == V2subgraphPool.token1.id) ||
+        (pool.token0.id == V2subgraphPool.token1.id &&
+          pool.token1.id == V2subgraphPool.token0.id)
+    );
+
+    if (V3PiperxsubgraphPool) {
+      if (V2subgraphPool.reserveUSD > V3PiperxsubgraphPool.tvlUSD) {
+        log.info(
+          {
+            token0: V2subgraphPool.token0.id,
+            token1: V2subgraphPool.token1.id,
+            v2reserveUSD: V2subgraphPool.reserveUSD,
+            v3PiperxtvlUSD: V3PiperxsubgraphPool.tvlUSD,
+          },
+          `MixedRoute heuristic, found a V2 pool with higher liquidity than its V3Piperx counterpart`
+        );
+        buildV2Pools.push(V2subgraphPool);
+      }
+    } else {
+      log.info(
+        {
+          token0: V2subgraphPool.token0.id,
+          token1: V2subgraphPool.token1.id,
+          v2reserveUSD: V2subgraphPool.reserveUSD,
+        },
+        `MixedRoute heuristic, found a V2 pool with no V3Piperx counterpart`
+      );
+      buildV2Pools.push(V2subgraphPool);
+    }
+
     const V4subgraphPool = V4sortedPools.find(
       (pool) =>
         (pool.token0.id == V2subgraphPool.token0.id &&
@@ -2639,7 +2672,7 @@ export async function getMixedRouteCandidatePools({
           token1: V2subgraphPool.token1.id,
           v2reserveUSD: V2subgraphPool.reserveUSD,
         },
-        `MixedRoute heuristic, found a V2 pool with no V3 counterpart`
+        `MixedRoute heuristic, found a V2 pool with no V4 counterpart`
       );
       buildV2Pools.push(V2subgraphPool);
     }
@@ -2650,8 +2683,10 @@ export async function getMixedRouteCandidatePools({
     `Number of V2 candidate pools that fit first heuristic`
   );
 
-  const subgraphPools: Array<V2SubgraphPool | V3SubgraphPool | V4SubgraphPool> =
-    [...buildV2Pools, ...V3sortedPools, ...V4sortedPools];
+  const subgraphPools: Array<V2SubgraphPool | V3SubgraphPool | V3PiperxSubgraphPool | V4SubgraphPool> =
+    [...buildV2Pools, ...V3sortedPools, ...V3PiperxsortedPools, ...V4sortedPools];
+
+  log.info(`Mixed subgraph pools: ${JSON.stringify(subgraphPools)}`);
 
   const tokenAddresses = _(subgraphPools)
     .flatMap((subgraphPool) => [subgraphPool.token0.id, subgraphPool.token1.id])

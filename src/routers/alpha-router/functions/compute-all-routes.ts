@@ -136,6 +136,7 @@ export function computeAllMixedRoutes(
     return (
       !route.pools.every((pool) => pool instanceof V4Pool) &&
       !route.pools.every((pool) => pool instanceof V3Pool) &&
+      !route.pools.every((pool) => pool instanceof V3S1Pool) &&
       !route.pools.every((pool) => pool instanceof Pair)
     );
   });
