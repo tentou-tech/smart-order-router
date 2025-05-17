@@ -324,6 +324,7 @@ export class MixedQuoter extends BaseQuoter<
           tradeType,
           v4PoolProvider: this.v4PoolProvider,
           v3PoolProvider: this.v3PoolProvider,
+          v3PiperxPoolProvider: this.v3PiperxPoolProvider,
           v2PoolProvider: this.v2PoolProvider,
         });
 

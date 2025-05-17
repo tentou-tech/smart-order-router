@@ -531,6 +531,7 @@ export function initSwapRouteFromExisting(
           ),
           tradeType: tradeType,
           v3PoolProvider: v3PoolProvider,
+          v3PiperxPoolProvider: v3PiperxPoolProvider,
           v4PoolProvider: v4PoolProvider,
         });
       default:

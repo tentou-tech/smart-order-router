@@ -3,6 +3,7 @@ import { Protocol } from '@tentou-tech/uniswap-router-sdk';
 import { Currency, Token, TradeType } from '@tentou-tech/uniswap-sdk-core';
 import { Pair } from '@tentou-tech/uniswap-v2-sdk';
 import { Pool as V3Pool } from '@tentou-tech/uniswap-v3-sdk';
+import { Pool as V3PiperxPool } from '@tentou-tech/uniswap-v3s1-sdk';
 import { Pool as V4Pool } from '@tentou-tech/uniswap-v4-sdk';
 import _ from 'lodash';
 
@@ -487,6 +488,7 @@ export type MixedRouteWithValidQuoteParams = {
   tradeType: TradeType;
   v4PoolProvider: IV4PoolProvider;
   v3PoolProvider: IV3PoolProvider;
+  v3PiperxPoolProvider: IV3PiperxPoolProvider;
   v2PoolProvider: IV2PoolProvider;
 };
 
@@ -540,6 +542,7 @@ export class MixedRouteWithValidQuote implements IMixedRouteWithValidQuote {
     tradeType,
     v4PoolProvider,
     v3PoolProvider,
+    v3PiperxPoolProvider,
     v2PoolProvider,
   }: MixedRouteWithValidQuoteParams) {
     this.amount = amount;
@@ -582,6 +585,9 @@ export class MixedRouteWithValidQuote implements IMixedRouteWithValidQuote {
         ).poolId;
       } else if (p instanceof V3Pool) {
         return v3PoolProvider.getPoolAddress(p.token0, p.token1, p.fee)
+          .poolAddress;
+      } else if (p instanceof V3PiperxPool) {
+        return v3PiperxPoolProvider.getPoolAddress(p.token0, p.token1, p.fee)
           .poolAddress;
       } else if (p instanceof Pair) {
         return v2PoolProvider.getPoolAddress(p.token0, p.token1).poolAddress;
