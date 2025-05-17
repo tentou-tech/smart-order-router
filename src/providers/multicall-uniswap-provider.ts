@@ -154,6 +154,8 @@ export class UniswapMulticallProvider extends IMulticallProvider<UniswapMultical
     } = params;
     const fragment = contractInterface.getFunction(functionName);
 
+    log.info({ fragment }, `Multicall fragment`);
+
     const gasLimitPerCall =
       additionalConfig?.gasLimitPerCallOverride ?? this.gasLimitPerCall;
     const blockNumberOverride = providerConfig?.blockNumber ?? undefined;
