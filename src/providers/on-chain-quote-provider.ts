@@ -13,14 +13,14 @@ import { encodeRouteToPath as encodeV3RouteToPath } from '@tentou-tech/uniswap-v
 import { encodeRouteToPath as encodeV3PiperxRouteToPath } from '@tentou-tech/uniswap-v3s1-sdk';
 import {
   encodeRouteToPath as encodeV4RouteToPath,
-  Pool as V4Pool,
+  // Pool as V4Pool,
 } from '@tentou-tech/uniswap-v4-sdk';
 import retry, { Options as RetryOptions } from 'async-retry';
 import _ from 'lodash';
 import stats from 'stats-lite';
 
 import {
-  MixedRoute,
+  // MixedRoute,
   SupportedRoutes,
   V2Route,
   V3PiperxRoute,
@@ -660,13 +660,18 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
     const useV3S1RouteQuoter =
       routes.some((route) => route.protocol === Protocol.V3S1) &&
       !useMixedRouteQuoter;
-    const mixedRouteContainsV4Pool = useMixedRouteQuoter
-      ? routes.some(
-          (route) =>
-            route.protocol === Protocol.MIXED &&
-            (route as MixedRoute).pools.some((pool) => pool instanceof V4Pool)
-        )
-      : false;
+    // const mixedRouteContainsV4Pool = useMixedRouteQuoter
+    //   ? routes.some(
+    //       (route) =>
+    //         route.protocol === Protocol.MIXED &&
+    //         (route as MixedRoute).pools.some((pool) => pool instanceof V4Pool)
+    //     )
+    //   : false;
+
+    // Currently we don't check v4 in mixed route
+    const mixedRouteContainsV4Pool = useMixedRouteQuoter;
+    log.info(`Mixed route contains v4 pool: ${mixedRouteContainsV4Pool}`);
+
     const protocol = useMixedRouteQuoter
       ? Protocol.MIXED
       : useV4RouteQuoter
