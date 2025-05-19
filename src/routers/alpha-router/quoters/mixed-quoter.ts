@@ -122,6 +122,7 @@ export class MixedQuoter extends BaseQuoter<
       v2CandidatePools,
       crossLiquidityPools,
     ] = v4v3v2candidatePools;
+    log.info(`v4v3v2candidatePools: ${JSON.stringify(v4v3v2candidatePools)}`);
 
     const {
       V2poolAccessor,

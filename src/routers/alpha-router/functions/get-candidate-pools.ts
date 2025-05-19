@@ -61,6 +61,8 @@ import {
   USDC_POLYGON,
   USDC_SEPOLIA,
   USDC_SONEIUM,
+  USDC_STORY,
+  USDC_STORY_AENEID,
   USDC_UNICHAIN,
   USDT_ARBITRUM,
   USDT_BNB,
@@ -288,6 +290,11 @@ const baseTokensByChain: { [chainId in ChainId]?: Token[] } = {
     USDC_UNICHAIN,
   ],
   [ChainId.SONEIUM]: [USDC_SONEIUM, WRAPPED_NATIVE_CURRENCY[ChainId.SONEIUM]!],
+  [ChainId.STORY_AENEID]: [
+    WRAPPED_NATIVE_CURRENCY[ChainId.STORY_AENEID]!,
+    USDC_STORY_AENEID,
+  ],
+  [ChainId.STORY]: [WRAPPED_NATIVE_CURRENCY[ChainId.STORY]!, USDC_STORY],
 };
 
 class SubcategorySelectionPools<SubgraphPool> {
@@ -1860,6 +1867,8 @@ export async function getV2CandidatePools({
     pool.token1.id = pool.token1.id.toLowerCase();
   }
 
+  log.info(`v2 allPoolsRaw: ${JSON.stringify(allPoolsRaw)}`);
+
   metric.putMetric(
     'V2SubgraphPoolsLoad',
     Date.now() - beforeSubgraphPools,
@@ -1870,6 +1879,8 @@ export async function getV2CandidatePools({
 
   // Sort by pool reserve in descending order.
   const subgraphPoolsSorted = allPoolsRaw.sort((a, b) => b.reserve - a.reserve);
+
+  log.info(`v2 subgraphPoolsSorted: ${JSON.stringify(subgraphPoolsSorted)}`);
 
   const poolAddressesSoFar = new Set<string>();
 
@@ -1939,7 +1950,9 @@ export async function getV2CandidatePools({
   if (
     tokenOut.symbol == 'WETH' ||
     tokenOut.symbol == 'WETH9' ||
-    tokenOut.symbol == 'ETH'
+    tokenOut.symbol == 'ETH' ||
+    tokenOut.symbol == 'WIP' ||
+    tokenOut.symbol == 'IP'
   ) {
     // if it's eth we change the topN to 0, so we can break early from the loop.
     topNEthQuoteToken = 0;
@@ -2562,6 +2575,8 @@ export async function getMixedRouteCandidatePools({
     .sortBy((pool) => -pool.reserveUSD)
     .value();
 
+  log.info(`V2topByTVLSortedPools: ${JSON.stringify(V2topByTVLSortedPools)}`);
+
   /// we consider all returned V3 pools for this heuristic to "fill in the gaps"
   const V3sortedPools = _(V3subgraphPools)
     .sortBy((pool) => -pool.tvlUSD)
@@ -2683,8 +2698,16 @@ export async function getMixedRouteCandidatePools({
     `Number of V2 candidate pools that fit first heuristic`
   );
 
-  const subgraphPools: Array<V2SubgraphPool | V3SubgraphPool | V3PiperxSubgraphPool | V4SubgraphPool> =
-    [...buildV2Pools, ...V3sortedPools, ...V3PiperxsortedPools, ...V4sortedPools];
+  log.info(`buildV2Pools: ${JSON.stringify(buildV2Pools)}`);
+
+  const subgraphPools: Array<
+    V2SubgraphPool | V3SubgraphPool | V3PiperxSubgraphPool | V4SubgraphPool
+  > = [
+    ...buildV2Pools,
+    ...V3sortedPools,
+    ...V3PiperxsortedPools,
+    ...V4sortedPools,
+  ];
 
   log.info(`Mixed subgraph pools: ${JSON.stringify(subgraphPools)}`);
 
