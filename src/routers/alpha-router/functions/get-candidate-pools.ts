@@ -312,6 +312,7 @@ export type CrossLiquidityCandidatePools = {
   v2Pools: V2SubgraphPool[];
   v3Pools: V3SubgraphPool[];
   v3PiperxPools: V3PiperxSubgraphPool[];
+  v2v3PiperxPools: V2SubgraphPool[];
 };
 
 /**
@@ -377,6 +378,14 @@ export async function getMixedCrossLiquidityCandidatePools({
     v2Candidates
   );
 
+  const v2V3PiperxSelectedPools = findCrossProtocolMissingPools(
+    tokenInAddress,
+    tokenOutAddress,
+    v2Pools,
+    v2Candidates,
+    v3PiperxCandidates
+  );
+
   const selectedV2Pools = [
     v2SelectedPools.forTokenIn,
     v2SelectedPools.forTokenOut,
@@ -390,10 +399,16 @@ export async function getMixedCrossLiquidityCandidatePools({
     v3PiperxSelectedPools.forTokenOut,
   ].filter((pool) => pool !== undefined) as V3PiperxSubgraphPool[];
 
+  const selectedV2V3PiperxPools = [
+    v2V3PiperxSelectedPools.forTokenIn,
+    v2V3PiperxSelectedPools.forTokenOut,
+  ].filter((pool) => pool !== undefined) as V2SubgraphPool[];
+
   return {
     v2Pools: selectedV2Pools,
     v3Pools: selectedV3Pools,
     v3PiperxPools: selectedV3PiperxPools,
+    v2v3PiperxPools: selectedV2V3PiperxPools,
   };
 }
 
@@ -2539,6 +2554,7 @@ export async function getMixedRouteCandidatePools({
 
   // Injects the liquidity pools found by the getMixedCrossLiquidityCandidatePools function
   V2subgraphPools.push(...crossLiquidityPools.v2Pools);
+  V2subgraphPools.push(...crossLiquidityPools.v2v3PiperxPools);
   V3subgraphPools.push(...crossLiquidityPools.v3Pools);
   V3PiperxsubgraphPools.push(...crossLiquidityPools.v3PiperxPools);
   metric.putMetric(
