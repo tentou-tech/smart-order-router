@@ -1963,9 +1963,9 @@ export async function getV2CandidatePools({
   let topNEthQuoteToken = 1;
   // but, we only need it if token out is not ETH.
   if (
-    tokenOut.symbol == 'WETH' ||
-    tokenOut.symbol == 'WETH9' ||
-    tokenOut.symbol == 'ETH' ||
+    // tokenOut.symbol == 'WETH' ||
+    // tokenOut.symbol == 'WETH9' ||
+    // tokenOut.symbol == 'ETH' ||
     tokenOut.symbol == 'WIP' ||
     tokenOut.symbol == 'IP'
   ) {

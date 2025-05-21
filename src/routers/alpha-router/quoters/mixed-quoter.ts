@@ -266,6 +266,15 @@ export class MixedQuoter extends BaseQuoter<
       routingConfig
     );
 
+    // TODO: Remove this, log gas limit and gas est for debugging
+    for (const routeWithQuote of routesWithQuotes) {
+      const [_, quotes] = routeWithQuote;
+      for (const quote of quotes) {
+        log.info({ gasLimit: quote?.gasLimit }, 'gasLimit');
+        log.info({ gasEstimate: quote?.gasEstimate }, 'gasEstimate');
+      }
+    }
+
     metric.putMetric(
       'MixedQuotesLoad',
       Date.now() - beforeQuotes,
