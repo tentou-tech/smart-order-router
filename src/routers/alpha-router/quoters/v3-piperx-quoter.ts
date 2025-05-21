@@ -187,6 +187,15 @@ export class V3PiperxQuoter extends BaseQuoter<
       routingConfig
     );
 
+    // TODO: Remove this, log gas limit and gas est for debugging
+    for (const routeWithQuote of routesWithQuotes) {
+      const [_, quotes] = routeWithQuote;
+      for (const quote of quotes) {
+        log.info({ gasLimit: quote?.gasLimit }, 'gasLimit');
+        log.info({ gasEstimate: quote?.gasEstimate }, 'gasEstimate');
+      }
+    }
+
     log.debug('v3 piperx routesWithQuotes', JSON.stringify(routesWithQuotes));
 
     metric.putMetric(
