@@ -740,6 +740,13 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId in ChainId]: Token } = {
     'WIP',
     'Wrapped IP'
   ),
+  [ChainId.HYPER_EVM]: new Token(
+    ChainId.HYPER_EVM,
+    '0x5555555555555555555555555555555555555555',
+    18,
+    'WHYPE',
+    'Wrapped Hyper Ether'
+  ),
 };
 
 function isMatic(
@@ -876,6 +883,10 @@ function isStory(
   return chainId === ChainId.STORY || chainId === ChainId.STORY_AENEID;
 }
 
+function isHyperEvm(chainId: number): chainId is ChainId.HYPER_EVM {
+  return chainId === ChainId.HYPER_EVM;
+}
+
 class StoryNativeCurrency extends NativeCurrency {
   equals(other: Currency): boolean {
     return other.isNative && other.chainId === this.chainId;
@@ -896,6 +907,25 @@ class StoryNativeCurrency extends NativeCurrency {
   }
 }
 
+class HyperEvmNativeCurrency extends NativeCurrency {
+  equals(other: Currency): boolean {
+    return other.isNative && other.chainId === this.chainId;
+  }
+
+  get wrapped(): Token {
+    if (!isHyperEvm(this.chainId)) throw new Error('Not hyper evm');
+    const nativeCurrency = WRAPPED_NATIVE_CURRENCY[this.chainId];
+    if (nativeCurrency) {
+      return nativeCurrency;
+    }
+    throw new Error(`Does not support this chain ${this.chainId}`);
+  }
+
+  public constructor(chainId: number) {
+    if (!isHyperEvm(chainId)) throw new Error('Not hyper evm');
+    super(chainId, 18, 'WHYPE', 'Wrapped Hyper Ether');
+  }
+}
 class AvalancheNativeCurrency extends NativeCurrency {
   equals(other: Currency): boolean {
     return other.isNative && other.chainId === this.chainId;
@@ -955,6 +985,8 @@ export function nativeOnChain(chainId: number): NativeCurrency {
     cachedNativeCurrency[chainId] = new AvalancheNativeCurrency(chainId);
   } else if (isStory(chainId)) {
     cachedNativeCurrency[chainId] = new StoryNativeCurrency(chainId);
+  } else if (isHyperEvm(chainId)) {
+    cachedNativeCurrency[chainId] = new HyperEvmNativeCurrency(chainId);
   } else {
     cachedNativeCurrency[chainId] = ExtendedEther.onChain(chainId);
   }

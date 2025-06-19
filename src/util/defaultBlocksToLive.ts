@@ -50,4 +50,5 @@ export const DEFAULT_BLOCKS_TO_LIVE: { [chain in ChainId]: number } = {
   // (60 minutes) / (1 seconds) = 3600
   [ChainId.STORY_AENEID]: 3600,
   [ChainId.STORY]: 3600,
+  [ChainId.HYPER_EVM]: 3600,
 };

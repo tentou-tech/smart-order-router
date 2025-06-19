@@ -59,6 +59,8 @@ export const V3_CORE_FACTORY_ADDRESSES: AddressMap = {
   [ChainId.STORY_AENEID]:
     CHAIN_TO_ADDRESSES_MAP[ChainId.STORY_AENEID].v3CoreFactoryAddress,
   [ChainId.STORY]: CHAIN_TO_ADDRESSES_MAP[ChainId.STORY].v3CoreFactoryAddress,
+  [ChainId.HYPER_EVM]:
+    CHAIN_TO_ADDRESSES_MAP[ChainId.HYPER_EVM].v3CoreFactoryAddress,
 };
 
 export const V3S1_CORE_FACTORY_ADDRESSES: AddressMap = {
@@ -103,6 +105,7 @@ export const QUOTER_V2_ADDRESSES: AddressMap = {
   [ChainId.STORY_AENEID]:
     CHAIN_TO_ADDRESSES_MAP[ChainId.STORY_AENEID].quoterAddress,
   [ChainId.STORY]: CHAIN_TO_ADDRESSES_MAP[ChainId.STORY].quoterAddress,
+  [ChainId.HYPER_EVM]: CHAIN_TO_ADDRESSES_MAP[ChainId.HYPER_EVM].quoterAddress,
 };
 
 export const NEW_QUOTER_V2_ADDRESSES: AddressMap = {
@@ -132,6 +135,7 @@ export const NEW_QUOTER_V2_ADDRESSES: AddressMap = {
   [ChainId.STORY_AENEID]:
     CHAIN_TO_ADDRESSES_MAP[ChainId.STORY_AENEID].quoterAddress,
   [ChainId.STORY]: CHAIN_TO_ADDRESSES_MAP[ChainId.STORY].quoterAddress,
+  [ChainId.HYPER_EVM]: CHAIN_TO_ADDRESSES_MAP[ChainId.HYPER_EVM].quoterAddress,
 };
 
 export const V3S1_QUOTER_ADDRESSES: AddressMapNew = {
@@ -247,6 +251,8 @@ export const UNISWAP_MULTICALL_ADDRESSES: AddressMap = {
   [ChainId.STORY_AENEID]:
     CHAIN_TO_ADDRESSES_MAP[ChainId.STORY_AENEID].multicallAddress,
   [ChainId.STORY]: CHAIN_TO_ADDRESSES_MAP[ChainId.STORY].multicallAddress,
+  [ChainId.HYPER_EVM]:
+    CHAIN_TO_ADDRESSES_MAP[ChainId.HYPER_EVM].multicallAddress,
 };
 
 export const SWAP_ROUTER_02_ADDRESSES = (chainId: number): string => {
@@ -477,6 +483,13 @@ export const WETH9: {
     18,
     'WIP',
     'Wrapped IP'
+  ),
+  [ChainId.HYPER_EVM]: new Token(
+    ChainId.HYPER_EVM,
+    '0x5555555555555555555555555555555555555555',
+    18,
+    'WHYPE',
+    'Wrapped HYPE'
   ),
 };
 

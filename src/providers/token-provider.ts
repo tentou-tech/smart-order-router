@@ -822,6 +822,14 @@ export const USDC_STORY = new Token(
   'Bridged USDC Stargate'
 );
 
+export const USDT_HYPER_EVM = new Token(
+  ChainId.HYPER_EVM,
+  '0x5555555555555555555555555555555555555555',
+  6,
+  'USD₮0',
+  'USD₮0'
+);
+
 export class TokenProvider implements ITokenProvider {
   constructor(
     private chainId: ChainId,

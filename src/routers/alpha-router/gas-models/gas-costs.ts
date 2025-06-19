@@ -53,6 +53,8 @@ export const BASE_SWAP_COST = (id: ChainId): BigNumber => {
     case ChainId.STORY_AENEID:
     case ChainId.STORY:
       return BigNumber.from(3000);
+    case ChainId.HYPER_EVM:
+      return BigNumber.from(3000);
   }
 };
 export const COST_PER_INIT_TICK = (id: ChainId): BigNumber => {
@@ -97,6 +99,8 @@ export const COST_PER_INIT_TICK = (id: ChainId): BigNumber => {
     case ChainId.STORY_AENEID:
     case ChainId.STORY:
       return BigNumber.from(31000);
+    case ChainId.HYPER_EVM:
+      return BigNumber.from(31000);
   }
 };
 
@@ -140,6 +144,8 @@ export const COST_PER_HOP = (id: ChainId): BigNumber => {
       return BigNumber.from(80000);
     case ChainId.STORY_AENEID:
     case ChainId.STORY:
+      return BigNumber.from(80000);
+    case ChainId.HYPER_EVM:
       return BigNumber.from(80000);
   }
 };
