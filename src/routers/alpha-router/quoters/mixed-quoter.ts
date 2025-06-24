@@ -164,6 +164,8 @@ export class MixedQuoter extends BaseQuoter<
       poolsRaw.push(...V2poolsRaw);
     }
 
+    log.debug(`Mixed route poolsRaw: ${JSON.stringify(poolsRaw)}`);
+
     const candidatePools = mixedRouteCandidatePools;
 
     // Drop any pools that contain fee on transfer tokens (not supported by v3) or have issues with being transferred.
