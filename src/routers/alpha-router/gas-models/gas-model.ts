@@ -61,6 +61,7 @@ import {
   USDT_ARBITRUM,
   USDT_BNB,
   USDT_GOERLI,
+  USDT_HYPER_EVM,
   USDT_MAINNET,
   USDT_MONAD_TESTNET,
   USDT_OPTIMISM,
@@ -141,6 +142,7 @@ export const usdGasTokensByChain: { [chainId in ChainId]?: Token[] } = {
   [ChainId.SONEIUM]: [USDC_SONEIUM],
   [ChainId.STORY_AENEID]: [USDT_STORY_AENEID, USDC_STORY_AENEID],
   [ChainId.STORY]: [USDC_STORY],
+  [ChainId.HYPER_EVM]: [USDT_HYPER_EVM],
 };
 
 export type L1ToL2GasCosts = {

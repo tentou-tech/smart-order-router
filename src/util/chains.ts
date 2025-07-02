@@ -34,6 +34,7 @@ export const SUPPORTED_CHAINS: ChainId[] = [
   ChainId.SONEIUM,
   ChainId.STORY_AENEID,
   ChainId.STORY,
+  ChainId.HYPER_EVM,
   // Gnosis and Moonbeam don't yet have contracts deployed yet
 ];
 
@@ -52,6 +53,7 @@ export const V2_SUPPORTED = [
   ChainId.SONEIUM,
   ChainId.STORY_AENEID,
   ChainId.STORY,
+  ChainId.HYPER_EVM,
 ];
 
 export const V4_SUPPORTED = [
@@ -86,6 +88,7 @@ export const MIXED_SUPPORTED = [
   ChainId.SONEIUM,
   ChainId.STORY_AENEID,
   ChainId.STORY,
+  ChainId.HYPER_EVM,
 ];
 
 export const MIXED_HAS_V1_QUOTER = [ChainId.MAINNET, ChainId.GOERLI];
@@ -179,6 +182,8 @@ export const ID_TO_CHAIN_ID = (id: number): ChainId => {
       return ChainId.STORY_AENEID;
     case 1514:
       return ChainId.STORY;
+    case 999:
+      return ChainId.HYPER_EVM;
     default:
       throw new Error(`Unknown chain id: ${id}`);
   }
@@ -215,6 +220,7 @@ export enum ChainName {
   SONEIUM = 'soneium-mainnet',
   STORY_AENEID = 'story-aeneid-testnet',
   STORY = 'story-mainnet',
+  HYPER_EVM = 'hyper-evm-mainnet',
 }
 
 export enum NativeCurrencyName {
@@ -228,6 +234,7 @@ export enum NativeCurrencyName {
   AVALANCHE = 'AVAX',
   MONAD = 'MON',
   IP = 'IP',
+  HYPER_EVM = 'HYPER',
 }
 
 export const NATIVE_NAMES_BY_ID: { [chainId: number]: string[] } = {
@@ -347,6 +354,11 @@ export const NATIVE_NAMES_BY_ID: { [chainId: number]: string[] } = {
     '0x0000000000000000000000000000000000000000',
   ],
   [ChainId.STORY]: ['IP', 'IP', '0x0000000000000000000000000000000000000000'],
+  [ChainId.HYPER_EVM]: [
+    'HYPE',
+    'HYPE',
+    '0x0000000000000000000000000000000000000000',
+  ],
 };
 
 export const NATIVE_CURRENCY: { [chainId: number]: NativeCurrencyName } = {
@@ -379,6 +391,7 @@ export const NATIVE_CURRENCY: { [chainId: number]: NativeCurrencyName } = {
   [ChainId.SONEIUM]: NativeCurrencyName.ETHER,
   [ChainId.STORY_AENEID]: NativeCurrencyName.IP,
   [ChainId.STORY]: NativeCurrencyName.IP,
+  [ChainId.HYPER_EVM]: NativeCurrencyName.HYPER_EVM,
 };
 
 export const ID_TO_NETWORK_NAME = (id: number): ChainName => {
@@ -443,6 +456,8 @@ export const ID_TO_NETWORK_NAME = (id: number): ChainName => {
       return ChainName.STORY_AENEID;
     case 1514:
       return ChainName.STORY;
+    case 999:
+      return ChainName.HYPER_EVM;
     default:
       throw new Error(`Unknown chain id: ${id}`);
   }
@@ -508,6 +523,8 @@ export const ID_TO_PROVIDER = (id: ChainId): string => {
       return process.env.JSON_RPC_PROVIDER_STORY_AENEID!;
     case ChainId.STORY:
       return process.env.JSON_RPC_PROVIDER_STORY!;
+    case ChainId.HYPER_EVM:
+      return process.env.JSON_RPC_PROVIDER_HYPER_EVM!;
     default:
       throw new Error(`Chain id: ${id} not supported`);
   }
@@ -745,7 +762,7 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId in ChainId]: Token } = {
     '0x5555555555555555555555555555555555555555',
     18,
     'WHYPE',
-    'Wrapped Hyper Ether'
+    'Wrapped HYPE'
   ),
 };
 

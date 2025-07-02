@@ -1086,6 +1086,8 @@ export const USDT_ON = (chainId: ChainId): Token => {
       return USDT_BNB;
     case ChainId.MONAD_TESTNET:
       return USDT_MONAD_TESTNET;
+    case ChainId.HYPER_EVM:
+      return USDT_HYPER_EVM;
     default:
       throw new Error(`Chain id: ${chainId} not supported`);
   }
