@@ -2562,6 +2562,13 @@ export async function getMixedRouteCandidatePools({
   V2subgraphPools.push(...crossLiquidityPools.v2v3PiperxPools);
   V3subgraphPools.push(...crossLiquidityPools.v3Pools);
   V3PiperxsubgraphPools.push(...crossLiquidityPools.v3PiperxPools);
+
+  log.debug(`Mixed V2subgraphPools: ${JSON.stringify(V2subgraphPools)}`);
+  log.debug(`Mixed V3subgraphPools: ${JSON.stringify(V3subgraphPools)}`);
+  log.debug(
+    `Mixed V3PiperxsubgraphPools: ${JSON.stringify(V3PiperxsubgraphPools)}`
+  );
+
   metric.putMetric(
     'MixedSubgraphPoolsLoad',
     Date.now() - beforeSubgraphPools,
@@ -2588,6 +2595,8 @@ export async function getMixedRouteCandidatePools({
       ...V2candidatePools.selections.topByDirectSwapPool,
       // Cross Liquidity (has to be added to be considered):
       ...crossLiquidityPools.v2Pools,
+      /// top tvl
+      ...V2candidatePools.selections.topByTVL,
     ].map((poolId) => poolId.id)
   );
 
