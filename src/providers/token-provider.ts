@@ -824,7 +824,7 @@ export const USDC_STORY = new Token(
 
 export const USDT_HYPER_EVM = new Token(
   ChainId.HYPER_EVM,
-  '0x5555555555555555555555555555555555555555',
+  '0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb',
   6,
   'USD₮0',
   'USD₮0'

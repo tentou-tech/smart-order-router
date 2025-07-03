@@ -138,6 +138,7 @@ export class V3PoolProvider
     functionName: string,
     providerConfig?: ProviderConfig
   ): Promise<Result<TReturn>[]> {
+    log.info({ poolAddresses }, 'getPoolsData');
     const { results, blockNumber } = await retry(async () => {
       return this.multicall2Provider.callSameFunctionOnMultipleContracts<
         any,
@@ -177,13 +178,18 @@ export class V3PoolProvider
         currency1: token1,
       };
     }
+    let initCodeHashManualOverride: string | undefined =
+      DEXES.StoryHunt.InitCodeHash;
+    if (this.chainId === ChainId.HYPER_EVM) {
+      initCodeHashManualOverride = DEXES.HyperSwapV3.InitCodeHash;
+    }
 
     const poolAddress = computePoolAddress({
       factoryAddress: V3_CORE_FACTORY_ADDRESSES[this.chainId]!,
       tokenA: token0,
       tokenB: token1,
       fee: feeAmount,
-      initCodeHashManualOverride: DEXES.StoryHunt.InitCodeHash,
+      initCodeHashManualOverride,
       chainId: this.chainId,
     });
 

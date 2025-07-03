@@ -733,6 +733,47 @@ export class AlphaRouter
             }
           );
           break;
+        case ChainId.HYPER_EVM:
+          this.onChainQuoteProvider = new OnChainQuoteProvider(
+            chainId,
+            provider,
+            this.multicall2Provider,
+            {
+              retries: 2,
+              minTimeout: 100,
+              maxTimeout: 1000,
+            },
+            (_) => {
+              return {
+                multicallChunk: 4,
+                gasLimitPerCall: 500_000,
+                quoteMinSuccessRate: 0.2,
+              };
+            },
+            (_) => {
+              return {
+                gasLimitOverride: 1_000_000,
+                multicallChunk: 2,
+              };
+            },
+            (_) => {
+              return {
+                gasLimitOverride: 2_000_000,
+                multicallChunk: 1,
+              };
+            },
+            (_) => {
+              return {
+                baseBlockOffset: -10,
+                rollback: {
+                  enabled: true,
+                  attemptsBeforeRollback: 1,
+                  rollbackBlockOffset: -10,
+                },
+              };
+            }
+          );
+          break;
         case ChainId.BASE:
         case ChainId.BLAST:
         case ChainId.ZORA:

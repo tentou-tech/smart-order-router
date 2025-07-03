@@ -11,16 +11,12 @@ import {
 import { ChainId } from '@tentou-tech/uniswap-sdk-core';
 import { encodeRouteToPath as encodeV3RouteToPath } from '@tentou-tech/uniswap-v3-sdk';
 import { encodeRouteToPath as encodeV3PiperxRouteToPath } from '@tentou-tech/uniswap-v3s1-sdk';
-import {
-  encodeRouteToPath as encodeV4RouteToPath,
-  // Pool as V4Pool,
-} from '@tentou-tech/uniswap-v4-sdk';
+import { encodeRouteToPath as encodeV4RouteToPath } from '@tentou-tech/uniswap-v4-sdk';
 import retry, { Options as RetryOptions } from 'async-retry';
 import _ from 'lodash';
 import stats from 'stats-lite';
 
 import {
-  // MixedRoute,
   SupportedRoutes,
   V2Route,
   V3PiperxRoute,
@@ -357,8 +353,8 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
       protocol: Protocol
     ) => BatchParams = (_optimisticCachedRoutes, _protocol) => {
       return {
-        multicallChunk: 150,
-        gasLimitPerCall: 2_500_000, // 1_000_000 default
+        multicallChunk: 4,
+        gasLimitPerCall: 500_000, // 1_000_000 default
         quoteMinSuccessRate: 0.2,
       };
     },
@@ -366,8 +362,8 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
       protocol: Protocol
     ) => FailureOverrides = (_protocol: Protocol) => {
       return {
-        gasLimitOverride: 5_000_000, // 1_500_000 default
-        multicallChunk: 100,
+        gasLimitOverride: 1_000_000, // 1_500_000 default
+        multicallChunk: 2,
       };
     },
     // successRateFailureOverrides and blockNumberConfig are not always override in alpha-router.
@@ -503,8 +499,8 @@ export class OnChainQuoteProvider implements IOnChainQuoteProvider {
       // We don't have onchain V2 quoter, but we do have a mixed quoter that can quote against v2 routes onchain
       // Hence in case of V2 or mixed, we explicitly encode into mixed routes.
       case Protocol.V2:
-         // we need to retain the fake pool data for the v2 route
-         return encodeMixedRouteToPath(
+        // we need to retain the fake pool data for the v2 route
+        return encodeMixedRouteToPath(
           route instanceof V2Route
             ? new MixedRouteSDK(route.pairs, route.input, route.output, true)
             : route
