@@ -1,4 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
+import { Protocol } from '@tentou-tech/uniswap-router-sdk';
 import { ChainId, Token } from '@tentou-tech/uniswap-sdk-core';
 import {
   computePoolAddress,
@@ -178,18 +179,14 @@ export class V3PoolProvider
         currency1: token1,
       };
     }
-    let initCodeHashManualOverride: string | undefined =
-      DEXES.StoryHunt.InitCodeHash;
-    if (this.chainId === ChainId.HYPER_EVM) {
-      initCodeHashManualOverride = DEXES.HyperSwapV3.InitCodeHash;
-    }
 
     const poolAddress = computePoolAddress({
       factoryAddress: V3_CORE_FACTORY_ADDRESSES[this.chainId]!,
       tokenA: token0,
       tokenB: token1,
       fee: feeAmount,
-      initCodeHashManualOverride,
+      initCodeHashManualOverride:
+        DEXES[`${this.chainId}-${Protocol.V3}`]?.InitCodeHash,
       chainId: this.chainId,
     });
 
