@@ -44,6 +44,7 @@ import {
   USDC_ZKSYNC,
   USDT_ARBITRUM,
   USDT_BNB,
+  USDT_HYPER_EVM,
   USDT_MAINNET,
   USDT_MONAD_TESTNET,
   USDT_OPTIMISM,
@@ -197,6 +198,11 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     nativeOnChain(ChainId.STORY),
     WRAPPED_NATIVE_CURRENCY[ChainId.STORY]!,
     USDC_STORY,
+  ],
+  [ChainId.HYPER_EVM]: [
+    nativeOnChain(ChainId.HYPER_EVM),
+    WRAPPED_NATIVE_CURRENCY[ChainId.HYPER_EVM]!,
+    USDT_HYPER_EVM,
   ],
 };
 

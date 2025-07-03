@@ -22,6 +22,11 @@ export const DEXES = {
       '0x0000000000000000000000000000000000000000000000000000000000000000',
     DexName: 'PiperX V2',
   },
+  HyperSwapV3: {
+    InitCodeHash:
+      '0xe3572921be1688dba92df30c6781b8770499ff274d20ae9b325f4242634774fb',
+    DexName: 'HyperSwap V3',
+  },
 };
 
 export const V3_FACTORY_ADDRESS: Record<string, string> = {

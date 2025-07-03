@@ -66,6 +66,7 @@ import {
   USDC_UNICHAIN,
   USDT_ARBITRUM,
   USDT_BNB,
+  USDT_HYPER_EVM,
   USDT_MAINNET,
   USDT_MONAD_TESTNET,
   USDT_OPTIMISM,
@@ -295,6 +296,10 @@ const baseTokensByChain: { [chainId in ChainId]?: Token[] } = {
     USDC_STORY_AENEID,
   ],
   [ChainId.STORY]: [WRAPPED_NATIVE_CURRENCY[ChainId.STORY]!, USDC_STORY],
+  [ChainId.HYPER_EVM]: [
+    WRAPPED_NATIVE_CURRENCY[ChainId.HYPER_EVM]!,
+    USDT_HYPER_EVM,
+  ],
 };
 
 class SubcategorySelectionPools<SubgraphPool> {

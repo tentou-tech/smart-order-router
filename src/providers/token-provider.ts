@@ -822,6 +822,14 @@ export const USDC_STORY = new Token(
   'Bridged USDC Stargate'
 );
 
+export const USDT_HYPER_EVM = new Token(
+  ChainId.HYPER_EVM,
+  '0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb',
+  6,
+  'USD₮0',
+  'USD₮0'
+);
+
 export class TokenProvider implements ITokenProvider {
   constructor(
     private chainId: ChainId,
@@ -1078,6 +1086,8 @@ export const USDT_ON = (chainId: ChainId): Token => {
       return USDT_BNB;
     case ChainId.MONAD_TESTNET:
       return USDT_MONAD_TESTNET;
+    case ChainId.HYPER_EVM:
+      return USDT_HYPER_EVM;
     default:
       throw new Error(`Chain id: ${chainId} not supported`);
   }
