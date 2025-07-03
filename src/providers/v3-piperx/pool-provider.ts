@@ -1,4 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
+import { Protocol } from '@tentou-tech/uniswap-router-sdk';
 import { ChainId, Token } from '@tentou-tech/uniswap-sdk-core';
 import { computePoolAddress } from '@tentou-tech/uniswap-v3-sdk';
 import { FeeAmount, Pool } from '@tentou-tech/uniswap-v3s1-sdk';
@@ -180,7 +181,8 @@ export class V3PoolPiperxProvider
       tokenA: token0,
       tokenB: token1,
       fee: feeAmount,
-      initCodeHashManualOverride: DEXES.PiPerxV3.InitCodeHash,
+      initCodeHashManualOverride:
+        DEXES[`${this.chainId}-${Protocol.V3S1}`]?.InitCodeHash,
       chainId: this.chainId,
     });
 

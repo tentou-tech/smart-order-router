@@ -64,7 +64,7 @@ export const poolToString = (pool: TPool): string => {
       pool.token0,
       pool.token1,
       pool.fee,
-      DEXES.StoryHunt.InitCodeHash,
+      DEXES[`${pool.chainId}-${Protocol.V3}`]?.InitCodeHash,
       V3_CORE_FACTORY_ADDRESSES[pool.chainId]
     )}]`;
   } else if (pool instanceof V3S1Pool) {
@@ -72,7 +72,7 @@ export const poolToString = (pool: TPool): string => {
       pool.token0,
       pool.token1,
       pool.fee,
-      DEXES.PiPerxV3.InitCodeHash,
+      DEXES[`${pool.chainId}-${Protocol.V3S1}`]?.InitCodeHash,
       V3S1_CORE_FACTORY_ADDRESSES[pool.chainId]
     )}]`;
   } else if (pool instanceof Pair) {
@@ -101,7 +101,7 @@ export const routeToString = (route: SupportedRoutes): string => {
         pool.token0,
         pool.token1,
         pool.fee,
-        DEXES.StoryHunt.InitCodeHash,
+        DEXES[`${pool.chainId}-${Protocol.V3}`]?.InitCodeHash,
         V3_CORE_FACTORY_ADDRESSES[pool.chainId]
       )}]`;
     } else if (pool instanceof V3S1Pool) {
@@ -109,7 +109,7 @@ export const routeToString = (route: SupportedRoutes): string => {
         pool.token0,
         pool.token1,
         pool.fee,
-        DEXES.PiPerxV3.InitCodeHash,
+        DEXES[`${pool.chainId}-${Protocol.V3S1}`]?.InitCodeHash,
         V3S1_CORE_FACTORY_ADDRESSES[pool.chainId]
       )}]`;
     } else if (pool instanceof V4Pool) {
